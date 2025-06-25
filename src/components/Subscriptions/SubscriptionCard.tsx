@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, DollarSign, MoreVertical, Pause, Trash2, Edit } from 'lucide-react';
+import { Calendar, DollarSign, MoreVertical, Pause, Trash2, Edit, Check } from 'lucide-react';
 import { Subscription } from '../../types/subscription';
 
 interface SubscriptionCardProps {
@@ -7,13 +7,19 @@ interface SubscriptionCardProps {
   onEdit: (subscription: Subscription) => void;
   onDelete: (id: string) => void;
   onToggleStatus: (id: string) => void;
+  isSelectionMode?: boolean;
+  isSelected?: boolean;
+  onSelect?: (id: string) => void;
 }
 
 const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   subscription,
   onEdit,
   onDelete,
-  onToggleStatus
+  onToggleStatus,
+  isSelectionMode = false,
+  isSelected = false,
+  onSelect
 }) => {
   const [showActions, setShowActions] = React.useState(false);
 
@@ -29,56 +35,82 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   const isUrgent = daysUntil <= 3;
   const isWarning = daysUntil <= 7 && daysUntil > 3;
 
+  const handleCardClick = () => {
+    if (isSelectionMode && onSelect) {
+      onSelect(subscription.id);
+    }
+  };
+
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 relative">
-      {/* Status Badge */}
-      <div className="absolute top-4 right-4">
-        <div className="relative">
-          <button
-            onClick={() => setShowActions(!showActions)}
-            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <MoreVertical className="w-4 h-4" />
-          </button>
-          {showActions && (
-            <div className="absolute right-0 top-10 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-10 min-w-[140px]">
-              <button
-                onClick={() => {
-                  onEdit(subscription);
-                  setShowActions(false);
-                }}
-                className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-              >
-                <Edit className="w-4 h-4" />
-                <span>Edit</span>
-              </button>
-              <button
-                onClick={() => {
-                  onToggleStatus(subscription.id);
-                  setShowActions(false);
-                }}
-                className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-              >
-                <Pause className="w-4 h-4" />
-                <span>{subscription.status === 'active' ? 'Pause' : 'Resume'}</span>
-              </button>
-              <button
-                onClick={() => {
-                  onDelete(subscription.id);
-                  setShowActions(false);
-                }}
-                className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
-              >
-                <Trash2 className="w-4 h-4" />
-                <span>Delete</span>
-              </button>
-            </div>
-          )}
+    <div 
+      className={`bg-white rounded-2xl p-6 shadow-sm border transition-all duration-300 relative ${
+        isSelectionMode 
+          ? `cursor-pointer ${isSelected ? 'border-purple-300 bg-purple-50 shadow-md' : 'border-gray-100 hover:border-gray-300'}`
+          : 'border-gray-100 hover:shadow-md'
+      }`}
+      onClick={handleCardClick}
+    >
+      {/* Selection Checkbox */}
+      {isSelectionMode && (
+        <div className="absolute top-4 left-4">
+          <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
+            isSelected ? 'bg-purple-600 border-purple-600' : 'border-gray-300'
+          }`}>
+            {isSelected && <Check className="w-3 h-3 text-white" />}
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* Actions Menu */}
+      {!isSelectionMode && (
+        <div className="absolute top-4 right-4">
+          <div className="relative">
+            <button
+              onClick={() => setShowActions(!showActions)}
+              className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <MoreVertical className="w-4 h-4" />
+            </button>
+            {showActions && (
+              <div className="absolute right-0 top-10 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-10 min-w-[140px]">
+                <button
+                  onClick={() => {
+                    onEdit(subscription);
+                    setShowActions(false);
+                  }}
+                  className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                >
+                  <Edit className="w-4 h-4" />
+                  <span>Edit</span>
+                </button>
+                <button
+                  onClick={() => {
+                    onToggleStatus(subscription.id);
+                    setShowActions(false);
+                  }}
+                  className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                >
+                  <Pause className="w-4 h-4" />
+                  <span>{subscription.status === 'active' ? 'Pause' : 'Resume'}</span>
+                </button>
+                <button
+                  onClick={() => {
+                    onDelete(subscription.id);
+                    setShowActions(false);
+                  }}
+                  className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  <span>Delete</span>
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Subscription Info */}
-      <div className="flex items-start space-x-4 mb-4">
+      <div className={`flex items-start space-x-4 mb-4 ${isSelectionMode ? 'ml-8' : ''}`}>
         <div
           className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-lg"
           style={{ backgroundColor: subscription.color || '#8B5CF6' }}

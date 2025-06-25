@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Search, Filter, Grid3X3, List } from 'lucide-react';
+import { Plus, Search, Filter, Grid3X3, List, Trash2, X } from 'lucide-react';
 import SubscriptionCard from './SubscriptionCard';
 import SubscriptionListItem from './SubscriptionListItem';
 import AddSubscriptionModal from './AddSubscriptionModal';
@@ -26,6 +26,8 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'paused' | 'cancelled'>('all');
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [selectedSubscriptions, setSelectedSubscriptions] = useState<string[]>([]);
+  const [isSelectionMode, setIsSelectionMode] = useState(false);
 
   const categories = Array.from(new Set(subscriptions.map(sub => sub.category).filter(Boolean)));
 
@@ -57,9 +59,46 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
     setEditingSubscription(null);
   };
 
+  const handleSelectSubscription = (id: string) => {
+    setSelectedSubscriptions(prev => 
+      prev.includes(id) 
+        ? prev.filter(subId => subId !== id)
+        : [...prev, id]
+    );
+  };
+
+  const handleSelectAll = () => {
+    if (selectedSubscriptions.length === filteredSubscriptions.length) {
+      setSelectedSubscriptions([]);
+    } else {
+      setSelectedSubscriptions(filteredSubscriptions.map(sub => sub.id));
+    }
+  };
+
+  const handleBulkDelete = () => {
+    if (window.confirm(`Are you sure you want to delete ${selectedSubscriptions.length} subscription(s)? This action cannot be undone.`)) {
+      selectedSubscriptions.forEach(id => {
+        onDeleteSubscription(id);
+      });
+      setSelectedSubscriptions([]);
+      setIsSelectionMode(false);
+    }
+  };
+
+  const handleCancelSelection = () => {
+    setSelectedSubscriptions([]);
+    setIsSelectionMode(false);
+  };
+
   const totalMonthlySpend = filteredSubscriptions.reduce((sum, sub) => {
     if (sub.status !== 'active') return sum;
     return sum + (sub.billingCycle === 'monthly' ? sub.cost : sub.cost / 12);
+  }, 0);
+
+  const selectedMonthlyCost = selectedSubscriptions.reduce((sum, id) => {
+    const subscription = subscriptions.find(sub => sub.id === id);
+    if (!subscription || subscription.status !== 'active') return sum;
+    return sum + (subscription.billingCycle === 'monthly' ? subscription.cost : subscription.cost / 12);
   }, 0);
 
   return (
@@ -70,14 +109,71 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
           <h1 className="text-2xl font-bold text-gray-900">Subscriptions</h1>
           <p className="text-gray-600">Manage all your recurring subscriptions</p>
         </div>
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2 shadow-lg"
-        >
-          <Plus className="w-5 h-5" />
-          <span>Add Subscription</span>
-        </button>
+        <div className="flex space-x-3">
+          {!isSelectionMode ? (
+            <>
+              <button
+                onClick={() => setIsSelectionMode(true)}
+                className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2"
+              >
+                <span>Select</span>
+              </button>
+              <button
+                onClick={() => setShowAddModal(true)}
+                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2 shadow-lg"
+              >
+                <Plus className="w-5 h-5" />
+                <span>Add Subscription</span>
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={handleCancelSelection}
+                className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2"
+              >
+                <X className="w-4 h-4" />
+                <span>Cancel</span>
+              </button>
+              {selectedSubscriptions.length > 0 && (
+                <button
+                  onClick={handleBulkDelete}
+                  className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  <span>Delete ({selectedSubscriptions.length})</span>
+                </button>
+              )}
+            </>
+          )}
+        </div>
       </div>
+
+      {/* Selection Mode Banner */}
+      {isSelectionMode && (
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="text-blue-600">
+                <span className="font-medium">
+                  {selectedSubscriptions.length} of {filteredSubscriptions.length} selected
+                </span>
+                {selectedSubscriptions.length > 0 && (
+                  <span className="ml-2 text-sm">
+                    (${selectedMonthlyCost.toFixed(2)}/month potential savings)
+                  </span>
+                )}
+              </div>
+            </div>
+            <button
+              onClick={handleSelectAll}
+              className="text-blue-600 hover:text-blue-700 font-medium text-sm"
+            >
+              {selectedSubscriptions.length === filteredSubscriptions.length ? 'Deselect All' : 'Select All'}
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Stats */}
       <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl p-6">
@@ -197,6 +293,9 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
               onEdit={handleEdit}
               onDelete={onDeleteSubscription}
               onToggleStatus={onToggleSubscriptionStatus}
+              isSelectionMode={isSelectionMode}
+              isSelected={selectedSubscriptions.includes(subscription.id)}
+              onSelect={handleSelectSubscription}
             />
           ))}
         </div>
@@ -204,7 +303,8 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
           <div className="px-6 py-4 bg-gray-50 border-b border-gray-100">
             <div className="grid grid-cols-12 gap-4 text-sm font-medium text-gray-600">
-              <div className="col-span-4">Service</div>
+              {isSelectionMode && <div className="col-span-1">Select</div>}
+              <div className={isSelectionMode ? "col-span-3" : "col-span-4"}>Service</div>
               <div className="col-span-2">Category</div>
               <div className="col-span-2">Cost</div>
               <div className="col-span-2">Next Billing</div>
@@ -220,6 +320,9 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
                 onEdit={handleEdit}
                 onDelete={onDeleteSubscription}
                 onToggleStatus={onToggleSubscriptionStatus}
+                isSelectionMode={isSelectionMode}
+                isSelected={selectedSubscriptions.includes(subscription.id)}
+                onSelect={handleSelectSubscription}
               />
             ))}
           </div>
