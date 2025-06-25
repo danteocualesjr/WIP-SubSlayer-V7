@@ -63,24 +63,10 @@ const Dashboard: React.FC<DashboardProps> = ({
       {/* Header */}
       <div className="bg-gradient-to-br from-purple-600 via-blue-600 to-emerald-500 rounded-3xl p-8 text-white">
         <div className="max-w-4xl">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6">
-            <div>
-              <h1 className="text-4xl font-bold mb-4">Welcome back to SubSlayer</h1>
-              <p className="text-xl text-white/90">
-                Take control of your subscriptions and maximize your savings
-              </p>
-            </div>
-            <div className="mt-4 lg:mt-0">
-              <button
-                onClick={() => setShowAddModal(true)}
-                className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2 border border-white/20"
-              >
-                <Plus className="w-5 h-5" />
-                <span>Add Subscription</span>
-              </button>
-            </div>
-          </div>
-          
+          <h1 className="text-4xl font-bold mb-4">Welcome back to SubSlayer</h1>
+          <p className="text-xl text-white/90 mb-6">
+            Take control of your subscriptions and maximize your savings
+          </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4">
               <p className="text-white/80 text-sm font-medium">Monthly Total</p>
