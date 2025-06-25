@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Plus, Search, Filter } from 'lucide-react';
+import { Plus, Search, Filter, Grid3X3, List } from 'lucide-react';
 import SubscriptionCard from './SubscriptionCard';
+import SubscriptionListItem from './SubscriptionListItem';
 import AddSubscriptionModal from './AddSubscriptionModal';
 import { Subscription } from '../../types/subscription';
 
@@ -24,6 +25,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'paused' | 'cancelled'>('all');
   const [filterCategory, setFilterCategory] = useState<string>('all');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   const categories = Array.from(new Set(subscriptions.map(sub => sub.category).filter(Boolean)));
 
@@ -103,8 +105,8 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+      {/* Filters and View Toggle */}
+      <div className="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
           <input
@@ -136,10 +138,34 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
               <option key={category} value={category}>{category}</option>
             ))}
           </select>
+          
+          {/* View Toggle */}
+          <div className="flex bg-gray-100 rounded-xl p-1">
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`p-2 rounded-lg transition-all duration-200 ${
+                viewMode === 'grid'
+                  ? 'bg-white text-purple-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <Grid3X3 className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => setViewMode('list')}
+              className={`p-2 rounded-lg transition-all duration-200 ${
+                viewMode === 'list'
+                  ? 'bg-white text-purple-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <List className="w-5 h-5" />
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Subscriptions Grid */}
+      {/* Subscriptions Display */}
       {filteredSubscriptions.length === 0 ? (
         <div className="text-center py-12">
           <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -162,7 +188,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
             </button>
           )}
         </div>
-      ) : (
+      ) : viewMode === 'grid' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredSubscriptions.map((subscription) => (
             <SubscriptionCard
@@ -173,6 +199,30 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
               onToggleStatus={onToggleSubscriptionStatus}
             />
           ))}
+        </div>
+      ) : (
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="px-6 py-4 bg-gray-50 border-b border-gray-100">
+            <div className="grid grid-cols-12 gap-4 text-sm font-medium text-gray-600">
+              <div className="col-span-4">Service</div>
+              <div className="col-span-2">Category</div>
+              <div className="col-span-2">Cost</div>
+              <div className="col-span-2">Next Billing</div>
+              <div className="col-span-1">Status</div>
+              <div className="col-span-1">Actions</div>
+            </div>
+          </div>
+          <div className="divide-y divide-gray-100">
+            {filteredSubscriptions.map((subscription) => (
+              <SubscriptionListItem
+                key={subscription.id}
+                subscription={subscription}
+                onEdit={handleEdit}
+                onDelete={onDeleteSubscription}
+                onToggleStatus={onToggleSubscriptionStatus}
+              />
+            ))}
+          </div>
         </div>
       )}
 
