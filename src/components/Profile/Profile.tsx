@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { User, Mail, Calendar, Shield, Award, TrendingUp, DollarSign, CreditCard, Edit2, Camera } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { User, Mail, Calendar, Shield, Award, TrendingUp, DollarSign, CreditCard, Edit2, Camera, MapPin, Globe } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { Subscription } from '../../types/subscription';
+import ProfileEditModal from './ProfileEditModal';
 
 interface ProfileProps {
   subscriptions: Subscription[];
@@ -9,15 +10,29 @@ interface ProfileProps {
 
 const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
   const { user, signOut } = useAuth();
-  const [isEditing, setIsEditing] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [profile, setProfile] = useState({
     displayName: user?.email?.split('@')[0] || '',
     email: user?.email || '',
     bio: 'Subscription management enthusiast',
-    location: 'New York, NY',
+    location: '',
     website: '',
+    avatar: null as string | null,
     joinDate: user?.created_at || new Date().toISOString(),
   });
+
+  // Listen for navigation event from header
+  useEffect(() => {
+    const handleNavigateToProfile = () => {
+      setShowEditModal(true);
+    };
+
+    window.addEventListener('navigateToProfile', handleNavigateToProfile);
+    
+    return () => {
+      window.removeEventListener('navigateToProfile', handleNavigateToProfile);
+    };
+  }, []);
 
   const activeSubscriptions = subscriptions.filter(sub => sub.status === 'active');
   const totalMonthlySpend = activeSubscriptions.reduce((sum, sub) => {
@@ -68,10 +83,19 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
 
   const earnedAchievements = achievements.filter(a => a.earned);
 
-  const handleSaveProfile = () => {
+  const handleSaveProfile = (profileData: any) => {
+    setProfile(prev => ({
+      ...prev,
+      displayName: profileData.displayName,
+      email: profileData.email,
+      bio: profileData.bio,
+      location: profileData.location,
+      website: profileData.website,
+      avatar: profileData.avatarPreview || prev.avatar,
+    }));
+    
     // Here you would typically save to your backend
-    console.log('Saving profile:', profile);
-    setIsEditing(false);
+    console.log('Saving profile:', profileData);
   };
 
   const handleSignOut = async () => {
@@ -91,31 +115,67 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-6 md:space-y-0">
           <div className="flex items-center space-x-6">
             <div className="relative">
-              <div className="w-24 h-24 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center text-white font-bold text-3xl">
-                {profile.displayName.charAt(0).toUpperCase() || 'U'}
+              <div className="w-24 h-24 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center text-white font-bold text-3xl overflow-hidden">
+                {profile.avatar ? (
+                  <img 
+                    src={profile.avatar} 
+                    alt="Profile" 
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  profile.displayName.charAt(0).toUpperCase() || 'U'
+                )}
               </div>
-              <button className="absolute -bottom-2 -right-2 w-8 h-8 bg-white text-purple-600 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors">
+              <button 
+                onClick={() => setShowEditModal(true)}
+                className="absolute -bottom-2 -right-2 w-8 h-8 bg-white text-purple-600 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors shadow-lg"
+              >
                 <Camera className="w-4 h-4" />
               </button>
             </div>
             
             <div>
               <h2 className="text-3xl font-bold mb-2">{profile.displayName}</h2>
-              <p className="text-white/90 mb-1">{profile.email}</p>
-              <p className="text-white/80 text-sm">Member since {memberSince}</p>
+              <p className="text-white/90 mb-1 flex items-center space-x-2">
+                <Mail className="w-4 h-4" />
+                <span>{profile.email}</span>
+              </p>
+              <p className="text-white/80 text-sm flex items-center space-x-2">
+                <Calendar className="w-4 h-4" />
+                <span>Member since {memberSince}</span>
+              </p>
               {profile.location && (
-                <p className="text-white/80 text-sm">{profile.location}</p>
+                <p className="text-white/80 text-sm flex items-center space-x-2 mt-1">
+                  <MapPin className="w-4 h-4" />
+                  <span>{profile.location}</span>
+                </p>
+              )}
+              {profile.website && (
+                <p className="text-white/80 text-sm flex items-center space-x-2 mt-1">
+                  <Globe className="w-4 h-4" />
+                  <a 
+                    href={profile.website} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="hover:text-white transition-colors"
+                  >
+                    {profile.website}
+                  </a>
+                </p>
+              )}
+              {profile.bio && (
+                <p className="text-white/90 text-sm mt-2 max-w-md">{profile.bio}</p>
               )}
             </div>
           </div>
 
           <div className="flex space-x-3">
             <button
-              onClick={() => setIsEditing(!isEditing)}
+              onClick={() => setShowEditModal(true)}
               className="px-6 py-3 bg-white/20 backdrop-blur-sm text-white rounded-xl hover:bg-white/30 transition-all duration-200 flex items-center space-x-2"
             >
               <Edit2 className="w-4 h-4" />
-              <span>{isEditing ? 'Cancel' : 'Edit Profile'}</span>
+              <span>Edit Profile</span>
             </button>
             <button
               onClick={handleSignOut}
@@ -130,78 +190,6 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Profile Information */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Edit Profile Form */}
-          {isEditing && (
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Edit Profile</h3>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Display Name
-                  </label>
-                  <input
-                    type="text"
-                    value={profile.displayName}
-                    onChange={(e) => setProfile(prev => ({ ...prev, displayName: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Bio
-                  </label>
-                  <textarea
-                    value={profile.bio}
-                    onChange={(e) => setProfile(prev => ({ ...prev, bio: e.target.value }))}
-                    rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Location
-                  </label>
-                  <input
-                    type="text"
-                    value={profile.location}
-                    onChange={(e) => setProfile(prev => ({ ...prev, location: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Website
-                  </label>
-                  <input
-                    type="url"
-                    value={profile.website}
-                    onChange={(e) => setProfile(prev => ({ ...prev, website: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    placeholder="https://example.com"
-                  />
-                </div>
-
-                <div className="flex space-x-3 pt-4">
-                  <button
-                    onClick={handleSaveProfile}
-                    className="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all duration-200"
-                  >
-                    Save Changes
-                  </button>
-                  <button
-                    onClick={() => setIsEditing(false)}
-                    className="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
           {/* Subscription Statistics */}
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
             <h3 className="text-lg font-semibold text-gray-900 mb-6">Subscription Statistics</h3>
@@ -347,6 +335,13 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
           </div>
         </div>
       </div>
+
+      {/* Profile Edit Modal */}
+      <ProfileEditModal
+        isOpen={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        onSave={handleSaveProfile}
+      />
     </div>
   );
 };

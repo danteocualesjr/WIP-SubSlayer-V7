@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from './components/Layout/Sidebar';
 import Header from './components/Layout/Header';
 import Dashboard from './components/Dashboard/Dashboard';
@@ -28,6 +28,19 @@ function App() {
   const { spendingData, loading: spendingLoading } = useSpendingData();
 
   const [activeTab, setActiveTab] = useState('dashboard');
+
+  // Listen for navigation events from header
+  useEffect(() => {
+    const handleNavigateToProfile = () => {
+      setActiveTab('profile');
+    };
+
+    window.addEventListener('navigateToProfile', handleNavigateToProfile);
+    
+    return () => {
+      window.removeEventListener('navigateToProfile', handleNavigateToProfile);
+    };
+  }, []);
 
   // Show loading spinner while checking auth
   if (authLoading) {
