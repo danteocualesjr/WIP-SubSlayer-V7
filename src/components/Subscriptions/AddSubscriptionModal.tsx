@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Plus } from 'lucide-react';
 import { Subscription } from '../../types/subscription';
 
@@ -37,6 +37,56 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
     '#F97316', '#84CC16', '#06B6D4', '#8B5CF6', '#EC4899'
   ];
 
+  // Prevent modal from closing when clicking outside or losing focus
+  useEffect(() => {
+    if (isOpen) {
+      // Prevent body scroll when modal is open
+      document.body.style.overflow = 'hidden';
+      
+      // Prevent default behavior on visibility change
+      const handleVisibilityChange = (e: Event) => {
+        e.preventDefault();
+        e.stopPropagation();
+      };
+
+      // Prevent modal from closing on window blur/focus
+      const handleWindowBlur = (e: Event) => {
+        e.preventDefault();
+      };
+
+      const handleWindowFocus = (e: Event) => {
+        e.preventDefault();
+      };
+
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+      window.addEventListener('blur', handleWindowBlur);
+      window.addEventListener('focus', handleWindowFocus);
+
+      return () => {
+        document.body.style.overflow = 'unset';
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+        window.removeEventListener('blur', handleWindowBlur);
+        window.removeEventListener('focus', handleWindowFocus);
+      };
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+  }, [isOpen]);
+
+  // Handle escape key to close modal
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscape);
+      return () => document.removeEventListener('keydown', handleEscape);
+    }
+  }, [isOpen, onClose]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.cost || !formData.nextBilling) return;
@@ -59,11 +109,37 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
     });
   };
 
+  // Prevent modal from closing when clicking inside the modal content
+  const handleModalContentClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
+  // Only close when explicitly clicking the backdrop
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+    <div 
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4"
+      onClick={handleBackdropClick}
+      style={{ 
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 9999
+      }}
+    >
+      <div 
+        className="bg-white rounded-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl"
+        onClick={handleModalContentClick}
+      >
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-semibold text-gray-900">
             {subscription ? 'Edit Subscription' : 'Add New Subscription'}
@@ -71,6 +147,7 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
           <button
             onClick={onClose}
             className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+            type="button"
           >
             <X className="w-5 h-5" />
           </button>
@@ -88,6 +165,7 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               placeholder="e.g., ChatGPT Plus, Netflix, Spotify"
               required
+              autoFocus
             />
           </div>
 
@@ -173,8 +251,8 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
                   key={color}
                   type="button"
                   onClick={() => setFormData({ ...formData, color })}
-                  className={`w-8 h-8 rounded-lg border-2 ${
-                    formData.color === color ? 'border-gray-900' : 'border-gray-200'
+                  className={`w-8 h-8 rounded-lg border-2 transition-all duration-200 ${
+                    formData.color === color ? 'border-gray-900 scale-110' : 'border-gray-200 hover:border-gray-400'
                   }`}
                   style={{ backgroundColor: color }}
                 />
