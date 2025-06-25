@@ -28,7 +28,7 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
   });
 
   const categories = [
-    'Entertainment', 'Productivity', 'Development', 'Design', 'Education', 
+    'AI', 'Entertainment', 'Productivity', 'Development', 'Design', 'Education', 
     'Health & Fitness', 'News & Media', 'Music', 'Storage', 'Other'
   ];
 
@@ -86,7 +86,7 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              placeholder="e.g., Netflix, Spotify"
+              placeholder="e.g., ChatGPT Plus, Netflix, Spotify"
               required
             />
           </div>
