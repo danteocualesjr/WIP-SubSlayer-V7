@@ -60,50 +60,37 @@ const Dashboard: React.FC<DashboardProps> = ({
 
   return (
     <div className="space-y-8">
-      {/* Header with Add Button */}
-      <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between space-y-6 lg:space-y-0">
-        <div className="bg-gradient-to-br from-purple-600 via-blue-600 to-emerald-500 rounded-3xl p-8 text-white flex-1 lg:mr-6">
-          <div className="max-w-4xl">
-            <h1 className="text-4xl font-bold mb-4">Welcome back to SubSlayer</h1>
-            <p className="text-xl text-white/90 mb-6">
-              Take control of your subscriptions and maximize your savings
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4">
-                <p className="text-white/80 text-sm font-medium">Monthly Total</p>
-                <p className="text-2xl font-bold">${monthlyTotal.toFixed(2)}</p>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4">
-                <p className="text-white/80 text-sm font-medium">Annual Projection</p>
-                <p className="text-2xl font-bold">${annualTotal.toFixed(2)}</p>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4">
-                <p className="text-white/80 text-sm font-medium">Active Subscriptions</p>
-                <p className="text-2xl font-bold">{activeSubscriptions.length}</p>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4">
-                <p className="text-white/80 text-sm font-medium">Paused Subscriptions</p>
-                <p className="text-2xl font-bold">
-                  {subscriptions.filter(sub => sub.status === 'paused').length}
-                </p>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4">
-                <p className="text-white/80 text-sm font-medium">Upcoming Renewals</p>
-                <p className="text-2xl font-bold">{upcomingRenewalsCount}</p>
-              </div>
+      {/* Header */}
+      <div className="bg-gradient-to-br from-purple-600 via-blue-600 to-emerald-500 rounded-3xl p-8 text-white">
+        <div className="max-w-4xl">
+          <h1 className="text-4xl font-bold mb-4">Welcome back to SubSlayer</h1>
+          <p className="text-xl text-white/90 mb-6">
+            Take control of your subscriptions and maximize your savings
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4">
+              <p className="text-white/80 text-sm font-medium">Monthly Total</p>
+              <p className="text-2xl font-bold">${monthlyTotal.toFixed(2)}</p>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4">
+              <p className="text-white/80 text-sm font-medium">Annual Projection</p>
+              <p className="text-2xl font-bold">${annualTotal.toFixed(2)}</p>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4">
+              <p className="text-white/80 text-sm font-medium">Active Subscriptions</p>
+              <p className="text-2xl font-bold">{activeSubscriptions.length}</p>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4">
+              <p className="text-white/80 text-sm font-medium">Paused Subscriptions</p>
+              <p className="text-2xl font-bold">
+                {subscriptions.filter(sub => sub.status === 'paused').length}
+              </p>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4">
+              <p className="text-white/80 text-sm font-medium">Upcoming Renewals</p>
+              <p className="text-2xl font-bold">{upcomingRenewalsCount}</p>
             </div>
           </div>
-        </div>
-        
-        {/* Add Subscription Button */}
-        <div className="lg:self-start">
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="bg-white hover:bg-gray-50 text-purple-600 px-6 py-3 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2 shadow-lg border border-gray-200 hover:shadow-xl"
-          >
-            <Plus className="w-5 h-5" />
-            <span>Add Subscription</span>
-          </button>
         </div>
       </div>
 
