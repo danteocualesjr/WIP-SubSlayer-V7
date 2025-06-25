@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { User, Mail, Calendar, Shield, Award, TrendingUp, DollarSign, CreditCard, Edit2, Camera, MapPin, Globe } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
+import { useProfile } from '../../hooks/useProfile';
 import { Subscription } from '../../types/subscription';
 import ProfileEditModal from './ProfileEditModal';
 
@@ -10,16 +11,8 @@ interface ProfileProps {
 
 const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
   const { user, signOut } = useAuth();
+  const { profile, loading: profileLoading, saveProfile } = useProfile();
   const [showEditModal, setShowEditModal] = useState(false);
-  const [profile, setProfile] = useState({
-    displayName: user?.email?.split('@')[0] || '',
-    email: user?.email || '',
-    bio: 'Subscription management enthusiast',
-    location: '',
-    website: '',
-    avatar: null as string | null,
-    joinDate: user?.created_at || new Date().toISOString(),
-  });
 
   // Listen for navigation event from header
   useEffect(() => {
@@ -84,23 +77,34 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
   const earnedAchievements = achievements.filter(a => a.earned);
 
   const handleSaveProfile = (profileData: any) => {
-    setProfile(prev => ({
-      ...prev,
+    const result = saveProfile({
       displayName: profileData.displayName,
       email: profileData.email,
       bio: profileData.bio,
       location: profileData.location,
       website: profileData.website,
-      avatar: profileData.avatarPreview || prev.avatar,
-    }));
-    
-    // Here you would typically save to your backend
-    console.log('Saving profile:', profileData);
+      avatar: profileData.avatarPreview || profile.avatar,
+    });
+
+    if (result.success) {
+      console.log('Profile saved successfully');
+    } else {
+      console.error('Failed to save profile:', result.error);
+      alert('Failed to save profile. Please try again.');
+    }
   };
 
   const handleSignOut = async () => {
     await signOut();
   };
+
+  if (profileLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-purple-600/30 border-t-purple-600 rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -135,7 +139,7 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
             </div>
             
             <div>
-              <h2 className="text-3xl font-bold mb-2">{profile.displayName}</h2>
+              <h2 className="text-3xl font-bold mb-2">{profile.displayName || 'User'}</h2>
               <p className="text-white/90 mb-1 flex items-center space-x-2">
                 <Mail className="w-4 h-4" />
                 <span>{profile.email}</span>
@@ -341,6 +345,7 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
         isOpen={showEditModal}
         onClose={() => setShowEditModal(false)}
         onSave={handleSaveProfile}
+        currentProfile={profile}
       />
     </div>
   );

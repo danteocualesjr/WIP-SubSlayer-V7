@@ -1,33 +1,54 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { X, Camera, Upload, User, Mail, MapPin, Globe, Save } from 'lucide-react';
-import { useAuth } from '../../hooks/useAuth';
 
 interface ProfileEditModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (profileData: any) => void;
+  currentProfile: {
+    displayName: string;
+    email: string;
+    bio: string;
+    location: string;
+    website: string;
+    avatar: string | null;
+  };
 }
 
 const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   isOpen,
   onClose,
-  onSave
+  onSave,
+  currentProfile
 }) => {
-  const { user } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [profileData, setProfileData] = useState({
-    displayName: user?.email?.split('@')[0] || '',
-    email: user?.email || '',
-    bio: 'Subscription management enthusiast',
+    displayName: '',
+    email: '',
+    bio: '',
     location: '',
     website: '',
-    phone: '',
     avatar: null as File | null,
     avatarPreview: null as string | null,
   });
 
   const [loading, setLoading] = useState(false);
+
+  // Initialize form data when modal opens or currentProfile changes
+  useEffect(() => {
+    if (isOpen && currentProfile) {
+      setProfileData({
+        displayName: currentProfile.displayName || '',
+        email: currentProfile.email || '',
+        bio: currentProfile.bio || '',
+        location: currentProfile.location || '',
+        website: currentProfile.website || '',
+        avatar: null,
+        avatarPreview: currentProfile.avatar || null,
+      });
+    }
+  }, [isOpen, currentProfile]);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -44,12 +65,24 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         return;
       }
 
+      // Create preview URL
+      const previewUrl = URL.createObjectURL(file);
+      
       setProfileData(prev => ({
         ...prev,
         avatar: file,
-        avatarPreview: URL.createObjectURL(file)
+        avatarPreview: previewUrl
       }));
     }
+  };
+
+  const convertFileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -57,14 +90,32 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     setLoading(true);
     
     try {
-      // Here you would typically upload the avatar to your storage service
-      // and update the user profile in your database
+      let avatarData = profileData.avatarPreview;
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Convert file to base64 if a new file was selected
+      if (profileData.avatar) {
+        avatarData = await convertFileToBase64(profileData.avatar);
+      }
       
-      onSave(profileData);
+      // Prepare data for saving
+      const dataToSave = {
+        ...profileData,
+        avatarPreview: avatarData
+      };
+      
+      onSave(dataToSave);
       onClose();
+      
+      // Show success message
+      const successMessage = document.createElement('div');
+      successMessage.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-[10000]';
+      successMessage.textContent = 'Profile updated successfully!';
+      document.body.appendChild(successMessage);
+      
+      setTimeout(() => {
+        document.body.removeChild(successMessage);
+      }, 3000);
+      
     } catch (error) {
       console.error('Error saving profile:', error);
       alert('Failed to save profile. Please try again.');
@@ -78,6 +129,15 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       onClose();
     }
   };
+
+  // Clean up object URLs when component unmounts or modal closes
+  useEffect(() => {
+    return () => {
+      if (profileData.avatarPreview && profileData.avatarPreview.startsWith('blob:')) {
+        URL.revokeObjectURL(profileData.avatarPreview);
+      }
+    };
+  }, [profileData.avatarPreview]);
 
   if (!isOpen) return null;
 
@@ -162,6 +222,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 onChange={(e) => setProfileData(prev => ({ ...prev, displayName: e.target.value }))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 placeholder="Enter your display name"
+                required
               />
             </div>
 
@@ -176,6 +237,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 onChange={(e) => setProfileData(prev => ({ ...prev, email: e.target.value }))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 placeholder="Enter your email"
+                required
               />
             </div>
 
@@ -218,7 +280,11 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
               rows={3}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               placeholder="Tell us about yourself..."
+              maxLength={500}
             />
+            <p className="text-xs text-gray-500 mt-1">
+              {profileData.bio.length}/500 characters
+            </p>
           </div>
 
           {/* Action Buttons */}

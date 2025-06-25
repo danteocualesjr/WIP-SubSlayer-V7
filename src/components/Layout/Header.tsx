@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Bell, User, Search, LogOut } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
+import { useProfile } from '../../hooks/useProfile';
 
 const Header: React.FC = () => {
   const { user, signOut } = useAuth();
+  const { profile } = useProfile();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
@@ -142,16 +144,24 @@ const Header: React.FC = () => {
             <div className="flex items-center space-x-3 pl-3 border-l border-gray-200">
               <div className="text-right">
                 <p className="text-sm font-medium text-gray-900">
-                  {user?.email?.split('@')[0] || 'User'}
+                  {profile.displayName || user?.email?.split('@')[0] || 'User'}
                 </p>
                 <p className="text-xs text-gray-600">Premium Plan</p>
               </div>
               <div className="relative">
                 <button 
                   onClick={() => setShowProfileMenu(!showProfileMenu)}
-                  className="w-8 h-8 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center text-white hover:shadow-lg transition-all duration-200"
+                  className="w-8 h-8 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center text-white hover:shadow-lg transition-all duration-200 overflow-hidden"
                 >
-                  <User className="w-4 h-4" />
+                  {profile.avatar ? (
+                    <img 
+                      src={profile.avatar} 
+                      alt="Profile" 
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <User className="w-4 h-4" />
+                  )}
                 </button>
                 
                 {/* Profile Dropdown */}
@@ -159,9 +169,9 @@ const Header: React.FC = () => {
                   <div className="absolute right-0 top-10 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50 min-w-[160px]">
                     <div className="px-4 py-2 border-b border-gray-100">
                       <p className="text-sm font-medium text-gray-900">
-                        {user?.email?.split('@')[0] || 'User'}
+                        {profile.displayName || user?.email?.split('@')[0] || 'User'}
                       </p>
-                      <p className="text-xs text-gray-600">{user?.email}</p>
+                      <p className="text-xs text-gray-600">{profile.email || user?.email}</p>
                     </div>
                     <button
                       onClick={() => {
