@@ -86,6 +86,7 @@ function App() {
             subscriptions={subscriptions} 
             spendingData={spendingData}
             spendingLoading={spendingLoading}
+            onAddSubscription={addSubscription}
           />
         );
       case 'subscriptions':
@@ -116,6 +117,7 @@ function App() {
             subscriptions={subscriptions} 
             spendingData={spendingData}
             spendingLoading={spendingLoading}
+            onAddSubscription={addSubscription}
           />
         );
     }
