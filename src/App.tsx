@@ -5,6 +5,9 @@ import Dashboard from './components/Dashboard/Dashboard';
 import Subscriptions from './components/Subscriptions/Subscriptions';
 import Analytics from './components/Analytics/Analytics';
 import CostSimulator from './components/CostSimulator/CostSimulator';
+import Notifications from './components/Notifications/Notifications';
+import Settings from './components/Settings/Settings';
+import Profile from './components/Profile/Profile';
 import AuthForm from './components/Auth/AuthForm';
 import { useAuth } from './hooks/useAuth';
 import { useSubscriptions } from './hooks/useSubscriptions';
@@ -71,7 +74,7 @@ function App() {
   const currentCategoryData = updateCategoryData();
 
   const renderActiveTab = () => {
-    if (subscriptionsLoading) {
+    if (subscriptionsLoading && (activeTab === 'dashboard' || activeTab === 'subscriptions' || activeTab === 'analytics' || activeTab === 'simulator')) {
       return (
         <div className="flex items-center justify-center py-12">
           <div className="w-8 h-8 border-2 border-purple-600/30 border-t-purple-600 rounded-full animate-spin" />
@@ -111,6 +114,12 @@ function App() {
         );
       case 'simulator':
         return <CostSimulator subscriptions={subscriptions} />;
+      case 'notifications':
+        return <Notifications subscriptions={subscriptions} />;
+      case 'settings':
+        return <Settings />;
+      case 'profile':
+        return <Profile subscriptions={subscriptions} />;
       default:
         return (
           <Dashboard 
