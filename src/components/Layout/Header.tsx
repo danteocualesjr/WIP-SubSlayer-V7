@@ -1,7 +1,14 @@
 import React from 'react';
-import { Bell, User, Search } from 'lucide-react';
+import { Bell, User, Search, LogOut } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
 
 const Header: React.FC = () => {
+  const { user, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    await signOut();
+  };
+
   return (
     <header className="bg-white/80 backdrop-blur-xl border-b border-gray-200/50 sticky top-0 z-30 ml-64">
       <div className="px-6 lg:px-8">
@@ -26,12 +33,25 @@ const Header: React.FC = () => {
             </button>
             <div className="flex items-center space-x-3 pl-3 border-l border-gray-200">
               <div className="text-right">
-                <p className="text-sm font-medium text-gray-900">John Doe</p>
+                <p className="text-sm font-medium text-gray-900">
+                  {user?.email?.split('@')[0] || 'User'}
+                </p>
                 <p className="text-xs text-gray-600">Premium Plan</p>
               </div>
-              <button className="w-8 h-8 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center text-white">
-                <User className="w-4 h-4" />
-              </button>
+              <div className="relative group">
+                <button className="w-8 h-8 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center text-white">
+                  <User className="w-4 h-4" />
+                </button>
+                <div className="absolute right-0 top-10 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-10 min-w-[140px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                  <button
+                    onClick={handleSignOut}
+                    className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Sign Out</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

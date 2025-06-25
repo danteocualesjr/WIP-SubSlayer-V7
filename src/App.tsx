@@ -5,44 +5,45 @@ import Dashboard from './components/Dashboard/Dashboard';
 import Subscriptions from './components/Subscriptions/Subscriptions';
 import Analytics from './components/Analytics/Analytics';
 import CostSimulator from './components/CostSimulator/CostSimulator';
-import { mockSubscriptions, mockSpendingData, mockCategoryData } from './data/mockData';
-import { Subscription } from './types/subscription';
+import AuthForm from './components/Auth/AuthForm';
+import { useAuth } from './hooks/useAuth';
+import { useSubscriptions } from './hooks/useSubscriptions';
+import { mockSpendingData } from './data/mockData';
 
 function App() {
+  const { user, loading: authLoading } = useAuth();
+  const {
+    subscriptions,
+    loading: subscriptionsLoading,
+    addSubscription,
+    updateSubscription,
+    deleteSubscription,
+    toggleSubscriptionStatus,
+    bulkDeleteSubscriptions,
+  } = useSubscriptions();
+
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [subscriptions, setSubscriptions] = useState<Subscription[]>(mockSubscriptions);
 
-  const addSubscription = (subscriptionData: Omit<Subscription, 'id' | 'createdAt'>) => {
-    const newSubscription: Subscription = {
-      ...subscriptionData,
-      id: Date.now().toString(),
-      createdAt: new Date().toISOString(),
-    };
-    setSubscriptions(prev => [...prev, newSubscription]);
-  };
-
-  const editSubscription = (id: string, subscriptionData: Omit<Subscription, 'id' | 'createdAt'>) => {
-    setSubscriptions(prev => 
-      prev.map(sub => 
-        sub.id === id 
-          ? { ...subscriptionData, id, createdAt: sub.createdAt }
-          : sub
-      )
+  // Show loading spinner while checking auth
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-purple-600/30 border-t-purple-600 rounded-full animate-spin" />
+      </div>
     );
+  }
+
+  // Show auth form if not authenticated
+  if (!user) {
+    return <AuthForm />;
+  }
+
+  const handleEditSubscription = (id: string, subscriptionData: any) => {
+    updateSubscription(id, subscriptionData);
   };
 
-  const deleteSubscription = (id: string) => {
-    setSubscriptions(prev => prev.filter(sub => sub.id !== id));
-  };
-
-  const toggleSubscriptionStatus = (id: string) => {
-    setSubscriptions(prev =>
-      prev.map(sub =>
-        sub.id === id
-          ? { ...sub, status: sub.status === 'active' ? 'paused' : 'active' }
-          : sub
-      )
-    );
+  const handleBulkDelete = (ids: string[]) => {
+    bulkDeleteSubscriptions(ids);
   };
 
   // Update category data based on current subscriptions
@@ -67,6 +68,14 @@ function App() {
   const currentCategoryData = updateCategoryData();
 
   const renderActiveTab = () => {
+    if (subscriptionsLoading) {
+      return (
+        <div className="flex items-center justify-center py-12">
+          <div className="w-8 h-8 border-2 border-purple-600/30 border-t-purple-600 rounded-full animate-spin" />
+        </div>
+      );
+    }
+
     switch (activeTab) {
       case 'dashboard':
         return (
@@ -80,9 +89,10 @@ function App() {
           <Subscriptions
             subscriptions={subscriptions}
             onAddSubscription={addSubscription}
-            onEditSubscription={editSubscription}
+            onEditSubscription={handleEditSubscription}
             onDeleteSubscription={deleteSubscription}
             onToggleSubscriptionStatus={toggleSubscriptionStatus}
+            onBulkDelete={handleBulkDelete}
           />
         );
       case 'analytics':
