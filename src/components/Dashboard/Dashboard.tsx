@@ -29,11 +29,18 @@ const Dashboard: React.FC<DashboardProps> = ({ subscriptions, spendingData }) =>
     ? ((currentMonthSpending - lastMonthSpending) / lastMonthSpending * 100).toFixed(1)
     : '0';
 
-  const nextRenewalDays = activeSubscriptions.length > 0
-    ? Math.min(...activeSubscriptions.map(sub => 
-        Math.ceil((new Date(sub.nextBilling).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
-      ))
-    : 0;
+  // Calculate upcoming renewals in next 30 days
+  const getUpcomingRenewalsCount = () => {
+    const now = new Date();
+    const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+    
+    return activeSubscriptions.filter(sub => {
+      const renewalDate = new Date(sub.nextBilling);
+      return renewalDate >= now && renewalDate <= thirtyDaysFromNow;
+    }).length;
+  };
+
+  const upcomingRenewalsCount = getUpcomingRenewalsCount();
 
   return (
     <div className="space-y-8">
@@ -44,7 +51,7 @@ const Dashboard: React.FC<DashboardProps> = ({ subscriptions, spendingData }) =>
           <p className="text-xl text-white/90 mb-6">
             Take control of your subscriptions and maximize your savings
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4">
               <p className="text-white/80 text-sm font-medium">Monthly Total</p>
               <p className="text-2xl font-bold">${monthlyTotal.toFixed(2)}</p>
@@ -68,6 +75,10 @@ const Dashboard: React.FC<DashboardProps> = ({ subscriptions, spendingData }) =>
               <p className="text-2xl font-bold">
                 {Number(spendingChange) >= 0 ? '+' : ''}{spendingChange}%
               </p>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4">
+              <p className="text-white/80 text-sm font-medium">Upcoming Renewals</p>
+              <p className="text-2xl font-bold">{upcomingRenewalsCount}</p>
             </div>
           </div>
         </div>
