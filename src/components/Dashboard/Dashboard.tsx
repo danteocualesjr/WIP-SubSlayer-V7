@@ -51,7 +51,7 @@ const Dashboard: React.FC<DashboardProps> = ({ subscriptions, spendingData }) =>
           <p className="text-xl text-white/90 mb-6">
             Take control of your subscriptions and maximize your savings
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4">
               <p className="text-white/80 text-sm font-medium">Monthly Total</p>
               <p className="text-2xl font-bold">${monthlyTotal.toFixed(2)}</p>
@@ -68,12 +68,6 @@ const Dashboard: React.FC<DashboardProps> = ({ subscriptions, spendingData }) =>
               <p className="text-white/80 text-sm font-medium">Paused Subscriptions</p>
               <p className="text-2xl font-bold">
                 {subscriptions.filter(sub => sub.status === 'paused').length}
-              </p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4">
-              <p className="text-white/80 text-sm font-medium">Monthly Change</p>
-              <p className="text-2xl font-bold">
-                {Number(spendingChange) >= 0 ? '+' : ''}{spendingChange}%
               </p>
             </div>
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4">
