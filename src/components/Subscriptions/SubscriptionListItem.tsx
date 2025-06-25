@@ -10,6 +10,7 @@ interface SubscriptionListItemProps {
   isSelectionMode?: boolean;
   isSelected?: boolean;
   onSelect?: (id: string) => void;
+  onDeleteClick?: (subscription: Subscription) => void;
 }
 
 const SubscriptionListItem: React.FC<SubscriptionListItemProps> = ({
@@ -19,7 +20,8 @@ const SubscriptionListItem: React.FC<SubscriptionListItemProps> = ({
   onToggleStatus,
   isSelectionMode = false,
   isSelected = false,
-  onSelect
+  onSelect,
+  onDeleteClick
 }) => {
   const [showActions, setShowActions] = React.useState(false);
 
@@ -39,6 +41,15 @@ const SubscriptionListItem: React.FC<SubscriptionListItemProps> = ({
     if (isSelectionMode && onSelect) {
       onSelect(subscription.id);
     }
+  };
+
+  const handleDeleteClick = () => {
+    if (onDeleteClick) {
+      onDeleteClick(subscription);
+    } else {
+      onDelete(subscription.id);
+    }
+    setShowActions(false);
   };
 
   return (
@@ -166,8 +177,7 @@ const SubscriptionListItem: React.FC<SubscriptionListItemProps> = ({
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      onDelete(subscription.id);
-                      setShowActions(false);
+                      handleDeleteClick();
                     }}
                     className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                   >

@@ -10,6 +10,7 @@ interface SubscriptionCardProps {
   isSelectionMode?: boolean;
   isSelected?: boolean;
   onSelect?: (id: string) => void;
+  onDeleteClick?: (subscription: Subscription) => void;
 }
 
 const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
@@ -19,7 +20,8 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   onToggleStatus,
   isSelectionMode = false,
   isSelected = false,
-  onSelect
+  onSelect,
+  onDeleteClick
 }) => {
   const [showActions, setShowActions] = React.useState(false);
 
@@ -39,6 +41,15 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
     if (isSelectionMode && onSelect) {
       onSelect(subscription.id);
     }
+  };
+
+  const handleDeleteClick = () => {
+    if (onDeleteClick) {
+      onDeleteClick(subscription);
+    } else {
+      onDelete(subscription.id);
+    }
+    setShowActions(false);
   };
 
   return (
@@ -94,10 +105,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
                   <span>{subscription.status === 'active' ? 'Pause' : 'Resume'}</span>
                 </button>
                 <button
-                  onClick={() => {
-                    onDelete(subscription.id);
-                    setShowActions(false);
-                  }}
+                  onClick={handleDeleteClick}
                   className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                 >
                   <Trash2 className="w-4 h-4" />

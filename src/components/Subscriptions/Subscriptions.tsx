@@ -4,6 +4,7 @@ import SubscriptionCard from './SubscriptionCard';
 import SubscriptionListItem from './SubscriptionListItem';
 import CalendarView from './CalendarView';
 import AddSubscriptionModal from './AddSubscriptionModal';
+import DeleteConfirmationModal from './DeleteConfirmationModal';
 import { Subscription } from '../../types/subscription';
 
 interface SubscriptionsProps {
@@ -31,6 +32,11 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'calendar'>('grid');
   const [selectedSubscriptions, setSelectedSubscriptions] = useState<string[]>([]);
   const [isSelectionMode, setIsSelectionMode] = useState(false);
+  
+  // Delete confirmation modal state
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [subscriptionToDelete, setSubscriptionToDelete] = useState<Subscription | null>(null);
+  const [isMultipleDelete, setIsMultipleDelete] = useState(false);
 
   // Listen for calendar view switch event from dashboard
   useEffect(() => {
@@ -75,6 +81,19 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
     setEditingSubscription(null);
   };
 
+  const handleDeleteClick = (subscription: Subscription) => {
+    setSubscriptionToDelete(subscription);
+    setIsMultipleDelete(false);
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (subscriptionToDelete) {
+      onDeleteSubscription(subscriptionToDelete.id);
+    }
+    setSubscriptionToDelete(null);
+  };
+
   const handleSelectSubscription = (id: string) => {
     setSelectedSubscriptions(prev => 
       prev.includes(id) 
@@ -92,17 +111,20 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
   };
 
   const handleBulkDelete = () => {
-    if (window.confirm(`Are you sure you want to delete ${selectedSubscriptions.length} subscription(s)? This action cannot be undone.`)) {
-      if (onBulkDelete) {
-        onBulkDelete(selectedSubscriptions);
-      } else {
-        selectedSubscriptions.forEach(id => {
-          onDeleteSubscription(id);
-        });
-      }
-      setSelectedSubscriptions([]);
-      setIsSelectionMode(false);
+    setIsMultipleDelete(true);
+    setShowDeleteModal(true);
+  };
+
+  const handleBulkDeleteConfirm = () => {
+    if (onBulkDelete) {
+      onBulkDelete(selectedSubscriptions);
+    } else {
+      selectedSubscriptions.forEach(id => {
+        onDeleteSubscription(id);
+      });
     }
+    setSelectedSubscriptions([]);
+    setIsSelectionMode(false);
   };
 
   const handleCancelSelection = () => {
@@ -402,6 +424,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
               isSelectionMode={isSelectionMode}
               isSelected={selectedSubscriptions.includes(subscription.id)}
               onSelect={handleSelectSubscription}
+              onDeleteClick={handleDeleteClick}
             />
           ))}
         </div>
@@ -429,6 +452,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
                 isSelectionMode={isSelectionMode}
                 isSelected={selectedSubscriptions.includes(subscription.id)}
                 onSelect={handleSelectSubscription}
+                onDeleteClick={handleDeleteClick}
               />
             ))}
           </div>
@@ -441,6 +465,16 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
         onClose={handleModalClose}
         onAdd={handleAddOrEdit}
         subscription={editingSubscription || undefined}
+      />
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={isMultipleDelete ? handleBulkDeleteConfirm : handleDeleteConfirm}
+        subscription={subscriptionToDelete}
+        isMultiple={isMultipleDelete}
+        count={selectedSubscriptions.length}
       />
     </div>
   );
