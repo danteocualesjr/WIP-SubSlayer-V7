@@ -8,9 +8,10 @@ import { Subscription, SpendingData } from '../../types/subscription';
 interface DashboardProps {
   subscriptions: Subscription[];
   spendingData: SpendingData[];
+  spendingLoading?: boolean;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ subscriptions, spendingData }) => {
+const Dashboard: React.FC<DashboardProps> = ({ subscriptions, spendingData, spendingLoading = false }) => {
   const activeSubscriptions = subscriptions.filter(sub => sub.status === 'active');
   
   const monthlyTotal = activeSubscriptions.reduce((sum, sub) => {
@@ -80,7 +81,7 @@ const Dashboard: React.FC<DashboardProps> = ({ subscriptions, spendingData }) =>
 
       {/* Charts and Upcoming Renewals */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <SpendingChart data={spendingData} />
+        <SpendingChart data={spendingData} loading={spendingLoading} />
         <UpcomingRenewals subscriptions={subscriptions} />
       </div>
     </div>

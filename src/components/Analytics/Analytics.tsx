@@ -9,9 +9,15 @@ interface AnalyticsProps {
   subscriptions: Subscription[];
   spendingData: SpendingData[];
   categoryData: CategoryData[];
+  spendingLoading?: boolean;
 }
 
-const Analytics: React.FC<AnalyticsProps> = ({ subscriptions, spendingData, categoryData }) => {
+const Analytics: React.FC<AnalyticsProps> = ({ 
+  subscriptions, 
+  spendingData, 
+  categoryData, 
+  spendingLoading = false 
+}) => {
   const activeSubscriptions = subscriptions.filter(sub => sub.status === 'active');
   
   const monthlyTotal = activeSubscriptions.reduce((sum, sub) => {
@@ -28,9 +34,11 @@ const Analytics: React.FC<AnalyticsProps> = ({ subscriptions, spendingData, cate
     ? monthlyTotal / activeSubscriptions.length 
     : 0;
 
-  const mostExpensiveCategory = categoryData.reduce((max, current) => 
-    current.value > max.value ? current : max, categoryData[0] || { name: 'N/A', value: 0, color: '#8B5CF6' }
-  );
+  const mostExpensiveCategory = categoryData.length > 0 
+    ? categoryData.reduce((max, current) => 
+        current.value > max.value ? current : max, categoryData[0]
+      )
+    : { name: 'N/A', value: 0, color: '#8B5CF6' };
 
   const upcomingRenewals = activeSubscriptions.filter(sub => {
     const renewalDate = new Date(sub.nextBilling);
@@ -85,47 +93,58 @@ const Analytics: React.FC<AnalyticsProps> = ({ subscriptions, spendingData, cate
 
       {/* Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <SpendingChart data={spendingData} />
+        <SpendingChart data={spendingData} loading={spendingLoading} />
         <CategoryChart data={categoryData} />
       </div>
 
       {/* Detailed Breakdown */}
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <h3 className="text-lg font-semibold text-gray-900 mb-6">Subscription Breakdown</h3>
-        <div className="space-y-4">
-          {activeSubscriptions
-            .sort((a, b) => {
-              const aCost = a.billingCycle === 'monthly' ? a.cost : a.cost / 12;
-              const bCost = b.billingCycle === 'monthly' ? b.cost : b.cost / 12;
-              return bCost - aCost;
-            })
-            .map((subscription) => {
-              const monthlyCost = subscription.billingCycle === 'monthly' ? subscription.cost : subscription.cost / 12;
-              const percentage = (monthlyCost / monthlyTotal * 100).toFixed(1);
-              
-              return (
-                <div key={subscription.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-                  <div className="flex items-center space-x-3">
-                    <div
-                      className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-semibold text-sm"
-                      style={{ backgroundColor: subscription.color || '#8B5CF6' }}
-                    >
-                      {subscription.name.substring(0, 2).toUpperCase()}
+      {activeSubscriptions.length > 0 && (
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+          <h3 className="text-lg font-semibold text-gray-900 mb-6">Subscription Breakdown</h3>
+          <div className="space-y-4">
+            {activeSubscriptions
+              .sort((a, b) => {
+                const aCost = a.billingCycle === 'monthly' ? a.cost : a.cost / 12;
+                const bCost = b.billingCycle === 'monthly' ? b.cost : b.cost / 12;
+                return bCost - aCost;
+              })
+              .map((subscription) => {
+                const monthlyCost = subscription.billingCycle === 'monthly' ? subscription.cost : subscription.cost / 12;
+                const percentage = monthlyTotal > 0 ? (monthlyCost / monthlyTotal * 100).toFixed(1) : '0';
+                
+                return (
+                  <div key={subscription.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                    <div className="flex items-center space-x-3">
+                      <div
+                        className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-semibold text-sm"
+                        style={{ backgroundColor: subscription.color || '#8B5CF6' }}
+                      >
+                        {subscription.name.substring(0, 2).toUpperCase()}
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-gray-900">{subscription.name}</h4>
+                        <p className="text-sm text-gray-600">{subscription.category || 'Uncategorized'}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="font-medium text-gray-900">{subscription.name}</h4>
-                      <p className="text-sm text-gray-600">{subscription.category}</p>
+                    <div className="text-right">
+                      <p className="font-semibold text-gray-900">${monthlyCost.toFixed(2)}/mo</p>
+                      <p className="text-sm text-gray-600">{percentage}% of total</p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-semibold text-gray-900">${monthlyCost.toFixed(2)}/mo</p>
-                    <p className="text-sm text-gray-600">{percentage}% of total</p>
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })}
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* Empty State */}
+      {activeSubscriptions.length === 0 && (
+        <div className="bg-white rounded-2xl p-12 shadow-sm border border-gray-100 text-center">
+          <PieChart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">No Active Subscriptions</h3>
+          <p className="text-gray-600">Add some subscriptions to see detailed analytics and insights.</p>
+        </div>
+      )}
     </div>
   );
 };

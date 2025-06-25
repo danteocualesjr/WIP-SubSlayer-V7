@@ -30,6 +30,24 @@ const CategoryChart: React.FC<CategoryChartProps> = ({ data }) => {
     );
   };
 
+  if (!data || data.length === 0) {
+    return (
+      <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+        <div className="mb-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Spending by Category</h3>
+          <p className="text-sm text-gray-600">Distribution of your subscription costs</p>
+        </div>
+        <div className="h-80 flex items-center justify-center">
+          <div className="text-center">
+            <PieChart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <p className="text-gray-500 mb-2">No category data available</p>
+            <p className="text-sm text-gray-400">Add subscriptions with categories to see the breakdown</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
       <div className="mb-6">

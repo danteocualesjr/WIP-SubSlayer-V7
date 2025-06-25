@@ -4,9 +4,41 @@ import { SpendingData } from '../../types/subscription';
 
 interface SpendingChartProps {
   data: SpendingData[];
+  loading?: boolean;
 }
 
-const SpendingChart: React.FC<SpendingChartProps> = ({ data }) => {
+const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) => {
+  if (loading) {
+    return (
+      <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+        <div className="mb-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Monthly Spending Trend</h3>
+          <p className="text-sm text-gray-600">Track your subscription costs over time</p>
+        </div>
+        <div className="h-80 flex items-center justify-center">
+          <div className="w-8 h-8 border-2 border-purple-600/30 border-t-purple-600 rounded-full animate-spin" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!data || data.length === 0) {
+    return (
+      <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+        <div className="mb-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Monthly Spending Trend</h3>
+          <p className="text-sm text-gray-600">Track your subscription costs over time</p>
+        </div>
+        <div className="h-80 flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-gray-500 mb-2">No spending data available</p>
+            <p className="text-sm text-gray-400">Add some subscriptions to see your spending trends</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
       <div className="mb-6">

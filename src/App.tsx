@@ -8,7 +8,7 @@ import CostSimulator from './components/CostSimulator/CostSimulator';
 import AuthForm from './components/Auth/AuthForm';
 import { useAuth } from './hooks/useAuth';
 import { useSubscriptions } from './hooks/useSubscriptions';
-import { mockSpendingData } from './data/mockData';
+import { useSpendingData } from './hooks/useSpendingData';
 
 function App() {
   const { user, loading: authLoading } = useAuth();
@@ -21,6 +21,8 @@ function App() {
     toggleSubscriptionStatus,
     bulkDeleteSubscriptions,
   } = useSubscriptions();
+  
+  const { spendingData, loading: spendingLoading } = useSpendingData();
 
   const [activeTab, setActiveTab] = useState('dashboard');
 
@@ -52,11 +54,12 @@ function App() {
       .filter(sub => sub.status === 'active')
       .reduce((acc, sub) => {
         const monthlyCost = sub.billingCycle === 'monthly' ? sub.cost : sub.cost / 12;
-        acc[sub.category] = (acc[sub.category] || 0) + monthlyCost;
+        const category = sub.category || 'Uncategorized';
+        acc[category] = (acc[category] || 0) + monthlyCost;
         return acc;
       }, {} as Record<string, number>);
 
-    const colors = ['#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#F97316'];
+    const colors = ['#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#F97316', '#84CC16', '#06B6D4', '#EC4899'];
     
     return Object.entries(categoryTotals).map(([name, value], index) => ({
       name,
@@ -81,7 +84,8 @@ function App() {
         return (
           <Dashboard 
             subscriptions={subscriptions} 
-            spendingData={mockSpendingData}
+            spendingData={spendingData}
+            spendingLoading={spendingLoading}
           />
         );
       case 'subscriptions':
@@ -99,8 +103,9 @@ function App() {
         return (
           <Analytics
             subscriptions={subscriptions}
-            spendingData={mockSpendingData}
+            spendingData={spendingData}
             categoryData={currentCategoryData}
+            spendingLoading={spendingLoading}
           />
         );
       case 'simulator':
@@ -109,7 +114,8 @@ function App() {
         return (
           <Dashboard 
             subscriptions={subscriptions} 
-            spendingData={mockSpendingData}
+            spendingData={spendingData}
+            spendingLoading={spendingLoading}
           />
         );
     }
