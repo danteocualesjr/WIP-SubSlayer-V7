@@ -90,6 +90,10 @@ export function useSubscriptions() {
       };
 
       setSubscriptions(prev => [newSubscription, ...prev]);
+      
+      // Trigger spending data refresh by dispatching a custom event
+      window.dispatchEvent(new CustomEvent('subscriptionChanged'));
+      
       return { data: newSubscription, error: null };
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'An error occurred';
@@ -139,6 +143,10 @@ export function useSubscriptions() {
       setSubscriptions(prev => 
         prev.map(sub => sub.id === id ? updatedSubscription : sub)
       );
+      
+      // Trigger spending data refresh
+      window.dispatchEvent(new CustomEvent('subscriptionChanged'));
+      
       return { data: updatedSubscription, error: null };
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'An error occurred';
@@ -160,6 +168,10 @@ export function useSubscriptions() {
 
       // Remove from local state
       setSubscriptions(prev => prev.filter(sub => sub.id !== id));
+      
+      // Trigger spending data refresh
+      window.dispatchEvent(new CustomEvent('subscriptionChanged'));
+      
       return { error: null };
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'An error occurred';
@@ -190,6 +202,10 @@ export function useSubscriptions() {
           sub.id === id ? { ...sub, status: newStatus } : sub
         )
       );
+      
+      // Trigger spending data refresh
+      window.dispatchEvent(new CustomEvent('subscriptionChanged'));
+      
       return { error: null };
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'An error occurred';
@@ -211,6 +227,10 @@ export function useSubscriptions() {
 
       // Remove from local state
       setSubscriptions(prev => prev.filter(sub => !ids.includes(sub.id)));
+      
+      // Trigger spending data refresh
+      window.dispatchEvent(new CustomEvent('subscriptionChanged'));
+      
       return { error: null };
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'An error occurred';
