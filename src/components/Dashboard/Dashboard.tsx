@@ -78,40 +78,6 @@ const Dashboard: React.FC<DashboardProps> = ({ subscriptions, spendingData }) =>
         </div>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatsCard
-          title="Monthly Total"
-          value={`$${monthlyTotal.toFixed(2)}`}
-          change={`${Number(spendingChange) >= 0 ? '+' : ''}${spendingChange}%`}
-          changeType={Number(spendingChange) >= 0 ? 'negative' : 'positive'}
-          icon={DollarSign}
-          gradient="bg-gradient-to-br from-purple-500 to-purple-600"
-        />
-        <StatsCard
-          title="Annual Projection"
-          value={`$${annualTotal.toFixed(2)}`}
-          icon={TrendingUp}
-          gradient="bg-gradient-to-br from-blue-500 to-blue-600"
-        />
-        <StatsCard
-          title="Active Subscriptions"
-          value={activeSubscriptions.length.toString()}
-          icon={CreditCard}
-          gradient="bg-gradient-to-br from-emerald-500 to-emerald-600"
-        />
-        <StatsCard
-          title="Avg. Cost per Service"
-          value={
-            activeSubscriptions.length > 0
-              ? `$${(monthlyTotal / activeSubscriptions.length).toFixed(2)}`
-              : '$0.00'
-          }
-          icon={Calendar}
-          gradient="bg-gradient-to-br from-orange-500 to-orange-600"
-        />
-      </div>
-
       {/* Charts and Upcoming Renewals */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <SpendingChart data={spendingData} />
