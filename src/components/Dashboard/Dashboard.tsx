@@ -11,13 +11,15 @@ interface DashboardProps {
   spendingData: SpendingData[];
   spendingLoading?: boolean;
   onAddSubscription?: (subscription: Omit<Subscription, 'id' | 'createdAt'>) => void;
+  onSwitchToCalendar?: () => void;
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ 
   subscriptions, 
   spendingData, 
   spendingLoading = false,
-  onAddSubscription 
+  onAddSubscription,
+  onSwitchToCalendar 
 }) => {
   const [showAddModal, setShowAddModal] = useState(false);
   const activeSubscriptions = subscriptions.filter(sub => sub.status === 'active');
@@ -56,6 +58,12 @@ const Dashboard: React.FC<DashboardProps> = ({
       onAddSubscription(subscriptionData);
     }
     setShowAddModal(false);
+  };
+
+  const handleSwitchToCalendar = () => {
+    if (onSwitchToCalendar) {
+      onSwitchToCalendar();
+    }
   };
 
   return (
@@ -178,7 +186,10 @@ const Dashboard: React.FC<DashboardProps> = ({
       {/* Charts and Upcoming Renewals */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <SpendingChart data={spendingData} loading={spendingLoading} />
-        <UpcomingRenewals subscriptions={subscriptions} />
+        <UpcomingRenewals 
+          subscriptions={subscriptions} 
+          onSwitchToCalendar={handleSwitchToCalendar}
+        />
       </div>
 
       {/* Add Subscription Modal */}

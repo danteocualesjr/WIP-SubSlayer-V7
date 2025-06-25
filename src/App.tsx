@@ -51,6 +51,16 @@ function App() {
     bulkDeleteSubscriptions(ids);
   };
 
+  const handleSwitchToCalendar = () => {
+    setActiveTab('subscriptions');
+    // Small delay to ensure the subscriptions component is rendered
+    setTimeout(() => {
+      // This will be handled by the Subscriptions component to switch to calendar view
+      const event = new CustomEvent('switchToCalendarView');
+      window.dispatchEvent(event);
+    }, 100);
+  };
+
   // Update category data based on current subscriptions
   const updateCategoryData = () => {
     const categoryTotals = subscriptions
@@ -90,6 +100,7 @@ function App() {
             spendingData={spendingData}
             spendingLoading={spendingLoading}
             onAddSubscription={addSubscription}
+            onSwitchToCalendar={handleSwitchToCalendar}
           />
         );
       case 'subscriptions':
@@ -127,6 +138,7 @@ function App() {
             spendingData={spendingData}
             spendingLoading={spendingLoading}
             onAddSubscription={addSubscription}
+            onSwitchToCalendar={handleSwitchToCalendar}
           />
         );
     }

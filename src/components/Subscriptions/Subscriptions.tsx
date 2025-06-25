@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Search, Filter, Grid3X3, List, Trash2, X, Calendar as CalendarIcon } from 'lucide-react';
 import SubscriptionCard from './SubscriptionCard';
 import SubscriptionListItem from './SubscriptionListItem';
@@ -31,6 +31,19 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'calendar'>('grid');
   const [selectedSubscriptions, setSelectedSubscriptions] = useState<string[]>([]);
   const [isSelectionMode, setIsSelectionMode] = useState(false);
+
+  // Listen for calendar view switch event from dashboard
+  useEffect(() => {
+    const handleSwitchToCalendar = () => {
+      setViewMode('calendar');
+    };
+
+    window.addEventListener('switchToCalendarView', handleSwitchToCalendar);
+    
+    return () => {
+      window.removeEventListener('switchToCalendarView', handleSwitchToCalendar);
+    };
+  }, []);
 
   const categories = Array.from(new Set(subscriptions.map(sub => sub.category).filter(Boolean)));
 
