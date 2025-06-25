@@ -42,13 +42,24 @@ export function useSpendingData() {
 
       if (error) throw error;
 
-      // Generate spending data for the last 7 months
-      const months = ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan'];
-      const currentDate = new Date();
+      // Generate spending data for the last 7 months (Dec 2024 - Jun 2025)
+      const currentDate = new Date(); // June 26, 2025
+      const months = [];
       
-      const spendingByMonth = months.map((month, index) => {
-        // For the current month (Jan), show actual current spending
-        if (index === 6) { // January (current month)
+      // Generate the last 7 months including current month
+      for (let i = 6; i >= 0; i--) {
+        const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
+        const monthName = date.toLocaleDateString('en-US', { month: 'short' });
+        months.push({
+          name: monthName,
+          date: date,
+          isCurrentMonth: i === 0
+        });
+      }
+      
+      const spendingByMonth = months.map((monthInfo) => {
+        // For the current month (June), show actual current spending
+        if (monthInfo.isCurrentMonth) {
           let currentMonthTotal = 0;
           
           subscriptions?.forEach(sub => {
@@ -62,20 +73,19 @@ export function useSpendingData() {
           });
           
           return {
-            month,
+            month: monthInfo.name,
             amount: Number(currentMonthTotal.toFixed(2))
           };
         }
         
         // For previous months, simulate historical data based on creation dates
-        const monthDate = new Date(2024, 6 + index, 1); // July 2024 = month 6
         let monthlyTotal = 0;
         
         subscriptions?.forEach(sub => {
           const createdDate = new Date(sub.created_at);
           
           // Only include subscriptions that were created before or during this month
-          if (createdDate <= monthDate && sub.status === 'active') {
+          if (createdDate <= monthInfo.date && sub.status === 'active') {
             // Convert to monthly cost
             const monthlyCost = sub.billing_cycle === 'monthly' 
               ? Number(sub.cost) 
@@ -84,12 +94,12 @@ export function useSpendingData() {
           }
         });
 
-        // Add some realistic variation to historical data (±10%)
-        const variation = 0.9 + Math.random() * 0.2; // Random between 0.9 and 1.1
+        // Add some realistic variation to historical data (±15%)
+        const variation = 0.85 + Math.random() * 0.3; // Random between 0.85 and 1.15
         monthlyTotal *= variation;
 
         return {
-          month,
+          month: monthInfo.name,
           amount: Number(monthlyTotal.toFixed(2))
         };
       });
@@ -97,16 +107,20 @@ export function useSpendingData() {
       setSpendingData(spendingByMonth);
     } catch (err) {
       console.error('Error generating spending data:', err);
-      // Fallback to empty data
-      setSpendingData([
-        { month: 'Jul', amount: 0 },
-        { month: 'Aug', amount: 0 },
-        { month: 'Sep', amount: 0 },
-        { month: 'Oct', amount: 0 },
-        { month: 'Nov', amount: 0 },
-        { month: 'Dec', amount: 0 },
-        { month: 'Jan', amount: 0 }
-      ]);
+      // Fallback to current months with zero data
+      const currentDate = new Date();
+      const fallbackMonths = [];
+      
+      for (let i = 6; i >= 0; i--) {
+        const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
+        const monthName = date.toLocaleDateString('en-US', { month: 'short' });
+        fallbackMonths.push({
+          month: monthName,
+          amount: 0
+        });
+      }
+      
+      setSpendingData(fallbackMonths);
     } finally {
       setLoading(false);
     }
