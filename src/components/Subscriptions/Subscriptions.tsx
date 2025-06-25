@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Plus, Search, Filter, Grid3X3, List, Trash2, X } from 'lucide-react';
+import { Plus, Search, Filter, Grid3X3, List, Trash2, X, Calendar as CalendarIcon } from 'lucide-react';
 import SubscriptionCard from './SubscriptionCard';
 import SubscriptionListItem from './SubscriptionListItem';
+import CalendarView from './CalendarView';
 import AddSubscriptionModal from './AddSubscriptionModal';
 import { Subscription } from '../../types/subscription';
 
@@ -11,6 +12,7 @@ interface SubscriptionsProps {
   onEditSubscription: (id: string, subscription: Omit<Subscription, 'id' | 'createdAt'>) => void;
   onDeleteSubscription: (id: string) => void;
   onToggleSubscriptionStatus: (id: string) => void;
+  onBulkDelete?: (ids: string[]) => void;
 }
 
 const Subscriptions: React.FC<SubscriptionsProps> = ({
@@ -18,14 +20,15 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
   onAddSubscription,
   onEditSubscription,
   onDeleteSubscription,
-  onToggleSubscriptionStatus
+  onToggleSubscriptionStatus,
+  onBulkDelete
 }) => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingSubscription, setEditingSubscription] = useState<Subscription | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'paused' | 'cancelled'>('all');
   const [filterCategory, setFilterCategory] = useState<string>('all');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'calendar'>('grid');
   const [selectedSubscriptions, setSelectedSubscriptions] = useState<string[]>([]);
   const [isSelectionMode, setIsSelectionMode] = useState(false);
 
@@ -77,9 +80,13 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
 
   const handleBulkDelete = () => {
     if (window.confirm(`Are you sure you want to delete ${selectedSubscriptions.length} subscription(s)? This action cannot be undone.`)) {
-      selectedSubscriptions.forEach(id => {
-        onDeleteSubscription(id);
-      });
+      if (onBulkDelete) {
+        onBulkDelete(selectedSubscriptions);
+      } else {
+        selectedSubscriptions.forEach(id => {
+          onDeleteSubscription(id);
+        });
+      }
       setSelectedSubscriptions([]);
       setIsSelectionMode(false);
     }
@@ -100,6 +107,79 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
     if (!subscription || subscription.status !== 'active') return sum;
     return sum + (subscription.billingCycle === 'monthly' ? subscription.cost : subscription.cost / 12);
   }, 0);
+
+  // If calendar view is selected, show only the calendar
+  if (viewMode === 'calendar') {
+    return (
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Subscription Calendar</h1>
+            <p className="text-gray-600">View your renewals in calendar format</p>
+          </div>
+          <div className="flex space-x-3">
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2 shadow-lg"
+            >
+              <Plus className="w-5 h-5" />
+              <span>Add Subscription</span>
+            </button>
+          </div>
+        </div>
+
+        {/* View Toggle */}
+        <div className="flex justify-center">
+          <div className="flex bg-gray-100 rounded-xl p-1">
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`px-4 py-2 rounded-lg transition-all duration-200 flex items-center space-x-2 ${
+                viewMode === 'grid'
+                  ? 'bg-white text-purple-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <Grid3X3 className="w-4 h-4" />
+              <span>Grid</span>
+            </button>
+            <button
+              onClick={() => setViewMode('list')}
+              className={`px-4 py-2 rounded-lg transition-all duration-200 flex items-center space-x-2 ${
+                viewMode === 'list'
+                  ? 'bg-white text-purple-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <List className="w-4 h-4" />
+              <span>List</span>
+            </button>
+            <button
+              onClick={() => setViewMode('calendar')}
+              className={`px-4 py-2 rounded-lg transition-all duration-200 flex items-center space-x-2 ${
+                viewMode === 'calendar'
+                  ? 'bg-white text-purple-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <CalendarIcon className="w-4 h-4" />
+              <span>Calendar</span>
+            </button>
+          </div>
+        </div>
+
+        <CalendarView subscriptions={subscriptions} />
+
+        {/* Add/Edit Modal */}
+        <AddSubscriptionModal
+          isOpen={showAddModal}
+          onClose={handleModalClose}
+          onAdd={handleAddOrEdit}
+          subscription={editingSubscription || undefined}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -244,6 +324,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
                   ? 'bg-white text-purple-600 shadow-sm'
                   : 'text-gray-600 hover:text-gray-900'
               }`}
+              title="Grid View"
             >
               <Grid3X3 className="w-5 h-5" />
             </button>
@@ -254,8 +335,20 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
                   ? 'bg-white text-purple-600 shadow-sm'
                   : 'text-gray-600 hover:text-gray-900'
               }`}
+              title="List View"
             >
               <List className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => setViewMode('calendar')}
+              className={`p-2 rounded-lg transition-all duration-200 ${
+                viewMode === 'calendar'
+                  ? 'bg-white text-purple-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+              title="Calendar View"
+            >
+              <CalendarIcon className="w-5 h-5" />
             </button>
           </div>
         </div>
