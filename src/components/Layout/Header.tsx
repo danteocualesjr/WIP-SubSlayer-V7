@@ -151,7 +151,7 @@ const Header: React.FC = () => {
                 </p>
                 <div className="flex items-center space-x-1">
                   <Sparkles className="w-3 h-3 text-purple-500" />
-                  <p className="text-xs text-purple-600 font-medium">Premium Plan</p>
+                  <p className="text-xs text-purple-600 font-medium">Beta Plan</p>
                 </div>
               </div>
               <div className="relative">

@@ -35,7 +35,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
             </span>
             <div className="flex items-center space-x-1 mt-1">
               <Sparkles className="w-3 h-3 text-purple-500" />
-              <span className="text-xs text-purple-600 font-medium">Premium</span>
+              <span className="text-xs text-purple-600 font-medium">Beta</span>
             </div>
           </div>
         </div>
