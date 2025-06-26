@@ -29,6 +29,24 @@ function App() {
   const { spendingData, loading: spendingLoading } = useSpendingData();
 
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  // Listen for sidebar toggle events
+  useEffect(() => {
+    const handleSidebarToggle = (event: CustomEvent) => {
+      setSidebarCollapsed(event.detail.isCollapsed);
+    };
+
+    // Get initial state
+    const saved = localStorage.getItem('sidebar-collapsed');
+    setSidebarCollapsed(saved ? JSON.parse(saved) : false);
+
+    window.addEventListener('sidebarToggle', handleSidebarToggle as EventListener);
+    
+    return () => {
+      window.removeEventListener('sidebarToggle', handleSidebarToggle as EventListener);
+    };
+  }, []);
 
   // Listen for navigation events from header
   useEffect(() => {
@@ -166,7 +184,9 @@ function App() {
     <div className="min-h-screen bg-gray-50">
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
       <Header />
-      <main className="ml-64 px-6 lg:px-8 py-8">
+      <main className={`px-6 lg:px-8 py-8 transition-all duration-300 ${
+        sidebarCollapsed ? 'ml-20' : 'ml-64'
+      }`}>
         <div className="max-w-7xl mx-auto">
           {renderActiveTab()}
         </div>
