@@ -238,6 +238,17 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
         <div className="flex justify-center">
           <div className="flex bg-gray-100 rounded-xl p-1">
             <button
+              onClick={() => setViewMode('list')}
+              className={`px-4 py-2 rounded-lg transition-all duration-200 flex items-center space-x-2 ${
+                viewMode === 'list'
+                  ? 'bg-white text-purple-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <List className="w-4 h-4" />
+              <span>List View</span>
+            </button>
+            <button
               onClick={() => setViewMode('grid')}
               className={`px-4 py-2 rounded-lg transition-all duration-200 flex items-center space-x-2 ${
                 viewMode === 'grid'
@@ -247,17 +258,6 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
             >
               <Grid3X3 className="w-4 h-4" />
               <span>Grid</span>
-            </button>
-            <button
-              onClick={() => setViewMode('list')}
-              className={`px-4 py-2 rounded-lg transition-all duration-200 flex items-center space-x-2 ${
-                viewMode === 'list'
-                  ? 'bg-white text-purple-600 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              <List className="w-4 h-4" />
-              <span>List</span>
             </button>
             <button
               onClick={() => setViewMode('calendar')}
@@ -447,17 +447,6 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
           {/* View Toggle */}
           <div className="flex bg-gray-100 rounded-xl p-1">
             <button
-              onClick={() => setViewMode('grid')}
-              className={`p-2 rounded-lg transition-all duration-200 ${
-                viewMode === 'grid'
-                  ? 'bg-white text-purple-600 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-              title="Grid View"
-            >
-              <Grid3X3 className="w-5 h-5" />
-            </button>
-            <button
               onClick={() => setViewMode('list')}
               className={`p-2 rounded-lg transition-all duration-200 ${
                 viewMode === 'list'
@@ -467,6 +456,17 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
               title="List View"
             >
               <List className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`p-2 rounded-lg transition-all duration-200 ${
+                viewMode === 'grid'
+                  ? 'bg-white text-purple-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+              title="Grid View"
+            >
+              <Grid3X3 className="w-5 h-5" />
             </button>
             <button
               onClick={() => setViewMode('calendar')}
