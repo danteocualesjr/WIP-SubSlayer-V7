@@ -290,28 +290,25 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Subscriptions</h1>
-          <p className="text-gray-600">Manage all your recurring subscriptions</p>
+        <div className="flex items-center space-x-4">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Subscriptions</h1>
+            <p className="text-gray-600">Manage all your recurring subscriptions</p>
+          </div>
+          
+          {/* Select Button - Moved to left side near title */}
+          {!isSelectionMode && sortedSubscriptions.length > 0 && (
+            <button
+              onClick={() => setIsSelectionMode(true)}
+              className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2"
+            >
+              <span>Select</span>
+            </button>
+          )}
         </div>
+        
         <div className="flex space-x-3">
-          {!isSelectionMode ? (
-            <>
-              <button
-                onClick={() => setIsSelectionMode(true)}
-                className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2"
-              >
-                <span>Select</span>
-              </button>
-              <button
-                onClick={() => setShowAddModal(true)}
-                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2 shadow-lg"
-              >
-                <Plus className="w-5 h-5" />
-                <span>Add Subscription</span>
-              </button>
-            </>
-          ) : (
+          {isSelectionMode ? (
             <>
               <button
                 onClick={handleCancelSelection}
@@ -330,6 +327,14 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
                 </button>
               )}
             </>
+          ) : (
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2 shadow-lg"
+            >
+              <Plus className="w-5 h-5" />
+              <span>Add Subscription</span>
+            </button>
           )}
         </div>
       </div>
