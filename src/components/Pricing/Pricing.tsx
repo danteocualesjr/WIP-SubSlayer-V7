@@ -26,8 +26,8 @@ const Pricing: React.FC = () => {
       borderColor: 'border-gray-200',
     },
     {
-      id: 'individual',
-      name: 'Individual',
+      id: 'pro',
+      name: 'Pro',
       description: 'For power users who actively manage subscriptions',
       monthlyPrice: 9.99,
       annualPrice: 99,
@@ -55,7 +55,7 @@ const Pricing: React.FC = () => {
       annualPrice: 990,
       popular: false,
       features: [
-        'Everything in Individual',
+        'Everything in Pro',
         'Unlimited users',
         'Team dashboards & role-based access',
         'Company-wide subscription reporting',
@@ -255,7 +255,7 @@ const Pricing: React.FC = () => {
               <div className="text-center mb-8">
                 <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${plan.gradient} flex items-center justify-center`}>
                   {plan.id === 'free' && <Zap className="w-8 h-8 text-white" />}
-                  {plan.id === 'individual' && <Star className="w-8 h-8 text-white" />}
+                  {plan.id === 'pro' && <Star className="w-8 h-8 text-white" />}
                   {plan.id === 'enterprise' && <Building2 className="w-8 h-8 text-white" />}
                 </div>
                 
@@ -354,7 +354,7 @@ const Pricing: React.FC = () => {
             <div>
               <h4 className="font-semibold text-gray-900 mb-2">Is there a free trial?</h4>
               <p className="text-gray-600 text-sm">
-                Our Free plan lets you try SubSlayer with up to 5 subscriptions. For Individual and 
+                Our Free plan lets you try SubSlayer with up to 5 subscriptions. For Pro and 
                 Enterprise plans, we offer a 14-day free trial with full access.
               </p>
             </div>
@@ -372,7 +372,7 @@ const Pricing: React.FC = () => {
             <div>
               <h4 className="font-semibold text-gray-900 mb-2">Do you offer discounts for nonprofits?</h4>
               <p className="text-gray-600 text-sm">
-                Yes! We offer 50% off Individual and Enterprise plans for qualified nonprofit 
+                Yes! We offer 50% off Pro and Enterprise plans for qualified nonprofit 
                 organizations. Contact our sales team for more information.
               </p>
             </div>

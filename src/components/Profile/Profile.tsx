@@ -332,7 +332,7 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
                 <Shield className="w-4 h-4 text-gray-500" />
                 <div>
                   <p className="text-sm font-medium text-gray-900">Account Type</p>
-                  <p className="text-sm text-gray-600">Beta</p>
+                  <p className="text-sm text-gray-600">Pro</p>
                 </div>
               </div>
             </div>
