@@ -176,19 +176,19 @@ const Pricing: React.FC = () => {
   );
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-12">
       {/* Header */}
-      <div className="text-center space-y-4">
+      <div className="text-center space-y-6">
         <div className="inline-flex items-center space-x-2 bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm font-medium">
           <Sparkles className="w-4 h-4" />
           <span>Choose Your Plan</span>
         </div>
         
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
+        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
           Simple, transparent pricing
         </h1>
         
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
           Take control of your subscriptions with plans designed for every need. 
           Start free and upgrade as you grow.
         </p>
@@ -222,7 +222,7 @@ const Pricing: React.FC = () => {
       </div>
 
       {/* Pricing Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
         {plans.map((plan) => {
           const price = isAnnual ? plan.annualPrice : plan.monthlyPrice;
           const savings = calculateSavings(plan.monthlyPrice, plan.annualPrice);
@@ -230,7 +230,7 @@ const Pricing: React.FC = () => {
           return (
             <div
               key={plan.id}
-              className={`relative rounded-2xl p-6 transition-all duration-300 hover:shadow-xl ${
+              className={`relative rounded-2xl p-8 transition-all duration-300 hover:shadow-xl ${
                 plan.popular
                   ? 'ring-2 ring-purple-500 shadow-lg scale-105 z-10'
                   : 'border border-gray-200 hover:border-gray-300'
@@ -243,34 +243,34 @@ const Pricing: React.FC = () => {
             >
               {/* Popular Badge */}
               {plan.popular && (
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-1 rounded-full text-sm font-semibold flex items-center space-x-1 shadow-lg">
-                    <Star className="w-3 h-3 fill-current" />
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                  <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-2 rounded-full text-sm font-semibold flex items-center space-x-1 shadow-lg">
+                    <Star className="w-4 h-4 fill-current" />
                     <span>Most Popular</span>
                   </div>
                 </div>
               )}
 
               {/* Plan Header */}
-              <div className="text-center mb-6">
-                <div className={`w-12 h-12 mx-auto mb-3 rounded-xl bg-gradient-to-br ${plan.gradient} flex items-center justify-center`}>
-                  {plan.id === 'free' && <Zap className="w-6 h-6 text-white" />}
-                  {plan.id === 'pro' && <Star className="w-6 h-6 text-white" />}
-                  {plan.id === 'enterprise' && <Building2 className="w-6 h-6 text-white" />}
+              <div className="text-center mb-8">
+                <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${plan.gradient} flex items-center justify-center`}>
+                  {plan.id === 'free' && <Zap className="w-8 h-8 text-white" />}
+                  {plan.id === 'pro' && <Star className="w-8 h-8 text-white" />}
+                  {plan.id === 'enterprise' && <Building2 className="w-8 h-8 text-white" />}
                 </div>
                 
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
                 <p className="text-gray-600 text-sm leading-relaxed">{plan.description}</p>
               </div>
 
               {/* Pricing */}
-              <div className="text-center mb-6">
+              <div className="text-center mb-8">
                 <div className="flex items-baseline justify-center space-x-1">
-                  <span className="text-3xl font-bold text-gray-900">
+                  <span className="text-5xl font-bold text-gray-900">
                     ${plan.id === 'enterprise' ? (isAnnual ? price : `${price}+`) : price}
                   </span>
                   {plan.monthlyPrice > 0 && (
-                    <span className="text-gray-500 text-sm">
+                    <span className="text-gray-500 text-lg">
                       /{isAnnual ? 'year' : 'month'}
                     </span>
                   )}
@@ -278,23 +278,23 @@ const Pricing: React.FC = () => {
                 
                 {isAnnual && plan.monthlyPrice > 0 && savings > 0 && (
                   <div className="mt-2">
-                    <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">
+                    <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
                       Save {savings}% annually
                     </span>
                   </div>
                 )}
                 
                 {plan.id === 'enterprise' && (
-                  <p className="text-xs text-gray-500 mt-1">Starting price per month</p>
+                  <p className="text-sm text-gray-500 mt-2">Starting price per month</p>
                 )}
               </div>
 
               {/* Features */}
-              <div className="space-y-3 mb-6">
+              <div className="space-y-4 mb-8">
                 {plan.features.map((feature, index) => (
                   <div key={index} className="flex items-start space-x-3">
-                    <div className={`w-4 h-4 rounded-full bg-gradient-to-br ${plan.gradient} flex items-center justify-center flex-shrink-0 mt-0.5`}>
-                      <Check className="w-2.5 h-2.5 text-white" />
+                    <div className={`w-5 h-5 rounded-full bg-gradient-to-br ${plan.gradient} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                      <Check className="w-3 h-3 text-white" />
                     </div>
                     <span className="text-gray-700 text-sm leading-relaxed">{feature}</span>
                   </div>
@@ -304,7 +304,7 @@ const Pricing: React.FC = () => {
               {/* CTA Button */}
               <button
                 onClick={plan.id === 'enterprise' ? handleContactSales : undefined}
-                className={`w-full py-3 px-4 rounded-xl font-semibold transition-all duration-200 flex items-center justify-center space-x-2 ${
+                className={`w-full py-4 px-6 rounded-xl font-semibold transition-all duration-200 flex items-center justify-center space-x-2 ${
                   plan.popular
                     ? `bg-gradient-to-r ${plan.gradient} text-white hover:shadow-lg hover:scale-105`
                     : plan.id === 'enterprise'
@@ -325,15 +325,15 @@ const Pricing: React.FC = () => {
       </div>
 
       {/* FAQ Section */}
-      <div className="bg-gradient-to-br from-gray-50 to-white rounded-3xl p-8 md:p-10">
-        <div className="text-center mb-10">
-          <h2 className="text-2xl font-bold text-gray-900 mb-3">Frequently Asked Questions</h2>
+      <div className="bg-gradient-to-br from-gray-50 to-white rounded-3xl p-8 md:p-12">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
             Everything you need to know about our pricing and plans.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           <div className="space-y-6">
             <div>
               <h4 className="font-semibold text-gray-900 mb-2">Can I change plans anytime?</h4>
@@ -392,22 +392,22 @@ const Pricing: React.FC = () => {
       {showContactForm && <ContactForm />}
 
       {/* Bottom CTA */}
-      <div className="bg-gradient-to-br from-purple-600 via-blue-600 to-emerald-500 rounded-3xl p-8 md:p-10 text-center text-white">
-        <h2 className="text-2xl md:text-3xl font-bold mb-3">
+      <div className="bg-gradient-to-br from-purple-600 via-blue-600 to-emerald-500 rounded-3xl p-8 md:p-12 text-center text-white">
+        <h2 className="text-3xl md:text-4xl font-bold mb-4">
           Ready to take control of your subscriptions?
         </h2>
-        <p className="text-lg text-white/90 mb-6 max-w-2xl mx-auto">
+        <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
           Join thousands of users who have saved money and time with SubSlayer. 
           Start your journey today.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button className="bg-white text-purple-600 px-6 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors flex items-center justify-center space-x-2">
+          <button className="bg-white text-purple-600 px-8 py-4 rounded-xl font-semibold hover:bg-gray-100 transition-colors flex items-center justify-center space-x-2">
             <span>Start Free Trial</span>
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-5 h-5" />
           </button>
           <button 
             onClick={handleContactSales}
-            className="bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-xl font-semibold hover:bg-white/30 transition-colors border border-white/30"
+            className="bg-white/20 backdrop-blur-sm text-white px-8 py-4 rounded-xl font-semibold hover:bg-white/30 transition-colors border border-white/30"
           >
             Talk to Sales
           </button>
