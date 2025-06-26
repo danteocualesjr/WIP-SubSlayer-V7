@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Bell, User, Search, LogOut, Sparkles } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useProfile } from '../../hooks/useProfile';
@@ -8,6 +8,24 @@ const Header: React.FC = () => {
   const { profile } = useProfile();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  // Listen for sidebar toggle events
+  useEffect(() => {
+    const handleSidebarToggle = (event: CustomEvent) => {
+      setSidebarCollapsed(event.detail.isCollapsed);
+    };
+
+    // Get initial state
+    const saved = localStorage.getItem('sidebar-collapsed');
+    setSidebarCollapsed(saved ? JSON.parse(saved) : false);
+
+    window.addEventListener('sidebarToggle', handleSidebarToggle as EventListener);
+    
+    return () => {
+      window.removeEventListener('sidebarToggle', handleSidebarToggle as EventListener);
+    };
+  }, []);
 
   const handleSignOut = async () => {
     await signOut();
@@ -44,7 +62,9 @@ const Header: React.FC = () => {
   const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
-    <header className="bg-white/80 backdrop-blur-2xl border-b border-purple-200/50 sticky top-0 z-30 ml-64 shadow-sm">
+    <header className={`bg-white/80 backdrop-blur-2xl border-b border-purple-200/50 sticky top-0 z-30 shadow-sm transition-all duration-300 ${
+      sidebarCollapsed ? 'ml-20' : 'ml-64'
+    }`}>
       <div className="px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Search Bar */}
