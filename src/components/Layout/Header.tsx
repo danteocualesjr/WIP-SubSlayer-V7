@@ -9,16 +9,22 @@ const Header: React.FC = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Listen for sidebar toggle events
   useEffect(() => {
     const handleSidebarToggle = (event: CustomEvent) => {
       setSidebarCollapsed(event.detail.isCollapsed);
+      setIsMobile(event.detail.isMobile);
+      setIsMobileMenuOpen(event.detail.isMobileMenuOpen);
     };
 
     // Get initial state
     const saved = localStorage.getItem('sidebar-collapsed');
-    setSidebarCollapsed(saved ? JSON.parse(saved) : false);
+    const mobile = window.innerWidth < 768;
+    setSidebarCollapsed(mobile ? true : (saved ? JSON.parse(saved) : false));
+    setIsMobile(mobile);
 
     window.addEventListener('sidebarToggle', handleSidebarToggle as EventListener);
     
@@ -63,9 +69,9 @@ const Header: React.FC = () => {
 
   return (
     <header className={`bg-white/80 backdrop-blur-2xl border-b border-purple-200/50 sticky top-0 z-30 shadow-sm transition-all duration-300 ${
-      sidebarCollapsed ? 'ml-20' : 'ml-64'
+      isMobile ? 'ml-0' : (sidebarCollapsed ? 'ml-20' : 'ml-64')
     }`}>
-      <div className="px-6 lg:px-8">
+      <div className={`px-4 sm:px-6 lg:px-8 ${isMobile ? 'pl-20' : ''}`}>
         <div className="flex justify-between items-center h-16">
           {/* Search Bar */}
           <div className="flex-1 max-w-lg">
@@ -74,22 +80,22 @@ const Header: React.FC = () => {
               <input
                 type="text"
                 placeholder="Search subscriptions..."
-                className="w-full pl-12 pr-4 py-3 bg-gradient-to-r from-purple-50/50 to-blue-50/50 border border-purple-200/50 rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 placeholder-purple-400"
+                className="w-full pl-12 pr-4 py-2 sm:py-3 bg-gradient-to-r from-purple-50/50 to-blue-50/50 border border-purple-200/50 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 placeholder-purple-400 text-sm sm:text-base"
               />
             </div>
           </div>
 
           {/* Right side actions */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-4">
             {/* Notifications */}
             <div className="relative">
               <button 
                 onClick={() => setShowNotifications(!showNotifications)}
-                className="p-3 text-purple-600 hover:text-purple-700 hover:bg-purple-50 rounded-2xl transition-all duration-300 relative group"
+                className="p-2 sm:p-3 text-purple-600 hover:text-purple-700 hover:bg-purple-50 rounded-xl sm:rounded-2xl transition-all duration-300 relative group"
               >
                 <Bell className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
                 {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-6 h-6 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs rounded-full flex items-center justify-center font-medium shadow-lg animate-pulse">
+                  <span className="absolute -top-1 -right-1 w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs rounded-full flex items-center justify-center font-medium shadow-lg animate-pulse">
                     {unreadCount}
                   </span>
                 )}
@@ -97,8 +103,8 @@ const Header: React.FC = () => {
 
               {/* Notifications Dropdown */}
               {showNotifications && (
-                <div className="absolute right-0 top-14 bg-white/95 backdrop-blur-xl border border-purple-200/50 rounded-2xl shadow-2xl py-3 z-50 w-80">
-                  <div className="px-6 py-4 border-b border-purple-100">
+                <div className="absolute right-0 top-12 sm:top-14 bg-white/95 backdrop-blur-xl border border-purple-200/50 rounded-2xl shadow-2xl py-3 z-50 w-72 sm:w-80 max-h-96 overflow-hidden">
+                  <div className="px-4 sm:px-6 py-4 border-b border-purple-100">
                     <div className="flex items-center justify-between">
                       <h3 className="font-semibold text-gray-900 flex items-center space-x-2">
                         <Sparkles className="w-4 h-4 text-purple-500" />
@@ -112,9 +118,9 @@ const Header: React.FC = () => {
                     </div>
                   </div>
                   
-                  <div className="max-h-96 overflow-y-auto">
+                  <div className="max-h-80 overflow-y-auto">
                     {notifications.length === 0 ? (
-                      <div className="px-6 py-8 text-center text-gray-500">
+                      <div className="px-4 sm:px-6 py-8 text-center text-gray-500">
                         <Bell className="w-8 h-8 mx-auto mb-2 text-gray-300" />
                         <p>No notifications</p>
                       </div>
@@ -122,7 +128,7 @@ const Header: React.FC = () => {
                       notifications.map((notification) => (
                         <div
                           key={notification.id}
-                          className={`px-6 py-4 hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 border-b border-purple-50 last:border-b-0 transition-all duration-300 ${
+                          className={`px-4 sm:px-6 py-4 hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 border-b border-purple-50 last:border-b-0 transition-all duration-300 ${
                             !notification.read ? 'bg-gradient-to-r from-purple-50/50 to-blue-50/50' : ''
                           }`}
                         >
@@ -154,7 +160,7 @@ const Header: React.FC = () => {
                     )}
                   </div>
                   
-                  <div className="px-6 py-4 border-t border-purple-100">
+                  <div className="px-4 sm:px-6 py-4 border-t border-purple-100">
                     <button className="w-full text-center text-sm text-purple-600 hover:text-purple-700 font-medium transition-colors">
                       View all notifications
                     </button>
@@ -164,8 +170,8 @@ const Header: React.FC = () => {
             </div>
 
             {/* Profile Menu */}
-            <div className="flex items-center space-x-4 pl-4 border-l border-purple-200/50">
-              <div className="text-right">
+            <div className="flex items-center space-x-2 sm:space-x-4 pl-2 sm:pl-4 border-l border-purple-200/50">
+              <div className="text-right hidden sm:block">
                 <p className="text-sm font-medium text-gray-900">
                   {profile.displayName || user?.email?.split('@')[0] || 'User'}
                 </p>
@@ -177,7 +183,7 @@ const Header: React.FC = () => {
               <div className="relative">
                 <button 
                   onClick={() => setShowProfileMenu(!showProfileMenu)}
-                  className="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl flex items-center justify-center text-white hover:shadow-lg hover:scale-110 transition-all duration-300 overflow-hidden border-2 border-white shadow-lg"
+                  className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl sm:rounded-2xl flex items-center justify-center text-white hover:shadow-lg hover:scale-110 transition-all duration-300 overflow-hidden border-2 border-white shadow-lg"
                 >
                   {profile.avatar ? (
                     <img 
@@ -186,14 +192,14 @@ const Header: React.FC = () => {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <User className="w-5 h-5" />
+                    <User className="w-4 h-4 sm:w-5 sm:h-5" />
                   )}
                 </button>
                 
                 {/* Profile Dropdown */}
                 {showProfileMenu && (
-                  <div className="absolute right-0 top-12 bg-white/95 backdrop-blur-xl border border-purple-200/50 rounded-2xl shadow-2xl py-3 z-50 min-w-[180px]">
-                    <div className="px-6 py-3 border-b border-purple-100">
+                  <div className="absolute right-0 top-10 sm:top-12 bg-white/95 backdrop-blur-xl border border-purple-200/50 rounded-2xl shadow-2xl py-3 z-50 min-w-[180px]">
+                    <div className="px-4 sm:px-6 py-3 border-b border-purple-100">
                       <p className="text-sm font-medium text-gray-900">
                         {profile.displayName || user?.email?.split('@')[0] || 'User'}
                       </p>
@@ -204,14 +210,14 @@ const Header: React.FC = () => {
                         setShowProfileMenu(false);
                         window.dispatchEvent(new CustomEvent('navigateToProfile'));
                       }}
-                      className="flex items-center space-x-3 w-full px-6 py-3 text-sm text-gray-700 hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 transition-all duration-300"
+                      className="flex items-center space-x-3 w-full px-4 sm:px-6 py-3 text-sm text-gray-700 hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 transition-all duration-300"
                     >
                       <User className="w-4 h-4" />
                       <span>Edit Profile</span>
                     </button>
                     <button
                       onClick={handleSignOut}
-                      className="flex items-center space-x-3 w-full px-6 py-3 text-sm text-red-600 hover:bg-red-50 transition-all duration-300"
+                      className="flex items-center space-x-3 w-full px-4 sm:px-6 py-3 text-sm text-red-600 hover:bg-red-50 transition-all duration-300"
                     >
                       <LogOut className="w-4 h-4" />
                       <span>Sign Out</span>
@@ -227,7 +233,7 @@ const Header: React.FC = () => {
       {/* Click outside to close dropdowns */}
       {(showNotifications || showProfileMenu) && (
         <div 
-          className="fixed inset-0 z-40" 
+          className="fixed inset-0 z-20" 
           onClick={() => {
             setShowNotifications(false);
             setShowProfileMenu(false);

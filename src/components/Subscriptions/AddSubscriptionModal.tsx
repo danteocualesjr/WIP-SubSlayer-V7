@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { X, Plus, Sparkles } from 'lucide-react';
 import { Subscription } from '../../types/subscription';
 
@@ -220,28 +220,28 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
       }}
     >
       <div 
-        className="bg-white rounded-3xl p-8 w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl border border-purple-100"
+        className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl border border-purple-100"
         onClick={handleModalContentClick}
       >
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-6 sm:mb-8">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-white" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl sm:rounded-2xl flex items-center justify-center">
+              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
               {subscription ? 'Edit Subscription' : 'Add New Subscription'}
             </h2>
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-2xl transition-colors"
+            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-xl sm:rounded-2xl transition-colors"
             type="button"
           >
-            <X className="w-6 h-6" />
+            <X className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               Service Name *
@@ -250,7 +250,7 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
               type="text"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full px-4 py-3 border border-purple-200 rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
+              className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-purple-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
               placeholder="e.g., ChatGPT Plus, Netflix, Spotify"
               required
               autoFocus
@@ -265,12 +265,12 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
               type="text"
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="w-full px-4 py-3 border border-purple-200 rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
+              className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-purple-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
               placeholder="Brief description"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Cost *
@@ -280,7 +280,7 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
                 step="0.01"
                 value={formData.cost}
                 onChange={(e) => setFormData({ ...formData, cost: e.target.value })}
-                className="w-full px-4 py-3 border border-purple-200 rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-purple-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
                 placeholder="0.00"
                 required
               />
@@ -292,9 +292,9 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
               <select
                 value={formData.currency}
                 onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
-                className="w-full px-4 py-3 border border-purple-200 rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-purple-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
               >
-                {currencies.map((currency) => (
+                {currencies.slice(0, 10).map((currency) => (
                   <option key={currency.code} value={currency.code}>
                     {currency.symbol} {currency.code}
                   </option>
@@ -310,7 +310,7 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
             <select
               value={formData.billingCycle}
               onChange={(e) => setFormData({ ...formData, billingCycle: e.target.value as 'monthly' | 'annual' })}
-              className="w-full px-4 py-3 border border-purple-200 rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
+              className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-purple-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
             >
               <option value="monthly">Monthly</option>
               <option value="annual">Annual</option>
@@ -325,7 +325,7 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
               type="date"
               value={formData.nextBilling}
               onChange={(e) => setFormData({ ...formData, nextBilling: e.target.value })}
-              className="w-full px-4 py-3 border border-purple-200 rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
+              className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-purple-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
               required
             />
           </div>
@@ -337,7 +337,7 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
             <select
               value={formData.category}
               onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-              className="w-full px-4 py-3 border border-purple-200 rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
+              className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-purple-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
             >
               <option value="">Select a category</option>
               {categories.map((category) => (
@@ -350,13 +350,13 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
             <label className="block text-sm font-semibold text-gray-700 mb-3">
               Color
             </label>
-            <div className="flex space-x-3">
+            <div className="flex flex-wrap gap-2 sm:gap-3">
               {colors.map((color) => (
                 <button
                   key={color}
                   type="button"
                   onClick={() => setFormData({ ...formData, color })}
-                  className={`w-10 h-10 rounded-2xl border-2 transition-all duration-200 hover:scale-110 ${
+                  className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl border-2 transition-all duration-200 hover:scale-110 ${
                     formData.color === color ? 'border-gray-900 scale-110 shadow-lg' : 'border-gray-200 hover:border-gray-400'
                   }`}
                   style={{ backgroundColor: color }}
@@ -365,19 +365,19 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
             </div>
           </div>
 
-          <div className="flex space-x-4 pt-6">
+          <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 pt-4 sm:pt-6">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-6 py-3 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-2xl font-semibold transition-colors"
+              className="flex-1 px-4 sm:px-6 py-2 sm:py-3 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl sm:rounded-2xl font-semibold transition-colors text-sm sm:text-base"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-2xl font-semibold transition-all duration-300 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl"
+              className="flex-1 px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-xl sm:rounded-2xl font-semibold transition-all duration-300 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl text-sm sm:text-base"
             >
-              <Plus className="w-5 h-5" />
+              <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
               <span>{subscription ? 'Update' : 'Add'} Subscription</span>
             </button>
           </div>

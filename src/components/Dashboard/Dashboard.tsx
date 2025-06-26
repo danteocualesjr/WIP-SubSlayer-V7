@@ -90,65 +90,65 @@ const Dashboard: React.FC<DashboardProps> = ({
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Header */}
-      <div className="bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-600 rounded-3xl p-8 text-white relative overflow-hidden">
+      <div className="bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-600 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white rounded-full -translate-y-32 translate-x-32"></div>
-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-white rounded-full translate-y-24 -translate-x-24"></div>
+          <div className="absolute top-0 right-0 w-32 h-32 sm:w-64 sm:h-64 bg-white rounded-full -translate-y-16 translate-x-16 sm:-translate-y-32 sm:translate-x-32"></div>
+          <div className="absolute bottom-0 left-0 w-24 h-24 sm:w-48 sm:h-48 bg-white rounded-full translate-y-12 -translate-x-12 sm:translate-y-24 sm:-translate-x-24"></div>
         </div>
         
         <div className="relative z-10">
-          <div className="flex items-center space-x-3 mb-6">
-            <Sparkles className="w-8 h-8 text-yellow-300" />
-            <h1 className="text-4xl font-bold">Welcome back to SubSlayer</h1>
+          <div className="flex items-center space-x-3 mb-4 sm:mb-6">
+            <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" />
+            <h1 className="text-2xl sm:text-4xl font-bold">Welcome back to SubSlayer</h1>
           </div>
-          <p className="text-xl text-white/90 mb-8 max-w-2xl">
+          <p className="text-lg sm:text-xl text-white/90 mb-6 sm:mb-8 max-w-2xl">
             Take control of your subscriptions and maximize your savings with our beta dashboard
           </p>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
-              <div className="flex items-center space-x-3 mb-2">
-                <DollarSign className="w-6 h-6 text-yellow-300" />
-                <p className="text-white/80 text-sm font-medium">Monthly Total</p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-6">
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
+                <DollarSign className="w-4 h-4 sm:w-6 sm:h-6 text-yellow-300" />
+                <p className="text-white/80 text-xs sm:text-sm font-medium">Monthly Total</p>
               </div>
-              <p className="text-3xl font-bold">${monthlyTotal.toFixed(2)}</p>
+              <p className="text-lg sm:text-3xl font-bold">${monthlyTotal.toFixed(2)}</p>
             </div>
             
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
-              <div className="flex items-center space-x-3 mb-2">
-                <TrendingUp className="w-6 h-6 text-green-300" />
-                <p className="text-white/80 text-sm font-medium">Annual Projection</p>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
+                <TrendingUp className="w-4 h-4 sm:w-6 sm:h-6 text-green-300" />
+                <p className="text-white/80 text-xs sm:text-sm font-medium">Annual Projection</p>
               </div>
-              <p className="text-3xl font-bold">${annualTotal.toFixed(2)}</p>
+              <p className="text-lg sm:text-3xl font-bold">${annualTotal.toFixed(2)}</p>
             </div>
             
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
-              <div className="flex items-center space-x-3 mb-2">
-                <CreditCard className="w-6 h-6 text-blue-300" />
-                <p className="text-white/80 text-sm font-medium">Active Subscriptions</p>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
+                <CreditCard className="w-4 h-4 sm:w-6 sm:h-6 text-blue-300" />
+                <p className="text-white/80 text-xs sm:text-sm font-medium">Active Subscriptions</p>
               </div>
-              <p className="text-3xl font-bold">{activeSubscriptions.length}</p>
+              <p className="text-lg sm:text-3xl font-bold">{activeSubscriptions.length}</p>
             </div>
             
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
-              <div className="flex items-center space-x-3 mb-2">
-                <Zap className="w-6 h-6 text-orange-300" />
-                <p className="text-white/80 text-sm font-medium">Paused Subscriptions</p>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
+                <Zap className="w-4 h-4 sm:w-6 sm:h-6 text-orange-300" />
+                <p className="text-white/80 text-xs sm:text-sm font-medium">Paused Subscriptions</p>
               </div>
-              <p className="text-3xl font-bold">
+              <p className="text-lg sm:text-3xl font-bold">
                 {subscriptions.filter(sub => sub.status === 'paused').length}
               </p>
             </div>
             
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
-              <div className="flex items-center space-x-3 mb-2">
-                <Calendar className="w-6 h-6 text-pink-300" />
-                <p className="text-white/80 text-sm font-medium">Upcoming Renewals</p>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300 col-span-2 sm:col-span-1">
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
+                <Calendar className="w-4 h-4 sm:w-6 sm:h-6 text-pink-300" />
+                <p className="text-white/80 text-xs sm:text-sm font-medium">Upcoming Renewals</p>
               </div>
-              <p className="text-3xl font-bold">{upcomingRenewalsCount}</p>
+              <p className="text-lg sm:text-3xl font-bold">{upcomingRenewalsCount}</p>
             </div>
           </div>
         </div>
@@ -156,25 +156,25 @@ const Dashboard: React.FC<DashboardProps> = ({
 
       {/* Empty State for First Time Users */}
       {subscriptions.length === 0 && (
-        <div className="bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 rounded-3xl p-12 border border-purple-200/50 relative overflow-hidden">
+        <div className="bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 rounded-2xl sm:rounded-3xl p-8 sm:p-12 border border-purple-200/50 relative overflow-hidden">
           <div className="absolute inset-0 opacity-5">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500 rounded-full"></div>
-            <div className="absolute bottom-0 left-0 w-24 h-24 bg-blue-500 rounded-full"></div>
+            <div className="absolute top-0 right-0 w-16 h-16 sm:w-32 sm:h-32 bg-purple-500 rounded-full"></div>
+            <div className="absolute bottom-0 left-0 w-12 h-12 sm:w-24 sm:h-24 bg-blue-500 rounded-full"></div>
           </div>
           
           <div className="text-center relative z-10">
-            <div className="w-20 h-20 bg-gradient-to-br from-purple-600 to-blue-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl">
-              <CreditCard className="w-10 h-10 text-white" />
+            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-4 sm:mb-6 shadow-xl">
+              <CreditCard className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-3">Get Started with SubSlayer</h3>
-            <p className="text-gray-600 mb-8 max-w-md mx-auto text-lg">
+            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">Get Started with SubSlayer</h3>
+            <p className="text-gray-600 mb-6 sm:mb-8 max-w-md mx-auto text-base sm:text-lg">
               Start tracking your subscriptions and take control of your recurring expenses. Add your first subscription to see insights and analytics.
             </p>
             <button
               onClick={() => setShowAddModal(true)}
-              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-10 py-4 rounded-2xl font-semibold transition-all duration-300 flex items-center space-x-3 mx-auto shadow-xl hover:shadow-2xl hover:scale-105 transform"
+              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 sm:px-10 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-semibold transition-all duration-300 flex items-center space-x-2 sm:space-x-3 mx-auto shadow-xl hover:shadow-2xl hover:scale-105 transform"
             >
-              <Plus className="w-6 h-6" />
+              <Plus className="w-5 h-5 sm:w-6 sm:h-6" />
               <span>Add Your First Subscription</span>
             </button>
           </div>
@@ -183,25 +183,25 @@ const Dashboard: React.FC<DashboardProps> = ({
 
       {/* Quick Actions for Existing Users */}
       {subscriptions.length > 0 && (
-        <div className="bg-white rounded-3xl p-8 shadow-lg border border-purple-100/50">
+        <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-lg border border-purple-100/50">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h3 className="text-xl font-bold text-gray-900 flex items-center space-x-2">
-                <Star className="w-6 h-6 text-purple-500" />
+              <h3 className="text-lg sm:text-xl font-bold text-gray-900 flex items-center space-x-2">
+                <Star className="w-5 h-5 sm:w-6 sm:h-6 text-purple-500" />
                 <span>Quick Actions</span>
               </h3>
               <p className="text-gray-600 mt-1">Manage your subscriptions efficiently</p>
             </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             <button
               onClick={() => setShowAddModal(true)}
-              className="p-6 bg-gradient-to-br from-purple-50 to-blue-50 hover:from-purple-100 hover:to-blue-100 rounded-2xl border border-purple-200 transition-all duration-300 text-left group hover:scale-105 transform shadow-lg hover:shadow-xl"
+              className="p-4 sm:p-6 bg-gradient-to-br from-purple-50 to-blue-50 hover:from-purple-100 hover:to-blue-100 rounded-xl sm:rounded-2xl border border-purple-200 transition-all duration-300 text-left group hover:scale-105 transform shadow-lg hover:shadow-xl"
             >
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
-                  <Plus className="w-6 h-6 text-white" />
+              <div className="flex items-center space-x-3 sm:space-x-4">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl sm:rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                  <Plus className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                 </div>
                 <div>
                   <h4 className="font-semibold text-gray-900">Add Subscription</h4>
@@ -210,10 +210,10 @@ const Dashboard: React.FC<DashboardProps> = ({
               </div>
             </button>
             
-            <div className="p-6 bg-gradient-to-br from-emerald-50 to-green-50 rounded-2xl border border-emerald-200 shadow-lg">
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-gradient-to-r from-emerald-600 to-green-600 rounded-2xl flex items-center justify-center shadow-lg">
-                  <DollarSign className="w-6 h-6 text-white" />
+            <div className="p-4 sm:p-6 bg-gradient-to-br from-emerald-50 to-green-50 rounded-xl sm:rounded-2xl border border-emerald-200 shadow-lg">
+              <div className="flex items-center space-x-3 sm:space-x-4">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-emerald-600 to-green-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg">
+                  <DollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                 </div>
                 <div>
                   <h4 className="font-semibold text-gray-900">Monthly Savings</h4>
@@ -224,10 +224,10 @@ const Dashboard: React.FC<DashboardProps> = ({
               </div>
             </div>
             
-            <div className="p-6 bg-gradient-to-br from-orange-50 to-red-50 rounded-2xl border border-orange-200 shadow-lg">
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-gradient-to-r from-orange-600 to-red-600 rounded-2xl flex items-center justify-center shadow-lg">
-                  <Calendar className="w-6 h-6 text-white" />
+            <div className="p-4 sm:p-6 bg-gradient-to-br from-orange-50 to-red-50 rounded-xl sm:rounded-2xl border border-orange-200 shadow-lg sm:col-span-2 lg:col-span-1">
+              <div className="flex items-center space-x-3 sm:space-x-4">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-orange-600 to-red-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg">
+                  <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                 </div>
                 <div>
                   <h4 className="font-semibold text-gray-900">Next Renewal</h4>
@@ -245,7 +245,7 @@ const Dashboard: React.FC<DashboardProps> = ({
       )}
 
       {/* Charts and Upcoming Renewals */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
         <SpendingChart data={spendingData} loading={spendingLoading} />
         <UpcomingRenewals 
           subscriptions={subscriptions} 
