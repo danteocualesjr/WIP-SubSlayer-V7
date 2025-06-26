@@ -6,6 +6,7 @@ import CategoryChart from './CategoryChart';
 import { Subscription, SpendingData, CategoryData } from '../../types/subscription';
 
 interface AnalyticsProps {
+  
   subscriptions: Subscription[];
   spendingData: SpendingData[];
   categoryData: CategoryData[];
