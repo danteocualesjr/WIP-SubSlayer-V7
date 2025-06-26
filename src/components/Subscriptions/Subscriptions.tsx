@@ -32,7 +32,13 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'paused' | 'cancelled'>('all');
   const [filterCategory, setFilterCategory] = useState<string>('all');
-  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'calendar'>('grid');
+  
+  // Load view mode from localStorage, default to 'grid' if not found
+  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'calendar'>(() => {
+    const savedViewMode = localStorage.getItem('subscriptions-view-mode');
+    return (savedViewMode as 'grid' | 'list' | 'calendar') || 'grid';
+  });
+  
   const [selectedSubscriptions, setSelectedSubscriptions] = useState<string[]>([]);
   const [isSelectionMode, setIsSelectionMode] = useState(false);
   const [sortField, setSortField] = useState<SortField>('createdAt');
@@ -42,6 +48,11 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [subscriptionToDelete, setSubscriptionToDelete] = useState<Subscription | null>(null);
   const [isMultipleDelete, setIsMultipleDelete] = useState(false);
+
+  // Save view mode to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('subscriptions-view-mode', viewMode);
+  }, [viewMode]);
 
   // Listen for calendar view switch event from dashboard
   useEffect(() => {
