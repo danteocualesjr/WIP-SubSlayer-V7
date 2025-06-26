@@ -16,15 +16,15 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
   subscription
 }) => {
   const [formData, setFormData] = useState({
-    name: subscription?.name || '',
-    description: subscription?.description || '',
-    cost: subscription?.cost?.toString() || '',
-    currency: subscription?.currency || 'USD',
-    billingCycle: subscription?.billingCycle || 'monthly' as 'monthly' | 'annual',
-    nextBilling: subscription?.nextBilling || '',
-    category: subscription?.category || '',
-    status: subscription?.status || 'active' as 'active' | 'cancelled' | 'paused',
-    color: subscription?.color || '#8B5CF6'
+    name: '',
+    description: '',
+    cost: '',
+    currency: 'USD',
+    billingCycle: 'monthly' as 'monthly' | 'annual',
+    nextBilling: '',
+    category: '',
+    status: 'active' as 'active' | 'cancelled' | 'paused',
+    color: '#8B5CF6'
   });
 
   const categories = [
@@ -104,6 +104,39 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
     '#F97316', '#84CC16', '#06B6D4', '#8B5CF6', '#EC4899'
   ];
 
+  // Initialize form data when modal opens or subscription changes
+  useEffect(() => {
+    if (isOpen) {
+      if (subscription) {
+        // Pre-fill form with existing subscription data
+        setFormData({
+          name: subscription.name || '',
+          description: subscription.description || '',
+          cost: subscription.cost?.toString() || '',
+          currency: subscription.currency || 'USD',
+          billingCycle: subscription.billingCycle || 'monthly',
+          nextBilling: subscription.nextBilling || '',
+          category: subscription.category || '',
+          status: subscription.status || 'active',
+          color: subscription.color || '#8B5CF6'
+        });
+      } else {
+        // Reset form for new subscription
+        setFormData({
+          name: '',
+          description: '',
+          cost: '',
+          currency: 'USD',
+          billingCycle: 'monthly',
+          nextBilling: '',
+          category: '',
+          status: 'active',
+          color: '#8B5CF6'
+        });
+      }
+    }
+  }, [isOpen, subscription]);
+
   // Prevent modal from closing when clicking outside or losing focus
   useEffect(() => {
     if (isOpen) {
@@ -159,17 +192,6 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
       cost: parseFloat(formData.cost),
     });
     onClose();
-    setFormData({
-      name: '',
-      description: '',
-      cost: '',
-      currency: 'USD',
-      billingCycle: 'monthly',
-      nextBilling: '',
-      category: '',
-      status: 'active',
-      color: '#8B5CF6'
-    });
   };
 
   const handleModalContentClick = (e: React.MouseEvent) => {
