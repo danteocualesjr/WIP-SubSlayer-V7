@@ -20,6 +20,7 @@ const Analytics: React.FC<AnalyticsProps> = ({
   spendingData, 
   categoryData, 
   spendingLoading = false 
+  
 }) => {
   const activeSubscriptions = subscriptions.filter(sub => sub.status === 'active');
   
