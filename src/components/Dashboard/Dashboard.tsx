@@ -11,6 +11,7 @@ interface DashboardProps {
   spendingData: SpendingData[];
   spendingLoading?: boolean;
   onAddSubscription?: (subscription: Omit<Subscription, 'id' | 'createdAt'>) => void;
+  onEditSubscription?: (id: string, subscription: Omit<Subscription, 'id' | 'createdAt'>) => void;
   onSwitchToCalendar?: () => void;
 }
 
@@ -19,9 +20,12 @@ const Dashboard: React.FC<DashboardProps> = ({
   spendingData, 
   spendingLoading = false,
   onAddSubscription,
+  onEditSubscription,
   onSwitchToCalendar 
 }) => {
   const [showAddModal, setShowAddModal] = useState(false);
+  const [editingSubscription, setEditingSubscription] = useState<Subscription | null>(null);
+  
   const activeSubscriptions = subscriptions.filter(sub => sub.status === 'active');
   
   const monthlyTotal = activeSubscriptions.reduce((sum, sub) => {
@@ -58,6 +62,25 @@ const Dashboard: React.FC<DashboardProps> = ({
       onAddSubscription(subscriptionData);
     }
     setShowAddModal(false);
+    setEditingSubscription(null);
+  };
+
+  const handleEditSubscription = (subscription: Subscription) => {
+    setEditingSubscription(subscription);
+    setShowAddModal(true);
+  };
+
+  const handleSaveEdit = (subscriptionData: Omit<Subscription, 'id' | 'createdAt'>) => {
+    if (editingSubscription && onEditSubscription) {
+      onEditSubscription(editingSubscription.id, subscriptionData);
+    }
+    setShowAddModal(false);
+    setEditingSubscription(null);
+  };
+
+  const handleModalClose = () => {
+    setShowAddModal(false);
+    setEditingSubscription(null);
   };
 
   const handleSwitchToCalendar = () => {
@@ -227,14 +250,16 @@ const Dashboard: React.FC<DashboardProps> = ({
         <UpcomingRenewals 
           subscriptions={subscriptions} 
           onSwitchToCalendar={handleSwitchToCalendar}
+          onEditSubscription={handleEditSubscription}
         />
       </div>
 
-      {/* Add Subscription Modal */}
+      {/* Add/Edit Subscription Modal */}
       <AddSubscriptionModal
         isOpen={showAddModal}
-        onClose={() => setShowAddModal(false)}
-        onAdd={handleAddSubscription}
+        onClose={handleModalClose}
+        onAdd={editingSubscription ? handleSaveEdit : handleAddSubscription}
+        subscription={editingSubscription || undefined}
       />
     </div>
   );

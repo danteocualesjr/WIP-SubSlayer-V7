@@ -5,11 +5,13 @@ import { Subscription } from '../../types/subscription';
 interface UpcomingRenewalsProps {
   subscriptions: Subscription[];
   onSwitchToCalendar?: () => void;
+  onEditSubscription?: (subscription: Subscription) => void;
 }
 
 const UpcomingRenewals: React.FC<UpcomingRenewalsProps> = ({ 
   subscriptions, 
-  onSwitchToCalendar 
+  onSwitchToCalendar,
+  onEditSubscription 
 }) => {
   const [viewMode, setViewMode] = useState<'list' | 'mini-calendar'>('list');
 
@@ -35,6 +37,12 @@ const UpcomingRenewals: React.FC<UpcomingRenewalsProps> = ({
   };
 
   const upcomingRenewals = getUpcomingRenewals();
+
+  const handleSubscriptionClick = (subscription: Subscription) => {
+    if (onEditSubscription) {
+      onEditSubscription(subscription);
+    }
+  };
 
   const renderMiniCalendar = () => {
     const now = new Date();
@@ -183,17 +191,20 @@ const UpcomingRenewals: React.FC<UpcomingRenewalsProps> = ({
               return (
                 <div
                   key={subscription.id}
-                  className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
+                  onClick={() => handleSubscriptionClick(subscription)}
+                  className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all duration-200 cursor-pointer hover:shadow-sm group"
                 >
                   <div className="flex items-center space-x-3">
                     <div 
-                      className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-semibold text-sm"
+                      className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-semibold text-sm shadow-sm group-hover:shadow-md transition-shadow"
                       style={{ backgroundColor: subscription.color || '#8B5CF6' }}
                     >
                       {subscription.name.substring(0, 2).toUpperCase()}
                     </div>
                     <div>
-                      <h4 className="font-medium text-gray-900">{subscription.name}</h4>
+                      <h4 className="font-medium text-gray-900 group-hover:text-purple-700 transition-colors">
+                        {subscription.name}
+                      </h4>
                       <p className="text-sm text-gray-600">
                         {new Date(subscription.nextBilling).toLocaleDateString()}
                       </p>
@@ -201,15 +212,15 @@ const UpcomingRenewals: React.FC<UpcomingRenewalsProps> = ({
                   </div>
                   
                   <div className="flex items-center space-x-3">
-                    <span className="font-semibold text-gray-900">
+                    <span className="font-semibold text-gray-900 group-hover:text-purple-700 transition-colors">
                       ${subscription.cost.toFixed(2)}
                     </span>
-                    <div className={`flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium ${
+                    <div className={`flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium transition-colors ${
                       isUrgent 
-                        ? 'bg-red-100 text-red-700' 
+                        ? 'bg-red-100 text-red-700 group-hover:bg-red-200' 
                         : daysUntil <= 7 
-                          ? 'bg-yellow-100 text-yellow-700'
-                          : 'bg-green-100 text-green-700'
+                          ? 'bg-yellow-100 text-yellow-700 group-hover:bg-yellow-200'
+                          : 'bg-green-100 text-green-700 group-hover:bg-green-200'
                     }`}>
                       {isUrgent && <AlertCircle className="w-3 h-3" />}
                       <span>{daysUntil} days</span>

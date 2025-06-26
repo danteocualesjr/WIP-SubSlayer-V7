@@ -114,6 +114,7 @@ function App() {
             spendingData={spendingData}
             spendingLoading={spendingLoading}
             onAddSubscription={addSubscription}
+            onEditSubscription={handleEditSubscription}
             onSwitchToCalendar={handleSwitchToCalendar}
           />
         );
@@ -154,6 +155,7 @@ function App() {
             spendingData={spendingData}
             spendingLoading={spendingLoading}
             onAddSubscription={addSubscription}
+            onEditSubscription={handleEditSubscription}
             onSwitchToCalendar={handleSwitchToCalendar}
           />
         );
