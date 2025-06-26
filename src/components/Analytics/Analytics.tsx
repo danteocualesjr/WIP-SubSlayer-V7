@@ -15,6 +15,7 @@ interface AnalyticsProps {
 }
 
 const Analytics: React.FC<AnalyticsProps> = ({ 
+  
   subscriptions, 
   spendingData, 
   categoryData, 
