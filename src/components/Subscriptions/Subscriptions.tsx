@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, Filter, Grid3X3, List, Trash2, X, Calendar as CalendarIcon } from 'lucide-react';
+import { Plus, Search, Filter, Grid3X3, List, Trash2, X, Calendar as CalendarIcon, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import SubscriptionCard from './SubscriptionCard';
 import SubscriptionListItem from './SubscriptionListItem';
 import CalendarView from './CalendarView';
@@ -15,6 +15,9 @@ interface SubscriptionsProps {
   onToggleSubscriptionStatus: (id: string) => void;
   onBulkDelete?: (ids: string[]) => void;
 }
+
+type SortField = 'name' | 'category' | 'cost' | 'nextBilling' | 'status' | 'createdAt';
+type SortDirection = 'asc' | 'desc';
 
 const Subscriptions: React.FC<SubscriptionsProps> = ({
   subscriptions,
@@ -32,6 +35,8 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'calendar'>('grid');
   const [selectedSubscriptions, setSelectedSubscriptions] = useState<string[]>([]);
   const [isSelectionMode, setIsSelectionMode] = useState(false);
+  const [sortField, setSortField] = useState<SortField>('createdAt');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   
   // Delete confirmation modal state
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -53,6 +58,69 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
 
   const categories = Array.from(new Set(subscriptions.map(sub => sub.category).filter(Boolean)));
 
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  const getSortIcon = (field: SortField) => {
+    if (sortField !== field) {
+      return <ArrowUpDown className="w-4 h-4 text-gray-400" />;
+    }
+    return sortDirection === 'asc' 
+      ? <ArrowUp className="w-4 h-4 text-purple-600" />
+      : <ArrowDown className="w-4 h-4 text-purple-600" />;
+  };
+
+  const sortSubscriptions = (subs: Subscription[]) => {
+    return [...subs].sort((a, b) => {
+      let aValue: any;
+      let bValue: any;
+
+      switch (sortField) {
+        case 'name':
+          aValue = a.name.toLowerCase();
+          bValue = b.name.toLowerCase();
+          break;
+        case 'category':
+          aValue = (a.category || 'Uncategorized').toLowerCase();
+          bValue = (b.category || 'Uncategorized').toLowerCase();
+          break;
+        case 'cost':
+          // Convert to monthly cost for fair comparison
+          aValue = a.billingCycle === 'monthly' ? a.cost : a.cost / 12;
+          bValue = b.billingCycle === 'monthly' ? b.cost : b.cost / 12;
+          break;
+        case 'nextBilling':
+          aValue = new Date(a.nextBilling).getTime();
+          bValue = new Date(b.nextBilling).getTime();
+          break;
+        case 'status':
+          aValue = a.status;
+          bValue = b.status;
+          break;
+        case 'createdAt':
+          aValue = new Date(a.createdAt).getTime();
+          bValue = new Date(b.createdAt).getTime();
+          break;
+        default:
+          return 0;
+      }
+
+      if (aValue < bValue) {
+        return sortDirection === 'asc' ? -1 : 1;
+      }
+      if (aValue > bValue) {
+        return sortDirection === 'asc' ? 1 : -1;
+      }
+      return 0;
+    });
+  };
+
   const filteredSubscriptions = subscriptions.filter(subscription => {
     const matchesSearch = subscription.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          subscription.description?.toLowerCase().includes(searchTerm.toLowerCase());
@@ -61,6 +129,8 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
     
     return matchesSearch && matchesStatus && matchesCategory;
   });
+
+  const sortedSubscriptions = sortSubscriptions(filteredSubscriptions);
 
   const handleEdit = (subscription: Subscription) => {
     setEditingSubscription(subscription);
@@ -103,10 +173,10 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
   };
 
   const handleSelectAll = () => {
-    if (selectedSubscriptions.length === filteredSubscriptions.length) {
+    if (selectedSubscriptions.length === sortedSubscriptions.length) {
       setSelectedSubscriptions([]);
     } else {
-      setSelectedSubscriptions(filteredSubscriptions.map(sub => sub.id));
+      setSelectedSubscriptions(sortedSubscriptions.map(sub => sub.id));
     }
   };
 
@@ -132,7 +202,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
     setIsSelectionMode(false);
   };
 
-  const totalMonthlySpend = filteredSubscriptions.reduce((sum, sub) => {
+  const totalMonthlySpend = sortedSubscriptions.reduce((sum, sub) => {
     if (sub.status !== 'active') return sum;
     return sum + (sub.billingCycle === 'monthly' ? sub.cost : sub.cost / 12);
   }, 0);
@@ -271,7 +341,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
             <div className="flex items-center space-x-3">
               <div className="text-blue-600">
                 <span className="font-medium">
-                  {selectedSubscriptions.length} of {filteredSubscriptions.length} selected
+                  {selectedSubscriptions.length} of {sortedSubscriptions.length} selected
                 </span>
                 {selectedSubscriptions.length > 0 && (
                   <span className="ml-2 text-sm">
@@ -284,7 +354,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
               onClick={handleSelectAll}
               className="text-blue-600 hover:text-blue-700 font-medium text-sm"
             >
-              {selectedSubscriptions.length === filteredSubscriptions.length ? 'Deselect All' : 'Select All'}
+              {selectedSubscriptions.length === sortedSubscriptions.length ? 'Deselect All' : 'Select All'}
             </button>
           </div>
         </div>
@@ -316,7 +386,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
         </div>
       </div>
 
-      {/* Filters and View Toggle */}
+      {/* Filters, Sort, and View Toggle */}
       <div className="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -328,7 +398,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
             className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
           />
         </div>
-        <div className="flex space-x-3">
+        <div className="flex flex-wrap gap-3">
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value as any)}
@@ -348,6 +418,30 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
             {categories.map((category) => (
               <option key={category} value={category}>{category}</option>
             ))}
+          </select>
+          
+          {/* Sort Dropdown */}
+          <select
+            value={`${sortField}-${sortDirection}`}
+            onChange={(e) => {
+              const [field, direction] = e.target.value.split('-') as [SortField, SortDirection];
+              setSortField(field);
+              setSortDirection(direction);
+            }}
+            className="px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+          >
+            <option value="createdAt-desc">Newest First</option>
+            <option value="createdAt-asc">Oldest First</option>
+            <option value="name-asc">Name A-Z</option>
+            <option value="name-desc">Name Z-A</option>
+            <option value="cost-desc">Highest Cost</option>
+            <option value="cost-asc">Lowest Cost</option>
+            <option value="nextBilling-asc">Next Billing (Soon)</option>
+            <option value="nextBilling-desc">Next Billing (Later)</option>
+            <option value="category-asc">Category A-Z</option>
+            <option value="category-desc">Category Z-A</option>
+            <option value="status-asc">Status A-Z</option>
+            <option value="status-desc">Status Z-A</option>
           </select>
           
           {/* View Toggle */}
@@ -390,7 +484,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
       </div>
 
       {/* Subscriptions Display */}
-      {filteredSubscriptions.length === 0 ? (
+      {sortedSubscriptions.length === 0 ? (
         <div className="text-center py-12">
           <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <Filter className="w-8 h-8 text-gray-400" />
@@ -414,7 +508,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
         </div>
       ) : viewMode === 'grid' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredSubscriptions.map((subscription) => (
+          {sortedSubscriptions.map((subscription) => (
             <SubscriptionCard
               key={subscription.id}
               subscription={subscription}
@@ -433,16 +527,56 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
           <div className="px-6 py-4 bg-gray-50 border-b border-gray-100">
             <div className="grid grid-cols-12 gap-4 text-sm font-medium text-gray-600">
               {isSelectionMode && <div className="col-span-1">Select</div>}
-              <div className={isSelectionMode ? "col-span-3" : "col-span-4"}>Service</div>
-              <div className="col-span-2">Category</div>
-              <div className="col-span-2">Cost</div>
-              <div className="col-span-2">Next Billing</div>
-              <div className="col-span-1">Status</div>
+              <div className={isSelectionMode ? "col-span-3" : "col-span-4"}>
+                <button
+                  onClick={() => handleSort('name')}
+                  className="flex items-center space-x-1 hover:text-gray-900 transition-colors"
+                >
+                  <span>Service</span>
+                  {getSortIcon('name')}
+                </button>
+              </div>
+              <div className="col-span-2">
+                <button
+                  onClick={() => handleSort('category')}
+                  className="flex items-center space-x-1 hover:text-gray-900 transition-colors"
+                >
+                  <span>Category</span>
+                  {getSortIcon('category')}
+                </button>
+              </div>
+              <div className="col-span-2">
+                <button
+                  onClick={() => handleSort('cost')}
+                  className="flex items-center space-x-1 hover:text-gray-900 transition-colors"
+                >
+                  <span>Cost</span>
+                  {getSortIcon('cost')}
+                </button>
+              </div>
+              <div className="col-span-2">
+                <button
+                  onClick={() => handleSort('nextBilling')}
+                  className="flex items-center space-x-1 hover:text-gray-900 transition-colors"
+                >
+                  <span>Next Billing</span>
+                  {getSortIcon('nextBilling')}
+                </button>
+              </div>
+              <div className="col-span-1">
+                <button
+                  onClick={() => handleSort('status')}
+                  className="flex items-center space-x-1 hover:text-gray-900 transition-colors"
+                >
+                  <span>Status</span>
+                  {getSortIcon('status')}
+                </button>
+              </div>
               <div className="col-span-1">Actions</div>
             </div>
           </div>
           <div className="divide-y divide-gray-100">
-            {filteredSubscriptions.map((subscription) => (
+            {sortedSubscriptions.map((subscription) => (
               <SubscriptionListItem
                 key={subscription.id}
                 subscription={subscription}
