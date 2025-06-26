@@ -11,6 +11,7 @@ interface AnalyticsProps {
   spendingData: SpendingData[];
   categoryData: CategoryData[];
   spendingLoading?: boolean;
+  
 }
 
 const Analytics: React.FC<AnalyticsProps> = ({ 
