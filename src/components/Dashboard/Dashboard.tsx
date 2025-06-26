@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DollarSign, TrendingUp, CreditCard, Calendar, Plus } from 'lucide-react';
+import { DollarSign, TrendingUp, CreditCard, Calendar, Plus, Sparkles, Zap, Star } from 'lucide-react';
 import StatsCard from './StatsCard';
 import SpendingChart from './SpendingChart';
 import UpcomingRenewals from './UpcomingRenewals';
@@ -69,34 +69,63 @@ const Dashboard: React.FC<DashboardProps> = ({
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="bg-gradient-to-br from-purple-600 via-blue-600 to-emerald-500 rounded-3xl p-8 text-white">
-        <div className="max-w-4xl">
-          <h1 className="text-4xl font-bold mb-4">Welcome back to SubSlayer</h1>
-          <p className="text-xl text-white/90 mb-6">
-            Take control of your subscriptions and maximize your savings
+      <div className="bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-600 rounded-3xl p-8 text-white relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white rounded-full -translate-y-32 translate-x-32"></div>
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-white rounded-full translate-y-24 -translate-x-24"></div>
+        </div>
+        
+        <div className="relative z-10">
+          <div className="flex items-center space-x-3 mb-6">
+            <Sparkles className="w-8 h-8 text-yellow-300" />
+            <h1 className="text-4xl font-bold">Welcome back to SubSlayer</h1>
+          </div>
+          <p className="text-xl text-white/90 mb-8 max-w-2xl">
+            Take control of your subscriptions and maximize your savings with our premium dashboard
           </p>
+          
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4">
-              <p className="text-white/80 text-sm font-medium">Monthly Total</p>
-              <p className="text-2xl font-bold">${monthlyTotal.toFixed(2)}</p>
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
+              <div className="flex items-center space-x-3 mb-2">
+                <DollarSign className="w-6 h-6 text-yellow-300" />
+                <p className="text-white/80 text-sm font-medium">Monthly Total</p>
+              </div>
+              <p className="text-3xl font-bold">${monthlyTotal.toFixed(2)}</p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4">
-              <p className="text-white/80 text-sm font-medium">Annual Projection</p>
-              <p className="text-2xl font-bold">${annualTotal.toFixed(2)}</p>
+            
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
+              <div className="flex items-center space-x-3 mb-2">
+                <TrendingUp className="w-6 h-6 text-green-300" />
+                <p className="text-white/80 text-sm font-medium">Annual Projection</p>
+              </div>
+              <p className="text-3xl font-bold">${annualTotal.toFixed(2)}</p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4">
-              <p className="text-white/80 text-sm font-medium">Active Subscriptions</p>
-              <p className="text-2xl font-bold">{activeSubscriptions.length}</p>
+            
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
+              <div className="flex items-center space-x-3 mb-2">
+                <CreditCard className="w-6 h-6 text-blue-300" />
+                <p className="text-white/80 text-sm font-medium">Active Subscriptions</p>
+              </div>
+              <p className="text-3xl font-bold">{activeSubscriptions.length}</p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4">
-              <p className="text-white/80 text-sm font-medium">Paused Subscriptions</p>
-              <p className="text-2xl font-bold">
+            
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
+              <div className="flex items-center space-x-3 mb-2">
+                <Zap className="w-6 h-6 text-orange-300" />
+                <p className="text-white/80 text-sm font-medium">Paused Subscriptions</p>
+              </div>
+              <p className="text-3xl font-bold">
                 {subscriptions.filter(sub => sub.status === 'paused').length}
               </p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4">
-              <p className="text-white/80 text-sm font-medium">Upcoming Renewals</p>
-              <p className="text-2xl font-bold">{upcomingRenewalsCount}</p>
+            
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
+              <div className="flex items-center space-x-3 mb-2">
+                <Calendar className="w-6 h-6 text-pink-300" />
+                <p className="text-white/80 text-sm font-medium">Upcoming Renewals</p>
+              </div>
+              <p className="text-3xl font-bold">{upcomingRenewalsCount}</p>
             </div>
           </div>
         </div>
@@ -104,20 +133,25 @@ const Dashboard: React.FC<DashboardProps> = ({
 
       {/* Empty State for First Time Users */}
       {subscriptions.length === 0 && (
-        <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8 border border-blue-100">
-          <div className="text-center">
-            <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <CreditCard className="w-8 h-8 text-white" />
+        <div className="bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 rounded-3xl p-12 border border-purple-200/50 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-5">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500 rounded-full"></div>
+            <div className="absolute bottom-0 left-0 w-24 h-24 bg-blue-500 rounded-full"></div>
+          </div>
+          
+          <div className="text-center relative z-10">
+            <div className="w-20 h-20 bg-gradient-to-br from-purple-600 to-blue-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl">
+              <CreditCard className="w-10 h-10 text-white" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Get Started with SubSlayer</h3>
-            <p className="text-gray-600 mb-6 max-w-md mx-auto">
+            <h3 className="text-2xl font-bold text-gray-900 mb-3">Get Started with SubSlayer</h3>
+            <p className="text-gray-600 mb-8 max-w-md mx-auto text-lg">
               Start tracking your subscriptions and take control of your recurring expenses. Add your first subscription to see insights and analytics.
             </p>
             <button
               onClick={() => setShowAddModal(true)}
-              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-3 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2 mx-auto shadow-lg"
+              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-10 py-4 rounded-2xl font-semibold transition-all duration-300 flex items-center space-x-3 mx-auto shadow-xl hover:shadow-2xl hover:scale-105 transform"
             >
-              <Plus className="w-5 h-5" />
+              <Plus className="w-6 h-6" />
               <span>Add Your First Subscription</span>
             </button>
           </div>
@@ -126,50 +160,54 @@ const Dashboard: React.FC<DashboardProps> = ({
 
       {/* Quick Actions for Existing Users */}
       {subscriptions.length > 0 && (
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-          <div className="flex items-center justify-between mb-4">
+        <div className="bg-white rounded-3xl p-8 shadow-lg border border-purple-100/50">
+          <div className="flex items-center justify-between mb-6">
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">Quick Actions</h3>
-              <p className="text-sm text-gray-600">Manage your subscriptions efficiently</p>
+              <h3 className="text-xl font-bold text-gray-900 flex items-center space-x-2">
+                <Star className="w-6 h-6 text-purple-500" />
+                <span>Quick Actions</span>
+              </h3>
+              <p className="text-gray-600 mt-1">Manage your subscriptions efficiently</p>
             </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <button
               onClick={() => setShowAddModal(true)}
-              className="p-4 bg-gradient-to-r from-purple-50 to-blue-50 hover:from-purple-100 hover:to-blue-100 rounded-xl border border-purple-200 transition-all duration-200 text-left group"
+              className="p-6 bg-gradient-to-br from-purple-50 to-blue-50 hover:from-purple-100 hover:to-blue-100 rounded-2xl border border-purple-200 transition-all duration-300 text-left group hover:scale-105 transform shadow-lg hover:shadow-xl"
             >
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <Plus className="w-5 h-5 text-white" />
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                  <Plus className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h4 className="font-medium text-gray-900">Add Subscription</h4>
+                  <h4 className="font-semibold text-gray-900">Add Subscription</h4>
                   <p className="text-sm text-gray-600">Track a new service</p>
                 </div>
               </div>
             </button>
             
-            <div className="p-4 bg-gray-50 rounded-xl border border-gray-200">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-emerald-600 rounded-lg flex items-center justify-center">
-                  <DollarSign className="w-5 h-5 text-white" />
+            <div className="p-6 bg-gradient-to-br from-emerald-50 to-green-50 rounded-2xl border border-emerald-200 shadow-lg">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-emerald-600 to-green-600 rounded-2xl flex items-center justify-center shadow-lg">
+                  <DollarSign className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h4 className="font-medium text-gray-900">Monthly Savings</h4>
-                  <p className="text-sm text-emerald-600 font-semibold">
+                  <h4 className="font-semibold text-gray-900">Monthly Savings</h4>
+                  <p className="text-lg font-bold text-emerald-600">
                     ${(subscriptions.filter(s => s.status === 'paused').reduce((sum, s) => sum + (s.billingCycle === 'monthly' ? s.cost : s.cost / 12), 0)).toFixed(2)}
                   </p>
                 </div>
               </div>
             </div>
             
-            <div className="p-4 bg-gray-50 rounded-xl border border-gray-200">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-orange-600 rounded-lg flex items-center justify-center">
-                  <Calendar className="w-5 h-5 text-white" />
+            <div className="p-6 bg-gradient-to-br from-orange-50 to-red-50 rounded-2xl border border-orange-200 shadow-lg">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-orange-600 to-red-600 rounded-2xl flex items-center justify-center shadow-lg">
+                  <Calendar className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h4 className="font-medium text-gray-900">Next Renewal</h4>
+                  <h4 className="font-semibold text-gray-900">Next Renewal</h4>
                   <p className="text-sm text-gray-600">
                     {activeSubscriptions.length > 0 
                       ? new Date(Math.min(...activeSubscriptions.map(s => new Date(s.nextBilling).getTime()))).toLocaleDateString()

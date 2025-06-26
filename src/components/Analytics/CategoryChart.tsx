@@ -1,5 +1,6 @@
 import React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { PieChart as PieChartIcon, Sparkles } from 'lucide-react';
 import { CategoryData } from '../../types/subscription';
 
 interface CategoryChartProps {
@@ -32,15 +33,18 @@ const CategoryChart: React.FC<CategoryChartProps> = ({ data }) => {
 
   if (!data || data.length === 0) {
     return (
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <div className="mb-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Spending by Category</h3>
-          <p className="text-sm text-gray-600">Distribution of your subscription costs</p>
+      <div className="bg-white rounded-3xl p-8 shadow-lg border border-purple-100/50">
+        <div className="mb-8">
+          <div className="flex items-center space-x-3 mb-3">
+            <Sparkles className="w-6 h-6 text-purple-500" />
+            <h3 className="text-xl font-bold text-gray-900">Spending by Category</h3>
+          </div>
+          <p className="text-gray-600">Distribution of your subscription costs</p>
         </div>
         <div className="h-80 flex items-center justify-center">
           <div className="text-center">
-            <PieChart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500 mb-2">No category data available</p>
+            <PieChartIcon className="w-20 h-20 text-gray-300 mx-auto mb-6" />
+            <p className="text-gray-500 mb-2 font-medium">No category data available</p>
             <p className="text-sm text-gray-400">Add subscriptions with categories to see the breakdown</p>
           </div>
         </div>
@@ -49,10 +53,13 @@ const CategoryChart: React.FC<CategoryChartProps> = ({ data }) => {
   }
 
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">Spending by Category</h3>
-        <p className="text-sm text-gray-600">Distribution of your subscription costs</p>
+    <div className="bg-white rounded-3xl p-8 shadow-lg border border-purple-100/50">
+      <div className="mb-8">
+        <div className="flex items-center space-x-3 mb-3">
+          <Sparkles className="w-6 h-6 text-purple-500" />
+          <h3 className="text-xl font-bold text-gray-900">Spending by Category</h3>
+        </div>
+        <p className="text-gray-600">Distribution of your subscription costs</p>
       </div>
       <div className="h-80">
         <ResponsiveContainer width="100%" height="100%">
@@ -76,14 +83,15 @@ const CategoryChart: React.FC<CategoryChartProps> = ({ data }) => {
               contentStyle={{
                 backgroundColor: 'white',
                 border: '1px solid #e2e8f0',
-                borderRadius: '12px',
-                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
+                borderRadius: '16px',
+                boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
+                backdropFilter: 'blur(10px)'
               }}
             />
             <Legend 
               verticalAlign="bottom" 
               height={36}
-              formatter={(value) => <span className="text-sm text-gray-700">{value}</span>}
+              formatter={(value) => <span className="text-sm text-gray-700 font-medium">{value}</span>}
             />
           </PieChart>
         </ResponsiveContainer>

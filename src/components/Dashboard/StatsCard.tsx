@@ -25,19 +25,19 @@ const StatsCard: React.FC<StatsCardProps> = ({
   }[changeType];
 
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300">
+    <div className="bg-white rounded-3xl p-8 shadow-lg border border-purple-100/50 hover:shadow-xl transition-all duration-300 hover:scale-105 transform group">
       <div className="flex items-center justify-between">
         <div className="flex-1">
-          <p className="text-sm font-medium text-gray-600 mb-2">{title}</p>
-          <p className="text-3xl font-bold text-gray-900 mb-2">{value}</p>
+          <p className="text-sm font-medium text-gray-600 mb-3">{title}</p>
+          <p className="text-4xl font-bold text-gray-900 mb-3">{value}</p>
           {change && (
-            <div className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${changeColorClass}`}>
+            <div className={`inline-flex items-center px-3 py-2 rounded-full text-sm font-medium ${changeColorClass}`}>
               {change}
             </div>
           )}
         </div>
-        <div className={`w-12 h-12 rounded-xl ${gradient} flex items-center justify-center`}>
-          <Icon className="w-6 h-6 text-white" />
+        <div className={`w-16 h-16 rounded-2xl ${gradient} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+          <Icon className="w-8 h-8 text-white" />
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { TrendingUp, DollarSign, Calendar, PieChart } from 'lucide-react';
+import { TrendingUp, DollarSign, Calendar, PieChart, Sparkles, Star } from 'lucide-react';
 import StatsCard from '../Dashboard/StatsCard';
 import SpendingChart from '../Dashboard/SpendingChart';
 import CategoryChart from './CategoryChart';
@@ -57,9 +57,19 @@ const Analytics: React.FC<AnalyticsProps> = ({
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Analytics</h1>
-        <p className="text-gray-600">Deep insights into your subscription spending patterns</p>
+      <div className="bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-600 rounded-3xl p-8 text-white relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white rounded-full -translate-y-32 translate-x-32"></div>
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-white rounded-full translate-y-24 -translate-x-24"></div>
+        </div>
+        
+        <div className="relative z-10">
+          <div className="flex items-center space-x-3 mb-4">
+            <Sparkles className="w-8 h-8 text-yellow-300" />
+            <h1 className="text-3xl font-bold">Analytics</h1>
+          </div>
+          <p className="text-white/90 text-lg">Deep insights into your subscription spending patterns</p>
+        </div>
       </div>
 
       {/* Stats Grid */}
@@ -99,8 +109,11 @@ const Analytics: React.FC<AnalyticsProps> = ({
 
       {/* Detailed Breakdown */}
       {activeSubscriptions.length > 0 && (
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-          <h3 className="text-lg font-semibold text-gray-900 mb-6">Subscription Breakdown</h3>
+        <div className="bg-white rounded-3xl p-8 shadow-lg border border-purple-100/50">
+          <div className="flex items-center space-x-3 mb-8">
+            <Star className="w-6 h-6 text-purple-500" />
+            <h3 className="text-xl font-bold text-gray-900">Subscription Breakdown</h3>
+          </div>
           <div className="space-y-4">
             {activeSubscriptions
               .sort((a, b) => {
@@ -113,22 +126,22 @@ const Analytics: React.FC<AnalyticsProps> = ({
                 const percentage = monthlyTotal > 0 ? (monthlyCost / monthlyTotal * 100).toFixed(1) : '0';
                 
                 return (
-                  <div key={subscription.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-                    <div className="flex items-center space-x-3">
+                  <div key={subscription.id} className="flex items-center justify-between p-6 bg-gradient-to-r from-purple-50/50 to-blue-50/50 rounded-2xl border border-purple-100/50 hover:shadow-lg transition-all duration-300">
+                    <div className="flex items-center space-x-4">
                       <div
-                        className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-semibold text-sm"
+                        className="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-bold text-sm shadow-lg"
                         style={{ backgroundColor: subscription.color || '#8B5CF6' }}
                       >
                         {subscription.name.substring(0, 2).toUpperCase()}
                       </div>
                       <div>
-                        <h4 className="font-medium text-gray-900">{subscription.name}</h4>
+                        <h4 className="font-semibold text-gray-900">{subscription.name}</h4>
                         <p className="text-sm text-gray-600">{subscription.category || 'Uncategorized'}</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold text-gray-900">${monthlyCost.toFixed(2)}/mo</p>
-                      <p className="text-sm text-gray-600">{percentage}% of total</p>
+                      <p className="font-bold text-gray-900 text-lg">${monthlyCost.toFixed(2)}/mo</p>
+                      <p className="text-sm text-purple-600 font-medium">{percentage}% of total</p>
                     </div>
                   </div>
                 );
@@ -139,9 +152,9 @@ const Analytics: React.FC<AnalyticsProps> = ({
 
       {/* Empty State */}
       {activeSubscriptions.length === 0 && (
-        <div className="bg-white rounded-2xl p-12 shadow-sm border border-gray-100 text-center">
-          <PieChart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">No Active Subscriptions</h3>
+        <div className="bg-white rounded-3xl p-12 shadow-lg border border-purple-100/50 text-center">
+          <PieChart className="w-20 h-20 text-gray-300 mx-auto mb-6" />
+          <h3 className="text-xl font-bold text-gray-900 mb-3">No Active Subscriptions</h3>
           <p className="text-gray-600">Add some subscriptions to see detailed analytics and insights.</p>
         </div>
       )}
