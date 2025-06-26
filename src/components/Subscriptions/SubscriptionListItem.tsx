@@ -37,8 +37,27 @@ const SubscriptionListItem: React.FC<SubscriptionListItemProps> = ({
   const isUrgent = daysUntil <= 3;
   const isWarning = daysUntil <= 7 && daysUntil > 3;
 
-  const handleRowClick = () => {
-    if (isSelectionMode && onSelect) {
+  const handleRowClick = (e: React.MouseEvent) => {
+    // Prevent row click when clicking on action buttons
+    const target = e.target as HTMLElement;
+    if (target.closest('.actions-menu') || target.closest('button')) {
+      return;
+    }
+
+    if (isSelectionMode) {
+      if (onSelect) {
+        onSelect(subscription.id);
+      }
+      return;
+    }
+
+    // Open edit modal when clicking anywhere on the row
+    onEdit(subscription);
+  };
+
+  const handleSelectClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onSelect) {
       onSelect(subscription.id);
     }
   };
@@ -57,14 +76,14 @@ const SubscriptionListItem: React.FC<SubscriptionListItemProps> = ({
       className={`px-6 py-4 transition-colors ${
         isSelectionMode 
           ? `cursor-pointer ${isSelected ? 'bg-purple-50' : 'hover:bg-gray-50'}`
-          : 'hover:bg-gray-50'
+          : 'hover:bg-gray-50 cursor-pointer'
       }`}
       onClick={handleRowClick}
     >
       <div className="grid grid-cols-12 gap-4 items-center">
         {/* Selection Checkbox */}
         {isSelectionMode && (
-          <div className="col-span-1">
+          <div className="col-span-1" onClick={handleSelectClick}>
             <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
               isSelected ? 'bg-purple-600 border-purple-600' : 'border-gray-300'
             }`}>
@@ -138,7 +157,7 @@ const SubscriptionListItem: React.FC<SubscriptionListItemProps> = ({
         </div>
 
         {/* Actions */}
-        <div className="col-span-1 relative">
+        <div className="col-span-1 relative actions-menu">
           {!isSelectionMode && (
             <>
               <button

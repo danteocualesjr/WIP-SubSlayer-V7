@@ -37,8 +37,28 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   const isUrgent = daysUntil <= 3;
   const isWarning = daysUntil <= 7 && daysUntil > 3;
 
-  const handleCardClick = () => {
-    if (isSelectionMode && onSelect) {
+  const handleCardClick = (e: React.MouseEvent) => {
+    // Prevent card click when clicking on action buttons or in selection mode
+    if (isSelectionMode) {
+      if (onSelect) {
+        onSelect(subscription.id);
+      }
+      return;
+    }
+
+    // Check if the click was on the actions menu or its children
+    const target = e.target as HTMLElement;
+    if (target.closest('.actions-menu') || target.closest('button')) {
+      return;
+    }
+
+    // Open edit modal when clicking anywhere on the card
+    onEdit(subscription);
+  };
+
+  const handleSelectClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onSelect) {
       onSelect(subscription.id);
     }
   };
@@ -57,13 +77,13 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
       className={`bg-white rounded-2xl p-6 shadow-sm border transition-all duration-300 relative ${
         isSelectionMode 
           ? `cursor-pointer ${isSelected ? 'border-purple-300 bg-purple-50 shadow-md' : 'border-gray-100 hover:border-gray-300'}`
-          : 'border-gray-100 hover:shadow-md'
+          : 'border-gray-100 hover:shadow-md hover:border-purple-200 cursor-pointer'
       }`}
       onClick={handleCardClick}
     >
       {/* Selection Checkbox */}
       {isSelectionMode && (
-        <div className="absolute top-4 left-4">
+        <div className="absolute top-4 left-4" onClick={handleSelectClick}>
           <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
             isSelected ? 'bg-purple-600 border-purple-600' : 'border-gray-300'
           }`}>
@@ -74,10 +94,13 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
 
       {/* Actions Menu */}
       {!isSelectionMode && (
-        <div className="absolute top-4 right-4">
+        <div className="absolute top-4 right-4 actions-menu">
           <div className="relative">
             <button
-              onClick={() => setShowActions(!showActions)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowActions(!showActions);
+              }}
               className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
             >
               <MoreVertical className="w-4 h-4" />
@@ -85,7 +108,8 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
             {showActions && (
               <div className="absolute right-0 top-10 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-10 min-w-[140px]">
                 <button
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     onEdit(subscription);
                     setShowActions(false);
                   }}
@@ -95,7 +119,8 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
                   <span>Edit</span>
                 </button>
                 <button
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     onToggleStatus(subscription.id);
                     setShowActions(false);
                   }}
@@ -105,7 +130,10 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
                   <span>{subscription.status === 'active' ? 'Pause' : 'Resume'}</span>
                 </button>
                 <button
-                  onClick={handleDeleteClick}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteClick();
+                  }}
                   className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -170,6 +198,11 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
           <span>{daysUntil} days</span>
         </div>
       </div>
+
+      {/* Click to edit hint (only show when not in selection mode) */}
+      {!isSelectionMode && (
+        <div className="absolute inset-0 rounded-2xl bg-purple-500/0 hover:bg-purple-500/5 transition-colors pointer-events-none" />
+      )}
     </div>
   );
 };
