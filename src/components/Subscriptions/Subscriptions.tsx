@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, Filter, Grid3X3, List, Trash2, X, Calendar as CalendarIcon, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
+import { Plus, Search, Filter, Grid3X3, List, Trash2, X, Calendar as CalendarIcon, ArrowUpDown, ArrowUp, ArrowDown, CreditCard, Sparkles } from 'lucide-react';
 import SubscriptionCard from './SubscriptionCard';
 import SubscriptionListItem from './SubscriptionListItem';
 import CalendarView from './CalendarView';
 import AddSubscriptionModal from './AddSubscriptionModal';
 import DeleteConfirmationModal from './DeleteConfirmationModal';
+import { SparklesCore } from '../ui/sparkles';
 import { Subscription } from '../../types/subscription';
 
 interface SubscriptionsProps {
@@ -228,20 +229,39 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
   if (viewMode === 'calendar') {
     return (
       <div className="space-y-6">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Subscription Calendar</h1>
-            <p className="text-gray-600">View your renewals in calendar format</p>
+        {/* Calendar Hero Section */}
+        <div className="relative bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-600 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white overflow-hidden">
+          {/* Sparkles Background */}
+          <div className="absolute inset-0 w-full h-full">
+            <SparklesCore
+              id="calendar-sparkles"
+              background="transparent"
+              minSize={0.3}
+              maxSize={1.0}
+              particleDensity={60}
+              className="w-full h-full"
+              particleColor="#ffffff"
+              speed={0.6}
+            />
           </div>
-          <div className="flex space-x-3">
-            <button
-              onClick={() => setShowAddModal(true)}
-              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2 shadow-lg"
-            >
-              <Plus className="w-5 h-5" />
-              <span>Add Subscription</span>
-            </button>
+
+          {/* Gradient Overlays */}
+          <div className="absolute inset-0 opacity-20">
+            <div className="absolute top-0 left-1/3 w-80 h-80 bg-gradient-to-r from-emerald-400/30 to-teal-400/30 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-0 right-1/3 w-96 h-96 bg-gradient-to-r from-teal-400/30 to-cyan-400/30 rounded-full blur-3xl"></div>
+          </div>
+
+          {/* Radial gradient to prevent sharp edges */}
+          <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-emerald-600/50 via-teal-600/50 to-cyan-600/50 [mask-image:radial-gradient(800px_400px_at_center,transparent_20%,white)]"></div>
+          
+          <div className="relative z-10">
+            <div className="flex items-center space-x-3 mb-4 sm:mb-6">
+              <CalendarIcon className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" />
+              <h1 className="text-2xl sm:text-4xl font-bold">Subscription Calendar</h1>
+            </div>
+            <p className="text-lg sm:text-xl text-white/90 mb-6 sm:mb-8 max-w-2xl">
+              Visualize your renewal dates and never miss a payment again
+            </p>
           </div>
         </div>
 
@@ -299,11 +319,80 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+      {/* Enhanced Hero Section with Sparkles */}
+      <div className="relative bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-600 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white overflow-hidden">
+        {/* Sparkles Background */}
+        <div className="absolute inset-0 w-full h-full">
+          <SparklesCore
+            id="subscriptions-sparkles"
+            background="transparent"
+            minSize={0.4}
+            maxSize={1.2}
+            particleDensity={100}
+            className="w-full h-full"
+            particleColor="#ffffff"
+            speed={1.0}
+          />
+        </div>
+
+        {/* Gradient Overlays */}
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-r from-purple-400/20 to-blue-400/20 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-gradient-to-r from-blue-400/20 to-indigo-400/20 rounded-full blur-3xl"></div>
+        </div>
+
+        {/* Radial gradient to prevent sharp edges */}
+        <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-purple-600/50 via-blue-600/50 to-indigo-600/50 [mask-image:radial-gradient(800px_400px_at_center,transparent_20%,white)]"></div>
+        
+        <div className="relative z-10">
+          <div className="flex items-center space-x-3 mb-4 sm:mb-6">
+            <CreditCard className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" />
+            <h1 className="text-2xl sm:text-4xl font-bold">Subscription Management</h1>
+          </div>
+          <p className="text-lg sm:text-xl text-white/90 mb-6 sm:mb-8 max-w-2xl">
+            Take complete control of your recurring subscriptions and optimize your spending
+          </p>
+          
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6">
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
+                <CreditCard className="w-4 h-4 sm:w-6 sm:h-6 text-yellow-300" />
+                <p className="text-white/80 text-xs sm:text-sm font-medium">Total Services</p>
+              </div>
+              <p className="text-lg sm:text-3xl font-bold">{subscriptions.length}</p>
+            </div>
+            
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
+                <Sparkles className="w-4 h-4 sm:w-6 sm:h-6 text-green-300" />
+                <p className="text-white/80 text-xs sm:text-sm font-medium">Active</p>
+              </div>
+              <p className="text-lg sm:text-3xl font-bold">{subscriptions.filter(sub => sub.status === 'active').length}</p>
+            </div>
+            
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
+                <Filter className="w-4 h-4 sm:w-6 sm:h-6 text-orange-300" />
+                <p className="text-white/80 text-xs sm:text-sm font-medium">Paused</p>
+              </div>
+              <p className="text-lg sm:text-3xl font-bold">{subscriptions.filter(sub => sub.status === 'paused').length}</p>
+            </div>
+            
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300 col-span-2 sm:col-span-1">
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
+                <Plus className="w-4 h-4 sm:w-6 sm:h-6 text-pink-300" />
+                <p className="text-white/80 text-xs sm:text-sm font-medium">Monthly Total</p>
+              </div>
+              <p className="text-lg sm:text-3xl font-bold">${totalMonthlySpend.toFixed(2)}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Header Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Subscriptions</h1>
-          <p className="text-gray-600">Manage all your recurring subscriptions</p>
+          <p className="text-gray-600">Manage all your recurring subscriptions in one place</p>
         </div>
         <div className="flex space-x-3">
           {!isSelectionMode ? (
