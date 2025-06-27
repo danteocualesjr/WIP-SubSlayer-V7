@@ -566,7 +566,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
               }`}
               title="Grid View"
             >
-              <Grid3X3  className="w-5 h-5" />
+              <Grid3X3 className="w-5 h-5" />
             </button>
             <button
               onClick={() => setViewMode('calendar')}

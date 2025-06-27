@@ -91,26 +91,26 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
         />
         
         {/* Mobile Sidebar */}
-        <div className="fixed left-0 top-0 h-full w-80 bg-gradient-to-b from-purple-900 via-violet-800 to-purple-700 backdrop-blur-xl border-r border-purple-200/50 z-50 flex flex-col shadow-2xl transform transition-transform duration-300 ease-in-out">
+        <div className="fixed left-0 top-0 h-full w-80 bg-gradient-to-b from-white via-purple-50/30 to-blue-50/30 backdrop-blur-xl border-r border-purple-200/50 z-50 flex flex-col shadow-2xl transform transition-transform duration-300 ease-in-out">
           {/* Mobile Header */}
           <div className="p-6 border-b border-purple-200/50 flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-violet-500 rounded-2xl flex items-center justify-center transform rotate-12 shadow-lg">
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl flex items-center justify-center transform rotate-12 shadow-lg">
                 <Sword className="w-7 h-7 text-white transform -rotate-12" />
               </div>
               <div>
-                <span className="text-2xl font-bold bg-gradient-to-r from-purple-200 to-violet-200 bg-clip-text text-transparent">
+                <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
                   SubSlayer
                 </span>
                 <div className="flex items-center space-x-1 mt-1">
-                  <Sparkles className="w-3 h-3 text-purple-300" />
-                  <span className="text-xs text-purple-300 font-medium">Beta</span>
+                  <Sparkles className="w-3 h-3 text-purple-500" />
+                  <span className="text-xs text-purple-600 font-medium">Beta</span>
                 </div>
               </div>
             </div>
             <button
               onClick={() => setIsMobileMenuOpen(false)}
-              className="p-2 text-purple-200 hover:text-white hover:bg-purple-800/50 rounded-lg transition-colors"
+              className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
             >
               <X className="w-6 h-6" />
             </button>
@@ -126,8 +126,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
                   onClick={() => handleNavClick(item.id)}
                   className={`w-full flex items-center space-x-3 px-4 py-4 rounded-2xl font-medium transition-all duration-300 text-left ${
                     activeTab === item.id
-                      ? 'bg-gradient-to-r from-purple-500 to-violet-500 text-white shadow-lg shadow-purple-500/25'
-                      : 'text-purple-200 hover:text-white hover:bg-gradient-to-r hover:from-purple-800/50 hover:to-violet-800/50'
+                      ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg shadow-purple-500/25'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50'
                   }`}
                 >
                   <Icon className="w-6 h-6" />
@@ -147,8 +147,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
                   onClick={() => handleNavClick(item.id)}
                   className={`w-full flex items-center space-x-3 px-4 py-4 rounded-2xl font-medium transition-all duration-300 text-left ${
                     activeTab === item.id
-                      ? 'bg-gradient-to-r from-purple-500 to-violet-500 text-white shadow-lg shadow-purple-500/25'
-                      : 'text-purple-200 hover:text-white hover:bg-gradient-to-r hover:from-purple-800/50 hover:to-violet-800/50'
+                      ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg shadow-purple-500/25'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50'
                   }`}
                 >
                   <Icon className="w-6 h-6" />
@@ -169,14 +169,14 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
       {isMobile && (
         <button
           onClick={toggleSidebar}
-          className="fixed top-4 left-4 z-50 p-3 bg-gradient-to-r from-purple-600 to-violet-600 border border-purple-200 rounded-2xl shadow-lg text-white hover:from-purple-700 hover:to-violet-700 transition-all duration-200 md:hidden"
+          className="fixed top-4 left-4 z-50 p-3 bg-white border border-purple-200 rounded-2xl shadow-lg text-purple-600 hover:text-purple-700 hover:bg-purple-50 transition-all duration-200 md:hidden"
         >
           <Menu className="w-6 h-6" />
         </button>
       )}
 
       {/* Desktop Sidebar */}
-      <div className={`fixed left-0 top-0 h-full bg-gradient-to-b from-purple-900 via-violet-800 to-purple-700 backdrop-blur-xl border-r border-purple-200/50 z-40 flex-col shadow-xl transition-all duration-300 ease-in-out hidden md:flex ${
+      <div className={`fixed left-0 top-0 h-full bg-gradient-to-b from-white via-purple-50/30 to-blue-50/30 backdrop-blur-xl border-r border-purple-200/50 z-40 flex-col shadow-xl transition-all duration-300 ease-in-out hidden md:flex ${
         isCollapsed ? 'w-20' : 'w-64'
       }`}>
         {/* Logo */}
@@ -184,17 +184,17 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
           isCollapsed ? 'px-4' : 'px-6'
         }`}>
           <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-violet-500 rounded-2xl flex items-center justify-center transform rotate-12 shadow-lg flex-shrink-0">
+            <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl flex items-center justify-center transform rotate-12 shadow-lg flex-shrink-0">
               <Sword className="w-7 h-7 text-white transform -rotate-12" />
             </div>
             {!isCollapsed && (
               <div className="transition-opacity duration-300">
-                <span className="text-2xl font-bold bg-gradient-to-r from-purple-200 to-violet-200 bg-clip-text text-transparent">
+                <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
                   SubSlayer
                 </span>
                 <div className="flex items-center space-x-1 mt-1">
-                  <Sparkles className="w-3 h-3 text-purple-300" />
-                  <span className="text-xs text-purple-300 font-medium">Beta</span>
+                  <Sparkles className="w-3 h-3 text-purple-500" />
+                  <span className="text-xs text-purple-600 font-medium">Beta</span>
                 </div>
               </div>
             )}
@@ -205,7 +205,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
         <div className="absolute -right-3 top-8 z-50">
           <button
             onClick={toggleSidebar}
-            className="w-6 h-6 bg-gradient-to-r from-purple-500 to-violet-500 border border-purple-300 rounded-full flex items-center justify-center text-white hover:from-purple-600 hover:to-violet-600 transition-all duration-200 shadow-md hover:shadow-lg"
+            className="w-6 h-6 bg-white border border-purple-200 rounded-full flex items-center justify-center text-purple-600 hover:text-purple-700 hover:bg-purple-50 transition-all duration-200 shadow-md hover:shadow-lg"
             title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
             {isCollapsed ? (
@@ -230,8 +230,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
                     isCollapsed ? 'justify-center p-3' : 'space-x-3 px-4 py-3'
                   } ${
                     activeTab === item.id
-                      ? 'bg-gradient-to-r from-purple-500 to-violet-500 text-white shadow-lg shadow-purple-500/25 scale-105'
-                      : 'text-purple-200 hover:text-white hover:bg-gradient-to-r hover:from-purple-800/50 hover:to-violet-800/50 hover:scale-105'
+                      ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg shadow-purple-500/25 scale-105'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 hover:scale-105'
                   }`}
                   title={isCollapsed ? item.label : undefined}
                 >
@@ -267,8 +267,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
                     isCollapsed ? 'justify-center p-3' : 'space-x-3 px-4 py-3'
                   } ${
                     activeTab === item.id
-                      ? 'bg-gradient-to-r from-purple-500 to-violet-500 text-white shadow-lg shadow-purple-500/25 scale-105'
-                      : 'text-purple-200 hover:text-white hover:bg-gradient-to-r hover:from-purple-800/50 hover:to-violet-800/50 hover:scale-105'
+                      ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg shadow-purple-500/25 scale-105'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 hover:scale-105'
                   }`}
                   title={isCollapsed ? item.label : undefined}
                 >
