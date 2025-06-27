@@ -35,6 +35,19 @@ const Header: React.FC = () => {
     };
   }, []);
 
+  // Listen for navigation events from header
+  useEffect(() => {
+    const handleNavigateToProfile = () => {
+      setActiveTab('profile');
+    };
+
+    window.addEventListener('navigateToProfile', handleNavigateToProfile);
+    
+    return () => {
+      window.removeEventListener('navigateToProfile', handleNavigateToProfile);
+    };
+  }, []);
+
   const handleSignOut = async () => {
     await signOut();
   };
@@ -65,7 +78,7 @@ const Header: React.FC = () => {
               <input
                 type="text"
                 placeholder="Search subscriptions..."
-                className="w-full pl-12 pr-4 py-2 sm:py-3 bg-gradient-to-r from-purple-50/50 to-blue-50/50 border border-purple-200/50 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 placeholder-purple-400 text-sm sm:text-base"
+                className="w-full pl-12 pr-4 py-2 sm:py-3 bg-gradient-to-r from-purple-50/50 to-violet-50/50 border border-purple-200/50 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 placeholder-purple-400 text-sm sm:text-base"
               />
             </div>
           </div>
@@ -97,7 +110,7 @@ const Header: React.FC = () => {
                       </h3>
                       {unreadCount > 0 && (
                         <div className="flex items-center space-x-2">
-                          <span className="text-xs bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 px-3 py-1 rounded-full font-medium">
+                          <span className="text-xs bg-gradient-to-r from-purple-100 to-violet-100 text-purple-700 px-3 py-1 rounded-full font-medium">
                             {unreadCount} new
                           </span>
                           <button
@@ -124,14 +137,14 @@ const Header: React.FC = () => {
                         .map((notification) => (
                           <div
                             key={notification.id}
-                            className={`px-4 sm:px-6 py-4 hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 border-b border-purple-50 last:border-b-0 transition-all duration-300 ${
-                              !notification.read ? 'bg-gradient-to-r from-purple-50/50 to-blue-50/50' : ''
+                            className={`px-4 sm:px-6 py-4 hover:bg-gradient-to-r hover:from-purple-50 hover:to-violet-50 border-b border-purple-50 last:border-b-0 transition-all duration-300 ${
+                              !notification.read ? 'bg-gradient-to-r from-purple-50/50 to-violet-50/50' : ''
                             }`}
                           >
                             <div className="flex items-start justify-between">
                               <div className="flex items-start space-x-3 flex-1">
                                 <div className={`w-2 h-2 rounded-full mt-2 ${
-                                  !notification.read ? 'bg-gradient-to-r from-purple-500 to-blue-500' : 'bg-gray-300'
+                                  !notification.read ? 'bg-gradient-to-r from-purple-500 to-violet-500' : 'bg-gray-300'
                                 }`} />
                                 <div className="flex-1 min-w-0">
                                   <div className="flex items-center space-x-2 mb-1">
@@ -201,7 +214,7 @@ const Header: React.FC = () => {
               <div className="relative">
                 <button 
                   onClick={() => setShowProfileMenu(!showProfileMenu)}
-                  className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl sm:rounded-2xl flex items-center justify-center text-white hover:shadow-lg hover:scale-110 transition-all duration-300 overflow-hidden border-2 border-white shadow-lg"
+                  className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-purple-600 to-violet-600 rounded-xl sm:rounded-2xl flex items-center justify-center text-white hover:shadow-lg hover:scale-110 transition-all duration-300 overflow-hidden border-2 border-white shadow-lg"
                 >
                   {profile.avatar ? (
                     <img 
@@ -228,7 +241,7 @@ const Header: React.FC = () => {
                         setShowProfileMenu(false);
                         window.dispatchEvent(new CustomEvent('navigateToProfile'));
                       }}
-                      className="flex items-center space-x-3 w-full px-4 sm:px-6 py-3 text-sm text-gray-700 hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 transition-all duration-300"
+                      className="flex items-center space-x-3 w-full px-4 sm:px-6 py-3 text-sm text-gray-700 hover:bg-gradient-to-r hover:from-purple-50 hover:to-violet-50 transition-all duration-300"
                     >
                       <User className="w-4 h-4" />
                       <span>Edit Profile</span>
