@@ -230,7 +230,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
     return (
       <div className="space-y-6">
         {/* Calendar Hero Section */}
-        <div className="relative bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-600 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white overflow-hidden">
+        <div className="relative bg-gradient-to-br from-purple-600 via-violet-600 to-indigo-600 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white overflow-hidden">
           {/* Sparkles Background */}
           <div className="absolute inset-0 w-full h-full">
             <SparklesCore
@@ -247,12 +247,12 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
 
           {/* Gradient Overlays */}
           <div className="absolute inset-0 opacity-20">
-            <div className="absolute top-0 left-1/3 w-80 h-80 bg-gradient-to-r from-emerald-400/30 to-teal-400/30 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-0 right-1/3 w-96 h-96 bg-gradient-to-r from-teal-400/30 to-cyan-400/30 rounded-full blur-3xl"></div>
+            <div className="absolute top-0 left-1/3 w-80 h-80 bg-gradient-to-r from-purple-400/30 to-violet-400/30 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-0 right-1/3 w-96 h-96 bg-gradient-to-r from-violet-400/30 to-indigo-400/30 rounded-full blur-3xl"></div>
           </div>
 
           {/* Radial gradient to prevent sharp edges */}
-          <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-emerald-600/50 via-teal-600/50 to-cyan-600/50 [mask-image:radial-gradient(800px_400px_at_center,transparent_20%,white)]"></div>
+          <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-purple-600/50 via-violet-600/50 to-indigo-600/50 [mask-image:radial-gradient(800px_400px_at_center,transparent_20%,white)]"></div>
           
           <div className="relative z-10">
             <div className="flex items-center space-x-3 mb-4 sm:mb-6">
@@ -320,7 +320,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
   return (
     <div className="space-y-6">
       {/* Enhanced Hero Section with Sparkles */}
-      <div className="relative bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-600 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white overflow-hidden">
+      <div className="relative bg-gradient-to-br from-purple-600 via-violet-600 to-indigo-600 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white overflow-hidden">
         {/* Sparkles Background */}
         <div className="absolute inset-0 w-full h-full">
           <SparklesCore
@@ -337,12 +337,12 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
 
         {/* Gradient Overlays */}
         <div className="absolute inset-0 opacity-30">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-r from-purple-400/20 to-blue-400/20 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-gradient-to-r from-blue-400/20 to-indigo-400/20 rounded-full blur-3xl"></div>
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-r from-purple-400/20 to-violet-400/20 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-gradient-to-r from-violet-400/20 to-indigo-400/20 rounded-full blur-3xl"></div>
         </div>
 
         {/* Radial gradient to prevent sharp edges */}
-        <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-purple-600/50 via-blue-600/50 to-indigo-600/50 [mask-image:radial-gradient(800px_400px_at_center,transparent_20%,white)]"></div>
+        <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-purple-600/50 via-violet-600/50 to-indigo-600/50 [mask-image:radial-gradient(800px_400px_at_center,transparent_20%,white)]"></div>
         
         <div className="relative z-10">
           <div className="flex items-center space-x-3 mb-4 sm:mb-6">
