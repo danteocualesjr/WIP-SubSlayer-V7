@@ -44,6 +44,11 @@ export function useSubscriptions() {
       }));
 
       setSubscriptions(transformedData);
+      
+      // Trigger notification check
+      window.dispatchEvent(new CustomEvent('subscriptionsLoaded', { 
+        detail: { subscriptions: transformedData } 
+      }));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
@@ -89,10 +94,14 @@ export function useSubscriptions() {
         createdAt: data.created_at,
       };
 
-      setSubscriptions(prev => [newSubscription, ...prev]);
+      const updatedSubscriptions = [newSubscription, ...subscriptions];
+      setSubscriptions(updatedSubscriptions);
       
-      // Trigger spending data refresh by dispatching a custom event
+      // Trigger events for other hooks
       window.dispatchEvent(new CustomEvent('subscriptionChanged'));
+      window.dispatchEvent(new CustomEvent('subscriptionsLoaded', { 
+        detail: { subscriptions: updatedSubscriptions } 
+      }));
       
       return { data: newSubscription, error: null };
     } catch (err) {
@@ -140,12 +149,14 @@ export function useSubscriptions() {
         createdAt: data.created_at,
       };
 
-      setSubscriptions(prev => 
-        prev.map(sub => sub.id === id ? updatedSubscription : sub)
-      );
+      const updatedSubscriptions = subscriptions.map(sub => sub.id === id ? updatedSubscription : sub);
+      setSubscriptions(updatedSubscriptions);
       
-      // Trigger spending data refresh
+      // Trigger events
       window.dispatchEvent(new CustomEvent('subscriptionChanged'));
+      window.dispatchEvent(new CustomEvent('subscriptionsLoaded', { 
+        detail: { subscriptions: updatedSubscriptions } 
+      }));
       
       return { data: updatedSubscription, error: null };
     } catch (err) {
@@ -167,10 +178,14 @@ export function useSubscriptions() {
       if (error) throw error;
 
       // Remove from local state
-      setSubscriptions(prev => prev.filter(sub => sub.id !== id));
+      const updatedSubscriptions = subscriptions.filter(sub => sub.id !== id);
+      setSubscriptions(updatedSubscriptions);
       
-      // Trigger spending data refresh
+      // Trigger events
       window.dispatchEvent(new CustomEvent('subscriptionChanged'));
+      window.dispatchEvent(new CustomEvent('subscriptionsLoaded', { 
+        detail: { subscriptions: updatedSubscriptions } 
+      }));
       
       return { error: null };
     } catch (err) {
@@ -197,14 +212,16 @@ export function useSubscriptions() {
       if (error) throw error;
 
       // Update local state
-      setSubscriptions(prev =>
-        prev.map(sub =>
-          sub.id === id ? { ...sub, status: newStatus } : sub
-        )
+      const updatedSubscriptions = subscriptions.map(sub =>
+        sub.id === id ? { ...sub, status: newStatus } : sub
       );
+      setSubscriptions(updatedSubscriptions);
       
-      // Trigger spending data refresh
+      // Trigger events
       window.dispatchEvent(new CustomEvent('subscriptionChanged'));
+      window.dispatchEvent(new CustomEvent('subscriptionsLoaded', { 
+        detail: { subscriptions: updatedSubscriptions } 
+      }));
       
       return { error: null };
     } catch (err) {
@@ -226,10 +243,14 @@ export function useSubscriptions() {
       if (error) throw error;
 
       // Remove from local state
-      setSubscriptions(prev => prev.filter(sub => !ids.includes(sub.id)));
+      const updatedSubscriptions = subscriptions.filter(sub => !ids.includes(sub.id));
+      setSubscriptions(updatedSubscriptions);
       
-      // Trigger spending data refresh
+      // Trigger events
       window.dispatchEvent(new CustomEvent('subscriptionChanged'));
+      window.dispatchEvent(new CustomEvent('subscriptionsLoaded', { 
+        detail: { subscriptions: updatedSubscriptions } 
+      }));
       
       return { error: null };
     } catch (err) {

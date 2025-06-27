@@ -14,10 +14,12 @@ import { useAuth } from './hooks/useAuth';
 import { useSubscriptions } from './hooks/useSubscriptions';
 import { useSpendingData } from './hooks/useSpendingData';
 import { useSettings } from './hooks/useSettings';
+import { useNotifications } from './hooks/useNotifications';
 
 function App() {
   const { user, loading: authLoading } = useAuth();
   const { settings } = useSettings();
+  const { generateRenewalNotifications } = useNotifications();
   const {
     subscriptions,
     loading: subscriptionsLoading,
@@ -80,6 +82,31 @@ function App() {
       root.classList.toggle('dark', settings.theme === 'dark');
     }
   }, [settings.theme]);
+
+  // Generate notifications when subscriptions load or change
+  useEffect(() => {
+    const handleSubscriptionsLoaded = (event: CustomEvent) => {
+      const { subscriptions: loadedSubscriptions } = event.detail;
+      generateRenewalNotifications(loadedSubscriptions);
+    };
+
+    window.addEventListener('subscriptionsLoaded', handleSubscriptionsLoaded as EventListener);
+    
+    return () => {
+      window.removeEventListener('subscriptionsLoaded', handleSubscriptionsLoaded as EventListener);
+    };
+  }, [generateRenewalNotifications]);
+
+  // Check for notifications periodically (every 5 minutes)
+  useEffect(() => {
+    if (user && subscriptions.length > 0) {
+      const interval = setInterval(() => {
+        generateRenewalNotifications(subscriptions);
+      }, 5 * 60 * 1000); // 5 minutes
+
+      return () => clearInterval(interval);
+    }
+  }, [user, subscriptions, generateRenewalNotifications]);
 
   // Show loading spinner while checking auth
   if (authLoading) {

@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Bell, User, Search, LogOut, Sparkles } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useProfile } from '../../hooks/useProfile';
+import { useNotifications } from '../../hooks/useNotifications';
 
 const Header: React.FC = () => {
   const { user, signOut } = useAuth();
   const { profile } = useProfile();
+  const { notifications, markAsRead, markAllAsRead, deleteNotification, getUnreadCount } = useNotifications();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -37,35 +39,18 @@ const Header: React.FC = () => {
     await signOut();
   };
 
-  // Mock notifications data
-  const notifications = [
-    {
-      id: '1',
-      title: 'Netflix renewal in 2 days',
-      message: 'Your Netflix subscription will renew on June 28th for $15.99',
-      time: '2 hours ago',
-      read: false,
-      urgent: true,
-    },
-    {
-      id: '2',
-      title: 'Spotify payment processed',
-      message: 'Your monthly Spotify payment of $9.99 was processed successfully',
-      time: '1 day ago',
-      read: false,
-      urgent: false,
-    },
-    {
-      id: '3',
-      title: 'Weekly spending summary',
-      message: 'You spent $45.99 on subscriptions this week',
-      time: '3 days ago',
-      read: true,
-      urgent: false,
-    },
-  ];
+  const unreadCount = getUnreadCount();
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const formatTimeAgo = (dateString: string) => {
+    const now = new Date();
+    const date = new Date(dateString);
+    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
+    
+    if (diffInMinutes < 1) return 'Just now';
+    if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
+    if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h ago`;
+    return `${Math.floor(diffInMinutes / 1440)}d ago`;
+  };
 
   return (
     <header className={`bg-white/80 backdrop-blur-2xl border-b border-purple-200/50 sticky top-0 z-30 shadow-sm transition-all duration-300 ${
@@ -96,7 +81,7 @@ const Header: React.FC = () => {
                 <Bell className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
                 {unreadCount > 0 && (
                   <span className="absolute -top-1 -right-1 w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs rounded-full flex items-center justify-center font-medium shadow-lg animate-pulse">
-                    {unreadCount}
+                    {unreadCount > 99 ? '99+' : unreadCount}
                   </span>
                 )}
               </button>
@@ -111,9 +96,17 @@ const Header: React.FC = () => {
                         <span>Notifications</span>
                       </h3>
                       {unreadCount > 0 && (
-                        <span className="text-xs bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 px-3 py-1 rounded-full font-medium">
-                          {unreadCount} new
-                        </span>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-xs bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 px-3 py-1 rounded-full font-medium">
+                            {unreadCount} new
+                          </span>
+                          <button
+                            onClick={markAllAsRead}
+                            className="text-xs text-purple-600 hover:text-purple-700 font-medium"
+                          >
+                            Mark all read
+                          </button>
+                        </div>
                       )}
                     </div>
                   </div>
@@ -125,46 +118,71 @@ const Header: React.FC = () => {
                         <p>No notifications</p>
                       </div>
                     ) : (
-                      notifications.map((notification) => (
-                        <div
-                          key={notification.id}
-                          className={`px-4 sm:px-6 py-4 hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 border-b border-purple-50 last:border-b-0 transition-all duration-300 ${
-                            !notification.read ? 'bg-gradient-to-r from-purple-50/50 to-blue-50/50' : ''
-                          }`}
-                        >
-                          <div className="flex items-start space-x-3">
-                            <div className={`w-2 h-2 rounded-full mt-2 ${
-                              !notification.read ? 'bg-gradient-to-r from-purple-500 to-blue-500' : 'bg-gray-300'
-                            }`} />
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center space-x-2 mb-1">
-                                <h4 className={`text-sm font-medium ${
-                                  !notification.read ? 'text-gray-900' : 'text-gray-700'
-                                }`}>
-                                  {notification.title}
-                                </h4>
-                                {notification.urgent && (
-                                  <span className="w-2 h-2 bg-gradient-to-r from-red-500 to-pink-500 rounded-full animate-pulse" />
-                                )}
+                      notifications
+                        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                        .slice(0, 10)
+                        .map((notification) => (
+                          <div
+                            key={notification.id}
+                            className={`px-4 sm:px-6 py-4 hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 border-b border-purple-50 last:border-b-0 transition-all duration-300 ${
+                              !notification.read ? 'bg-gradient-to-r from-purple-50/50 to-blue-50/50' : ''
+                            }`}
+                          >
+                            <div className="flex items-start justify-between">
+                              <div className="flex items-start space-x-3 flex-1">
+                                <div className={`w-2 h-2 rounded-full mt-2 ${
+                                  !notification.read ? 'bg-gradient-to-r from-purple-500 to-blue-500' : 'bg-gray-300'
+                                }`} />
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center space-x-2 mb-1">
+                                    <h4 className={`text-sm font-medium ${
+                                      !notification.read ? 'text-gray-900' : 'text-gray-700'
+                                    }`}>
+                                      {notification.title}
+                                    </h4>
+                                    {notification.urgent && (
+                                      <span className="w-2 h-2 bg-gradient-to-r from-red-500 to-pink-500 rounded-full animate-pulse" />
+                                    )}
+                                  </div>
+                                  <p className="text-sm text-gray-600 mb-1">
+                                    {notification.message}
+                                  </p>
+                                  <p className="text-xs text-gray-400">
+                                    {formatTimeAgo(notification.createdAt)}
+                                  </p>
+                                </div>
                               </div>
-                              <p className="text-sm text-gray-600 mb-1">
-                                {notification.message}
-                              </p>
-                              <p className="text-xs text-gray-400">
-                                {notification.time}
-                              </p>
+                              <div className="flex items-center space-x-1 ml-2">
+                                {!notification.read && (
+                                  <button
+                                    onClick={() => markAsRead(notification.id)}
+                                    className="p-1 text-purple-600 hover:text-purple-700 hover:bg-purple-100 rounded transition-colors"
+                                    title="Mark as read"
+                                  >
+                                    <div className="w-2 h-2 bg-purple-600 rounded-full" />
+                                  </button>
+                                )}
+                                <button
+                                  onClick={() => deleteNotification(notification.id)}
+                                  className="p-1 text-gray-400 hover:text-red-600 hover:bg-red-100 rounded transition-colors"
+                                  title="Delete notification"
+                                >
+                                  ×
+                                </button>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      ))
+                        ))
                     )}
                   </div>
                   
-                  <div className="px-4 sm:px-6 py-4 border-t border-purple-100">
-                    <button className="w-full text-center text-sm text-purple-600 hover:text-purple-700 font-medium transition-colors">
-                      View all notifications
-                    </button>
-                  </div>
+                  {notifications.length > 10 && (
+                    <div className="px-4 sm:px-6 py-4 border-t border-purple-100">
+                      <button className="w-full text-center text-sm text-purple-600 hover:text-purple-700 font-medium transition-colors">
+                        View all notifications
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

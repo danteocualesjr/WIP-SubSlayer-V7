@@ -1,24 +1,28 @@
 import React, { useState } from 'react';
-import { Bell, Settings as SettingsIcon, Check, X, Calendar, DollarSign, AlertTriangle } from 'lucide-react';
+import { Bell, Settings as SettingsIcon, Check, X, Calendar, DollarSign, AlertTriangle, Trash2, MarkAsRead } from 'lucide-react';
 import { Subscription } from '../../types/subscription';
+import { useNotifications } from '../../hooks/useNotifications';
+import { useSettings } from '../../hooks/useSettings';
 
 interface NotificationsProps {
   subscriptions: Subscription[];
 }
 
 const Notifications: React.FC<NotificationsProps> = ({ subscriptions }) => {
-  const [notificationSettings, setNotificationSettings] = useState({
-    emailNotifications: true,
-    pushNotifications: true,
-    daysBeforeRenewal: 7,
-    weeklyDigest: true,
-    monthlyReport: true,
-    priceChanges: true,
-  });
+  const { settings, saveSettings } = useSettings();
+  const { 
+    notifications, 
+    markAsRead, 
+    markAllAsRead, 
+    deleteNotification, 
+    clearAllNotifications,
+    getUnreadCount,
+    getUrgentNotifications 
+  } = useNotifications();
 
   const getUpcomingRenewals = () => {
     const now = new Date();
-    const futureDate = new Date(now.getTime() + notificationSettings.daysBeforeRenewal * 24 * 60 * 60 * 1000);
+    const futureDate = new Date(now.getTime() + settings.reminderDays * 24 * 60 * 60 * 1000);
     
     return subscriptions
       .filter(sub => {
@@ -38,58 +42,23 @@ const Notifications: React.FC<NotificationsProps> = ({ subscriptions }) => {
 
   const upcomingRenewals = getUpcomingRenewals();
   const overdueSubscriptions = getOverdueSubscriptions();
+  const unreadCount = getUnreadCount();
+  const urgentNotifications = getUrgentNotifications();
 
-  const mockNotifications = [
-    {
-      id: '1',
-      type: 'renewal',
-      title: 'Upcoming Renewal',
-      message: 'Netflix will renew in 2 days for $15.99',
-      time: '2 hours ago',
-      read: false,
-      urgent: true,
-    },
-    {
-      id: '2',
-      type: 'savings',
-      title: 'Savings Opportunity',
-      message: 'You could save $12/month by switching to annual billing for Spotify',
-      time: '1 day ago',
-      read: false,
-      urgent: false,
-    },
-    {
-      id: '3',
-      type: 'digest',
-      title: 'Weekly Digest',
-      message: 'Your subscription spending this week: $45.99',
-      time: '3 days ago',
-      read: true,
-      urgent: false,
-    },
-  ];
-
-  const [notifications, setNotifications] = useState(mockNotifications);
-
-  const markAsRead = (id: string) => {
-    setNotifications(prev => 
-      prev.map(notif => 
-        notif.id === id ? { ...notif, read: true } : notif
-      )
-    );
+  const updateSetting = (key: string, value: any) => {
+    saveSettings({ [key]: value });
   };
 
-  const markAllAsRead = () => {
-    setNotifications(prev => 
-      prev.map(notif => ({ ...notif, read: true }))
-    );
+  const formatTimeAgo = (dateString: string) => {
+    const now = new Date();
+    const date = new Date(dateString);
+    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
+    
+    if (diffInMinutes < 1) return 'Just now';
+    if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
+    if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h ago`;
+    return `${Math.floor(diffInMinutes / 1440)}d ago`;
   };
-
-  const deleteNotification = (id: string) => {
-    setNotifications(prev => prev.filter(notif => notif.id !== id));
-  };
-
-  const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
     <div className="space-y-8">
@@ -107,9 +76,23 @@ const Notifications: React.FC<NotificationsProps> = ({ subscriptions }) => {
           {unreadCount > 0 && (
             <button
               onClick={markAllAsRead}
-              className="text-purple-600 hover:text-purple-700 font-medium text-sm"
+              className="text-purple-600 hover:text-purple-700 font-medium text-sm flex items-center space-x-1"
             >
-              Mark all as read
+              <MarkAsRead className="w-4 h-4" />
+              <span>Mark all as read</span>
+            </button>
+          )}
+          {notifications.length > 0 && (
+            <button
+              onClick={() => {
+                if (window.confirm('Are you sure you want to clear all notifications?')) {
+                  clearAllNotifications();
+                }
+              }}
+              className="text-red-600 hover:text-red-700 font-medium text-sm flex items-center space-x-1"
+            >
+              <Trash2 className="w-4 h-4" />
+              <span>Clear all</span>
             </button>
           )}
         </div>
@@ -122,8 +105,8 @@ const Notifications: React.FC<NotificationsProps> = ({ subscriptions }) => {
             <AlertTriangle className="w-6 h-6 text-red-600" />
             <h3 className="font-semibold text-gray-900">Urgent</h3>
           </div>
-          <p className="text-2xl font-bold text-red-600">{overdueSubscriptions.length}</p>
-          <p className="text-sm text-gray-600">Overdue renewals</p>
+          <p className="text-2xl font-bold text-red-600">{urgentNotifications.length}</p>
+          <p className="text-sm text-gray-600">Urgent notifications</p>
         </div>
 
         <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-6 border border-yellow-100">
@@ -132,7 +115,7 @@ const Notifications: React.FC<NotificationsProps> = ({ subscriptions }) => {
             <h3 className="font-semibold text-gray-900">Upcoming</h3>
           </div>
           <p className="text-2xl font-bold text-yellow-600">{upcomingRenewals.length}</p>
-          <p className="text-sm text-gray-600">Renewals in {notificationSettings.daysBeforeRenewal} days</p>
+          <p className="text-sm text-gray-600">Renewals in {settings.reminderDays} days</p>
         </div>
 
         <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6 border border-green-100">
@@ -160,14 +143,14 @@ const Notifications: React.FC<NotificationsProps> = ({ subscriptions }) => {
                 <p className="text-sm text-gray-600">Receive notifications via email</p>
               </div>
               <button
-                onClick={() => setNotificationSettings(prev => ({ ...prev, emailNotifications: !prev.emailNotifications }))}
+                onClick={() => updateSetting('emailNotifications', !settings.emailNotifications)}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  notificationSettings.emailNotifications ? 'bg-purple-600' : 'bg-gray-200'
+                  settings.emailNotifications ? 'bg-purple-600' : 'bg-gray-200'
                 }`}
               >
                 <span
                   className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    notificationSettings.emailNotifications ? 'translate-x-6' : 'translate-x-1'
+                    settings.emailNotifications ? 'translate-x-6' : 'translate-x-1'
                   }`}
                 />
               </button>
@@ -179,14 +162,14 @@ const Notifications: React.FC<NotificationsProps> = ({ subscriptions }) => {
                 <p className="text-sm text-gray-600">Receive browser notifications</p>
               </div>
               <button
-                onClick={() => setNotificationSettings(prev => ({ ...prev, pushNotifications: !prev.pushNotifications }))}
+                onClick={() => updateSetting('pushNotifications', !settings.pushNotifications)}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  notificationSettings.pushNotifications ? 'bg-purple-600' : 'bg-gray-200'
+                  settings.pushNotifications ? 'bg-purple-600' : 'bg-gray-200'
                 }`}
               >
                 <span
                   className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    notificationSettings.pushNotifications ? 'translate-x-6' : 'translate-x-1'
+                    settings.pushNotifications ? 'translate-x-6' : 'translate-x-1'
                   }`}
                 />
               </button>
@@ -198,14 +181,14 @@ const Notifications: React.FC<NotificationsProps> = ({ subscriptions }) => {
                 <p className="text-sm text-gray-600">Weekly spending summary</p>
               </div>
               <button
-                onClick={() => setNotificationSettings(prev => ({ ...prev, weeklyDigest: !prev.weeklyDigest }))}
+                onClick={() => updateSetting('weeklyDigest', !settings.weeklyDigest)}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  notificationSettings.weeklyDigest ? 'bg-purple-600' : 'bg-gray-200'
+                  settings.weeklyDigest ? 'bg-purple-600' : 'bg-gray-200'
                 }`}
               >
                 <span
                   className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    notificationSettings.weeklyDigest ? 'translate-x-6' : 'translate-x-1'
+                    settings.weeklyDigest ? 'translate-x-6' : 'translate-x-1'
                   }`}
                 />
               </button>
@@ -219,33 +202,14 @@ const Notifications: React.FC<NotificationsProps> = ({ subscriptions }) => {
                 <p className="text-sm text-gray-600">Monthly analytics report</p>
               </div>
               <button
-                onClick={() => setNotificationSettings(prev => ({ ...prev, monthlyReport: !prev.monthlyReport }))}
+                onClick={() => updateSetting('monthlyReport', !settings.monthlyReport)}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  notificationSettings.monthlyReport ? 'bg-purple-600' : 'bg-gray-200'
+                  settings.monthlyReport ? 'bg-purple-600' : 'bg-gray-200'
                 }`}
               >
                 <span
                   className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    notificationSettings.monthlyReport ? 'translate-x-6' : 'translate-x-1'
-                  }`}
-                />
-              </button>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div>
-                <h4 className="font-medium text-gray-900">Price Changes</h4>
-                <p className="text-sm text-gray-600">Alert on subscription price changes</p>
-              </div>
-              <button
-                onClick={() => setNotificationSettings(prev => ({ ...prev, priceChanges: !prev.priceChanges }))}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  notificationSettings.priceChanges ? 'bg-purple-600' : 'bg-gray-200'
-                }`}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    notificationSettings.priceChanges ? 'translate-x-6' : 'translate-x-1'
+                    settings.monthlyReport ? 'translate-x-6' : 'translate-x-1'
                   }`}
                 />
               </button>
@@ -256,8 +220,8 @@ const Notifications: React.FC<NotificationsProps> = ({ subscriptions }) => {
                 Renewal Reminder (days before)
               </label>
               <select
-                value={notificationSettings.daysBeforeRenewal}
-                onChange={(e) => setNotificationSettings(prev => ({ ...prev, daysBeforeRenewal: Number(e.target.value) }))}
+                value={settings.reminderDays}
+                onChange={(e) => updateSetting('reminderDays', Number(e.target.value))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               >
                 <option value={1}>1 day</option>
@@ -279,60 +243,71 @@ const Notifications: React.FC<NotificationsProps> = ({ subscriptions }) => {
           <div className="text-center py-8">
             <Bell className="w-12 h-12 text-gray-300 mx-auto mb-3" />
             <p className="text-gray-500">No notifications yet</p>
+            <p className="text-sm text-gray-400 mt-1">Notifications will appear here when subscriptions are due for renewal</p>
           </div>
         ) : (
           <div className="space-y-3">
-            {notifications.map((notification) => (
-              <div
-                key={notification.id}
-                className={`p-4 rounded-xl border transition-all duration-200 ${
-                  notification.read 
-                    ? 'bg-gray-50 border-gray-200' 
-                    : notification.urgent
-                      ? 'bg-red-50 border-red-200'
-                      : 'bg-blue-50 border-blue-200'
-                }`}
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-2 mb-1">
-                      <h4 className={`font-medium ${notification.read ? 'text-gray-700' : 'text-gray-900'}`}>
-                        {notification.title}
-                      </h4>
-                      {!notification.read && (
-                        <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
-                      )}
-                      {notification.urgent && (
-                        <AlertTriangle className="w-4 h-4 text-red-500" />
-                      )}
+            {notifications
+              .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+              .map((notification) => (
+                <div
+                  key={notification.id}
+                  className={`p-4 rounded-xl border transition-all duration-200 ${
+                    notification.read 
+                      ? 'bg-gray-50 border-gray-200' 
+                      : notification.urgent
+                        ? 'bg-red-50 border-red-200'
+                        : 'bg-blue-50 border-blue-200'
+                  }`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2 mb-1">
+                        <h4 className={`font-medium ${notification.read ? 'text-gray-700' : 'text-gray-900'}`}>
+                          {notification.title}
+                        </h4>
+                        {!notification.read && (
+                          <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
+                        )}
+                        {notification.urgent && (
+                          <AlertTriangle className="w-4 h-4 text-red-500" />
+                        )}
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          notification.type === 'renewal' ? 'bg-blue-100 text-blue-700' :
+                          notification.type === 'overdue' ? 'bg-red-100 text-red-700' :
+                          notification.type === 'savings' ? 'bg-green-100 text-green-700' :
+                          'bg-gray-100 text-gray-700'
+                        }`}>
+                          {notification.type}
+                        </span>
+                      </div>
+                      <p className={`text-sm ${notification.read ? 'text-gray-500' : 'text-gray-700'} mb-2`}>
+                        {notification.message}
+                      </p>
+                      <p className="text-xs text-gray-400">{formatTimeAgo(notification.createdAt)}</p>
                     </div>
-                    <p className={`text-sm ${notification.read ? 'text-gray-500' : 'text-gray-700'} mb-2`}>
-                      {notification.message}
-                    </p>
-                    <p className="text-xs text-gray-400">{notification.time}</p>
-                  </div>
-                  
-                  <div className="flex items-center space-x-2 ml-4">
-                    {!notification.read && (
+                    
+                    <div className="flex items-center space-x-2 ml-4">
+                      {!notification.read && (
+                        <button
+                          onClick={() => markAsRead(notification.id)}
+                          className="p-1 text-green-600 hover:text-green-700 hover:bg-green-100 rounded transition-colors"
+                          title="Mark as read"
+                        >
+                          <Check className="w-4 h-4" />
+                        </button>
+                      )}
                       <button
-                        onClick={() => markAsRead(notification.id)}
-                        className="p-1 text-green-600 hover:text-green-700 hover:bg-green-100 rounded transition-colors"
-                        title="Mark as read"
+                        onClick={() => deleteNotification(notification.id)}
+                        className="p-1 text-red-600 hover:text-red-700 hover:bg-red-100 rounded transition-colors"
+                        title="Delete notification"
                       >
-                        <Check className="w-4 h-4" />
+                        <X className="w-4 h-4" />
                       </button>
-                    )}
-                    <button
-                      onClick={() => deleteNotification(notification.id)}
-                      className="p-1 text-red-600 hover:text-red-700 hover:bg-red-100 rounded transition-colors"
-                      title="Delete notification"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
         )}
       </div>
