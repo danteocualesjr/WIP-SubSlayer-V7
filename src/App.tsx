@@ -13,9 +13,11 @@ import AuthForm from './components/Auth/AuthForm';
 import { useAuth } from './hooks/useAuth';
 import { useSubscriptions } from './hooks/useSubscriptions';
 import { useSpendingData } from './hooks/useSpendingData';
+import { useSettings } from './hooks/useSettings';
 
 function App() {
   const { user, loading: authLoading } = useAuth();
+  const { settings } = useSettings();
   const {
     subscriptions,
     loading: subscriptionsLoading,
@@ -66,6 +68,18 @@ function App() {
       window.removeEventListener('navigateToProfile', handleNavigateToProfile);
     };
   }, []);
+
+  // Apply theme from settings
+  useEffect(() => {
+    const root = document.documentElement;
+    
+    if (settings.theme === 'auto') {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      root.classList.toggle('dark', prefersDark);
+    } else {
+      root.classList.toggle('dark', settings.theme === 'dark');
+    }
+  }, [settings.theme]);
 
   // Show loading spinner while checking auth
   if (authLoading) {
@@ -187,7 +201,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
       <Header />
       <main className={`px-4 sm:px-6 lg:px-8 py-4 sm:py-8 transition-all duration-300 ${

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { X, Plus, Sparkles } from 'lucide-react';
 import { Subscription } from '../../types/subscription';
+import { useSettings } from '../../hooks/useSettings';
 
 interface AddSubscriptionModalProps {
   isOpen: boolean;
@@ -15,11 +16,12 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
   onAdd,
   subscription
 }) => {
+  const { settings } = useSettings();
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     cost: '',
-    currency: 'USD',
+    currency: settings.currency || 'USD',
     billingCycle: 'monthly' as 'monthly' | 'annual',
     nextBilling: '',
     category: '',
@@ -113,7 +115,7 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
           name: subscription.name || '',
           description: subscription.description || '',
           cost: subscription.cost?.toString() || '',
-          currency: subscription.currency || 'USD',
+          currency: subscription.currency || settings.currency || 'USD',
           billingCycle: subscription.billingCycle || 'monthly',
           nextBilling: subscription.nextBilling || '',
           category: subscription.category || '',
@@ -121,12 +123,12 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
           color: subscription.color || '#8B5CF6'
         });
       } else {
-        // Reset form for new subscription
+        // Reset form for new subscription with user's default currency
         setFormData({
           name: '',
           description: '',
           cost: '',
-          currency: 'USD',
+          currency: settings.currency || 'USD',
           billingCycle: 'monthly',
           nextBilling: '',
           category: '',
@@ -135,7 +137,7 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
         });
       }
     }
-  }, [isOpen, subscription]);
+  }, [isOpen, subscription, settings.currency]);
 
   // Prevent modal from closing when clicking outside or losing focus
   useEffect(() => {

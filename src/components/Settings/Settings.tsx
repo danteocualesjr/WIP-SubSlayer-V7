@@ -1,23 +1,15 @@
 import React, { useState } from 'react';
-import { Settings as SettingsIcon, User, Bell, Shield, Palette, Download, Trash2, Save } from 'lucide-react';
+import { Settings as SettingsIcon, User, Bell, Shield, Palette, Download, Trash2, Save, Check, AlertCircle, Upload } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
+import { useSettings } from '../../hooks/useSettings';
 
 const Settings: React.FC = () => {
   const { user, signOut } = useAuth();
+  const { settings, saveSettings, resetSettings, exportData, loading } = useSettings();
   const [activeSection, setActiveSection] = useState('general');
-  const [settings, setSettings] = useState({
-    currency: 'USD',
-    dateFormat: 'MM/DD/YYYY',
-    theme: 'light',
-    language: 'en',
-    timezone: 'America/New_York',
-    emailNotifications: true,
-    pushNotifications: true,
-    weeklyDigest: true,
-    monthlyReport: true,
-    dataSharing: false,
-    analytics: true,
-  });
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [profile, setProfile] = useState({
     displayName: user?.email?.split('@')[0] || '',
@@ -40,82 +32,109 @@ const Settings: React.FC = () => {
     { code: 'CAD', name: 'Canadian Dollar', symbol: 'C$' },
     { code: 'AUD', name: 'Australian Dollar', symbol: 'A$' },
     { code: 'JPY', name: 'Japanese Yen', symbol: '¥' },
-    { code: 'PHP', name: 'Philippine Peso', symbol: '₱' },
-    { code: 'SGD', name: 'Singapore Dollar', symbol: 'S$' },
-    { code: 'HKD', name: 'Hong Kong Dollar', symbol: 'HK$' },
-    { code: 'CNY', name: 'Chinese Yuan', symbol: '¥' },
-    { code: 'INR', name: 'Indian Rupee', symbol: '₹' },
-    { code: 'KRW', name: 'South Korean Won', symbol: '₩' },
-    { code: 'THB', name: 'Thai Baht', symbol: '฿' },
-    { code: 'MYR', name: 'Malaysian Ringgit', symbol: 'RM' },
-    { code: 'IDR', name: 'Indonesian Rupiah', symbol: 'Rp' },
-    { code: 'VND', name: 'Vietnamese Dong', symbol: '₫' },
     { code: 'CHF', name: 'Swiss Franc', symbol: 'CHF' },
     { code: 'SEK', name: 'Swedish Krona', symbol: 'kr' },
     { code: 'NOK', name: 'Norwegian Krone', symbol: 'kr' },
     { code: 'DKK', name: 'Danish Krone', symbol: 'kr' },
-    { code: 'PLN', name: 'Polish Zloty', symbol: 'zł' },
-    { code: 'CZK', name: 'Czech Koruna', symbol: 'Kč' },
-    { code: 'HUF', name: 'Hungarian Forint', symbol: 'Ft' },
-    { code: 'RUB', name: 'Russian Ruble', symbol: '₽' },
-    { code: 'BRL', name: 'Brazilian Real', symbol: 'R$' },
-    { code: 'MXN', name: 'Mexican Peso', symbol: '$' },
-    { code: 'ARS', name: 'Argentine Peso', symbol: '$' },
-    { code: 'CLP', name: 'Chilean Peso', symbol: '$' },
-    { code: 'COP', name: 'Colombian Peso', symbol: '$' },
-    { code: 'PEN', name: 'Peruvian Sol', symbol: 'S/' },
-    { code: 'ZAR', name: 'South African Rand', symbol: 'R' },
-    { code: 'EGP', name: 'Egyptian Pound', symbol: '£' },
-    { code: 'NGN', name: 'Nigerian Naira', symbol: '₦' },
-    { code: 'KES', name: 'Kenyan Shilling', symbol: 'KSh' },
-    { code: 'GHS', name: 'Ghanaian Cedi', symbol: '₵' },
-    { code: 'TRY', name: 'Turkish Lira', symbol: '₺' },
-    { code: 'AED', name: 'UAE Dirham', symbol: 'د.إ' },
-    { code: 'SAR', name: 'Saudi Riyal', symbol: '﷼' },
-    { code: 'QAR', name: 'Qatari Riyal', symbol: '﷼' },
-    { code: 'KWD', name: 'Kuwaiti Dinar', symbol: 'د.ك' },
-    { code: 'BHD', name: 'Bahraini Dinar', symbol: '.د.ب' },
-    { code: 'OMR', name: 'Omani Rial', symbol: '﷼' },
-    { code: 'ILS', name: 'Israeli Shekel', symbol: '₪' },
-    { code: 'JOD', name: 'Jordanian Dinar', symbol: 'د.ا' },
-    { code: 'LBP', name: 'Lebanese Pound', symbol: '£' },
-    { code: 'PKR', name: 'Pakistani Rupee', symbol: '₨' },
-    { code: 'BDT', name: 'Bangladeshi Taka', symbol: '৳' },
-    { code: 'LKR', name: 'Sri Lankan Rupee', symbol: '₨' },
-    { code: 'NPR', name: 'Nepalese Rupee', symbol: '₨' },
-    { code: 'AFN', name: 'Afghan Afghani', symbol: '؋' },
-    { code: 'MMK', name: 'Myanmar Kyat', symbol: 'K' },
-    { code: 'LAK', name: 'Lao Kip', symbol: '₭' },
-    { code: 'KHR', name: 'Cambodian Riel', symbol: '៛' },
-    { code: 'BND', name: 'Brunei Dollar', symbol: 'B$' },
-    { code: 'TWD', name: 'Taiwan Dollar', symbol: 'NT$' },
-    { code: 'MOP', name: 'Macanese Pataca', symbol: 'MOP$' },
-    { code: 'NZD', name: 'New Zealand Dollar', symbol: 'NZ$' },
-    { code: 'FJD', name: 'Fijian Dollar', symbol: 'FJ$' },
-    { code: 'PGK', name: 'Papua New Guinea Kina', symbol: 'K' },
-    { code: 'WST', name: 'Samoan Tala', symbol: 'T' },
-    { code: 'TOP', name: 'Tongan Paʻanga', symbol: 'T$' },
-    { code: 'VUV', name: 'Vanuatu Vatu', symbol: 'VT' },
-    { code: 'SBD', name: 'Solomon Islands Dollar', symbol: 'SI$' },
-    { code: 'NCL', name: 'CFP Franc', symbol: '₣' },
   ];
 
-  const handleSaveSettings = () => {
-    // Here you would typically save to your backend
-    console.log('Saving settings:', settings);
-    // Show success message
+  const timezones = [
+    { value: 'America/New_York', label: 'Eastern Time (ET)' },
+    { value: 'America/Chicago', label: 'Central Time (CT)' },
+    { value: 'America/Denver', label: 'Mountain Time (MT)' },
+    { value: 'America/Los_Angeles', label: 'Pacific Time (PT)' },
+    { value: 'Europe/London', label: 'London (GMT)' },
+    { value: 'Europe/Paris', label: 'Paris (CET)' },
+    { value: 'Europe/Berlin', label: 'Berlin (CET)' },
+    { value: 'Asia/Tokyo', label: 'Tokyo (JST)' },
+    { value: 'Asia/Shanghai', label: 'Shanghai (CST)' },
+    { value: 'Australia/Sydney', label: 'Sydney (AEST)' },
+  ];
+
+  const languages = [
+    { code: 'en', name: 'English' },
+    { code: 'es', name: 'Español' },
+    { code: 'fr', name: 'Français' },
+    { code: 'de', name: 'Deutsch' },
+    { code: 'it', name: 'Italiano' },
+    { code: 'pt', name: 'Português' },
+    { code: 'ja', name: '日本語' },
+    { code: 'ko', name: '한국어' },
+    { code: 'zh', name: '中文' },
+  ];
+
+  const showMessage = (type: 'success' | 'error', message?: string) => {
+    if (type === 'success') {
+      setShowSuccess(true);
+      setShowError(null);
+      setTimeout(() => setShowSuccess(false), 3000);
+    } else {
+      setShowError(message || 'An error occurred');
+      setShowSuccess(false);
+      setTimeout(() => setShowError(null), 5000);
+    }
+  };
+
+  const handleSaveSettings = async () => {
+    setIsLoading(true);
+    const result = saveSettings(settings);
+    
+    if (result.success) {
+      showMessage('success');
+    } else {
+      showMessage('error', result.error);
+    }
+    setIsLoading(false);
+  };
+
+  const handleResetSettings = async () => {
+    if (window.confirm('Are you sure you want to reset all settings to default? This action cannot be undone.')) {
+      setIsLoading(true);
+      const result = resetSettings();
+      
+      if (result.success) {
+        showMessage('success');
+      } else {
+        showMessage('error', result.error);
+      }
+      setIsLoading(false);
+    }
   };
 
   const handleExportData = () => {
-    // Export user data
-    console.log('Exporting data...');
+    const result = exportData();
+    
+    if (result.success) {
+      showMessage('success');
+    } else {
+      showMessage('error', result.error);
+    }
   };
 
-  const handleDeleteAccount = () => {
-    if (window.confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
-      // Handle account deletion
-      console.log('Deleting account...');
+  const handleDeleteAccount = async () => {
+    const confirmation = window.prompt(
+      'Are you sure you want to delete your account? This action cannot be undone.\n\nType "DELETE" to confirm:'
+    );
+    
+    if (confirmation === 'DELETE') {
+      try {
+        setIsLoading(true);
+        // Clear all local data
+        localStorage.clear();
+        // Sign out user
+        await signOut();
+        showMessage('success');
+      } catch (error) {
+        showMessage('error', 'Failed to delete account');
+      } finally {
+        setIsLoading(false);
+      }
     }
+  };
+
+  const updateSetting = (key: string, value: any) => {
+    const newSettings = { ...settings, [key]: value };
+    saveSettings({ [key]: value });
   };
 
   const renderGeneralSettings = () => (
@@ -129,8 +148,8 @@ const Settings: React.FC = () => {
             </label>
             <select
               value={settings.currency}
-              onChange={(e) => setSettings(prev => ({ ...prev, currency: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent max-h-48 overflow-y-auto"
+              onChange={(e) => updateSetting('currency', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             >
               {currencies.map((currency) => (
                 <option key={currency.code} value={currency.code}>
@@ -146,12 +165,12 @@ const Settings: React.FC = () => {
             </label>
             <select
               value={settings.dateFormat}
-              onChange={(e) => setSettings(prev => ({ ...prev, dateFormat: e.target.value }))}
+              onChange={(e) => updateSetting('dateFormat', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             >
-              <option value="MM/DD/YYYY">MM/DD/YYYY</option>
-              <option value="DD/MM/YYYY">DD/MM/YYYY</option>
-              <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+              <option value="MM/DD/YYYY">MM/DD/YYYY (US)</option>
+              <option value="DD/MM/YYYY">DD/MM/YYYY (EU)</option>
+              <option value="YYYY-MM-DD">YYYY-MM-DD (ISO)</option>
             </select>
           </div>
 
@@ -161,13 +180,14 @@ const Settings: React.FC = () => {
             </label>
             <select
               value={settings.language}
-              onChange={(e) => setSettings(prev => ({ ...prev, language: e.target.value }))}
+              onChange={(e) => updateSetting('language', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             >
-              <option value="en">English</option>
-              <option value="es">Español</option>
-              <option value="fr">Français</option>
-              <option value="de">Deutsch</option>
+              {languages.map((language) => (
+                <option key={language.code} value={language.code}>
+                  {language.name}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -177,15 +197,31 @@ const Settings: React.FC = () => {
             </label>
             <select
               value={settings.timezone}
-              onChange={(e) => setSettings(prev => ({ ...prev, timezone: e.target.value }))}
+              onChange={(e) => updateSetting('timezone', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             >
-              <option value="America/New_York">Eastern Time (ET)</option>
-              <option value="America/Chicago">Central Time (CT)</option>
-              <option value="America/Denver">Mountain Time (MT)</option>
-              <option value="America/Los_Angeles">Pacific Time (PT)</option>
-              <option value="Europe/London">London (GMT)</option>
-              <option value="Europe/Paris">Paris (CET)</option>
+              {timezones.map((timezone) => (
+                <option key={timezone.value} value={timezone.value}>
+                  {timezone.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Reminder Days Before Renewal
+            </label>
+            <select
+              value={settings.reminderDays}
+              onChange={(e) => updateSetting('reminderDays', Number(e.target.value))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            >
+              <option value={1}>1 day</option>
+              <option value={3}>3 days</option>
+              <option value={7}>7 days</option>
+              <option value={14}>14 days</option>
+              <option value={30}>30 days</option>
             </select>
           </div>
         </div>
@@ -221,7 +257,9 @@ const Settings: React.FC = () => {
               onChange={(e) => setProfile(prev => ({ ...prev, email: e.target.value }))}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               placeholder="Enter your email"
+              disabled
             />
+            <p className="text-xs text-gray-500 mt-1">Email cannot be changed from settings</p>
           </div>
 
           <div>
@@ -232,8 +270,9 @@ const Settings: React.FC = () => {
               <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
                 {profile.displayName.charAt(0).toUpperCase() || 'U'}
               </div>
-              <button className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
-                Upload New Picture
+              <button className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center space-x-2">
+                <Upload className="w-4 h-4" />
+                <span>Upload New Picture</span>
               </button>
             </div>
           </div>
@@ -253,7 +292,7 @@ const Settings: React.FC = () => {
               <p className="text-sm text-gray-600">Receive notifications via email</p>
             </div>
             <button
-              onClick={() => setSettings(prev => ({ ...prev, emailNotifications: !prev.emailNotifications }))}
+              onClick={() => updateSetting('emailNotifications', !settings.emailNotifications)}
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                 settings.emailNotifications ? 'bg-purple-600' : 'bg-gray-200'
               }`}
@@ -272,7 +311,7 @@ const Settings: React.FC = () => {
               <p className="text-sm text-gray-600">Receive browser notifications</p>
             </div>
             <button
-              onClick={() => setSettings(prev => ({ ...prev, pushNotifications: !prev.pushNotifications }))}
+              onClick={() => updateSetting('pushNotifications', !settings.pushNotifications)}
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                 settings.pushNotifications ? 'bg-purple-600' : 'bg-gray-200'
               }`}
@@ -291,7 +330,7 @@ const Settings: React.FC = () => {
               <p className="text-sm text-gray-600">Weekly spending summary</p>
             </div>
             <button
-              onClick={() => setSettings(prev => ({ ...prev, weeklyDigest: !prev.weeklyDigest }))}
+              onClick={() => updateSetting('weeklyDigest', !settings.weeklyDigest)}
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                 settings.weeklyDigest ? 'bg-purple-600' : 'bg-gray-200'
               }`}
@@ -310,7 +349,7 @@ const Settings: React.FC = () => {
               <p className="text-sm text-gray-600">Monthly analytics report</p>
             </div>
             <button
-              onClick={() => setSettings(prev => ({ ...prev, monthlyReport: !prev.monthlyReport }))}
+              onClick={() => updateSetting('monthlyReport', !settings.monthlyReport)}
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                 settings.monthlyReport ? 'bg-purple-600' : 'bg-gray-200'
               }`}
@@ -338,7 +377,7 @@ const Settings: React.FC = () => {
               <p className="text-sm text-gray-600">Share anonymized data for product improvement</p>
             </div>
             <button
-              onClick={() => setSettings(prev => ({ ...prev, dataSharing: !prev.dataSharing }))}
+              onClick={() => updateSetting('dataSharing', !settings.dataSharing)}
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                 settings.dataSharing ? 'bg-purple-600' : 'bg-gray-200'
               }`}
@@ -357,7 +396,7 @@ const Settings: React.FC = () => {
               <p className="text-sm text-gray-600">Help improve the app with usage analytics</p>
             </div>
             <button
-              onClick={() => setSettings(prev => ({ ...prev, analytics: !prev.analytics }))}
+              onClick={() => updateSetting('analytics', !settings.analytics)}
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                 settings.analytics ? 'bg-purple-600' : 'bg-gray-200'
               }`}
@@ -405,10 +444,10 @@ const Settings: React.FC = () => {
               Theme
             </label>
             <div className="grid grid-cols-3 gap-3">
-              {['light', 'dark', 'auto'].map((theme) => (
+              {(['light', 'dark', 'auto'] as const).map((theme) => (
                 <button
                   key={theme}
-                  onClick={() => setSettings(prev => ({ ...prev, theme }))}
+                  onClick={() => updateSetting('theme', theme)}
                   className={`p-4 border-2 rounded-lg transition-all duration-200 ${
                     settings.theme === theme
                       ? 'border-purple-600 bg-purple-50'
@@ -447,6 +486,14 @@ const Settings: React.FC = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-purple-600/30 border-t-purple-600 rounded-full animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -454,6 +501,21 @@ const Settings: React.FC = () => {
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Settings</h1>
         <p className="text-gray-600">Manage your account settings and preferences</p>
       </div>
+
+      {/* Success/Error Messages */}
+      {showSuccess && (
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center space-x-3">
+          <Check className="w-5 h-5 text-green-600" />
+          <span className="text-green-800">Settings saved successfully!</span>
+        </div>
+      )}
+
+      {showError && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center space-x-3">
+          <AlertCircle className="w-5 h-5 text-red-600" />
+          <span className="text-red-800">{showError}</span>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* Sidebar */}
@@ -486,14 +548,27 @@ const Settings: React.FC = () => {
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
             {renderContent()}
             
-            {/* Save Button */}
-            <div className="mt-8 pt-6 border-t border-gray-200">
+            {/* Action Buttons */}
+            <div className="mt-8 pt-6 border-t border-gray-200 flex flex-wrap gap-3">
               <button
                 onClick={handleSaveSettings}
-                className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-lg font-medium transition-all duration-200 shadow-lg"
+                disabled={isLoading}
+                className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-lg font-medium transition-all duration-200 shadow-lg disabled:opacity-50"
               >
-                <Save className="w-5 h-5" />
+                {isLoading ? (
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <Save className="w-5 h-5" />
+                )}
                 <span>Save Changes</span>
+              </button>
+
+              <button
+                onClick={handleResetSettings}
+                disabled={isLoading}
+                className="flex items-center space-x-2 px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-all duration-200 disabled:opacity-50"
+              >
+                <span>Reset to Default</span>
               </button>
             </div>
           </div>
