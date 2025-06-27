@@ -1,8 +1,9 @@
 import React from 'react';
-import { TrendingUp, DollarSign, Calendar, PieChart, Sparkles, Star } from 'lucide-react';
+import { TrendingUp, DollarSign, Calendar, PieChart, Sparkles, Star, BarChart3, Target } from 'lucide-react';
 import StatsCard from '../Dashboard/StatsCard';
 import SpendingChart from '../Dashboard/SpendingChart';
 import CategoryChart from './CategoryChart';
+import { SparklesCore } from '../ui/sparkles';
 import { Subscription, SpendingData, CategoryData } from '../../types/subscription';
 
 interface AnalyticsProps {
@@ -60,19 +61,82 @@ const Analytics: React.FC<AnalyticsProps> = ({
 
   return (
     <div className="space-y-6 sm:space-y-8">
-      {/* Header */}
-      <div className="bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-600 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 right-0 w-32 h-32 sm:w-64 sm:h-64 bg-white rounded-full -translate-y-16 translate-x-16 sm:-translate-y-32 sm:translate-x-32"></div>
-          <div className="absolute bottom-0 left-0 w-24 h-24 sm:w-48 sm:h-48 bg-white rounded-full translate-y-12 -translate-x-12 sm:translate-y-24 sm:-translate-x-24"></div>
+      {/* Enhanced Hero Section with Sparkles */}
+      <div className="relative bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white overflow-hidden">
+        {/* Sparkles Background */}
+        <div className="absolute inset-0 w-full h-full">
+          <SparklesCore
+            id="analytics-sparkles"
+            background="transparent"
+            minSize={0.3}
+            maxSize={1.4}
+            particleDensity={120}
+            className="w-full h-full"
+            particleColor="#ffffff"
+            speed={1.2}
+          />
         </div>
+
+        {/* Gradient Overlays */}
+        <div className="absolute inset-0 opacity-25">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-r from-indigo-400/30 to-purple-400/30 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-gradient-to-r from-purple-400/30 to-pink-400/30 rounded-full blur-3xl"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-gradient-to-r from-pink-400/20 to-indigo-400/20 rounded-full blur-3xl"></div>
+        </div>
+
+        {/* Radial gradient to prevent sharp edges */}
+        <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-indigo-600/50 via-purple-600/50 to-pink-600/50 [mask-image:radial-gradient(800px_400px_at_center,transparent_20%,white)]"></div>
         
         <div className="relative z-10">
-          <div className="flex items-center space-x-3 mb-4">
-            <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" />
-            <h1 className="text-2xl sm:text-3xl font-bold">Analytics</h1>
+          <div className="flex items-center space-x-3 mb-4 sm:mb-6">
+            <BarChart3 className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" />
+            <h1 className="text-2xl sm:text-4xl font-bold">Analytics & Insights</h1>
           </div>
-          <p className="text-white/90 text-base sm:text-lg">Deep insights into your subscription spending patterns</p>
+          <p className="text-lg sm:text-xl text-white/90 mb-6 sm:mb-8 max-w-2xl">
+            Deep dive into your subscription spending patterns and discover optimization opportunities
+          </p>
+          
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-6">
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
+                <DollarSign className="w-4 h-4 sm:w-6 sm:h-6 text-yellow-300" />
+                <p className="text-white/80 text-xs sm:text-sm font-medium">Monthly Total</p>
+              </div>
+              <p className="text-lg sm:text-3xl font-bold">${monthlyTotal.toFixed(2)}</p>
+            </div>
+            
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
+                <TrendingUp className="w-4 h-4 sm:w-6 sm:h-6 text-green-300" />
+                <p className="text-white/80 text-xs sm:text-sm font-medium">Annual Projection</p>
+              </div>
+              <p className="text-lg sm:text-3xl font-bold">${annualTotal.toFixed(2)}</p>
+            </div>
+            
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
+                <Target className="w-4 h-4 sm:w-6 sm:h-6 text-blue-300" />
+                <p className="text-white/80 text-xs sm:text-sm font-medium">Average Cost</p>
+              </div>
+              <p className="text-lg sm:text-3xl font-bold">${averagePerSubscription.toFixed(2)}</p>
+            </div>
+            
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
+                <Sparkles className="w-4 h-4 sm:w-6 sm:h-6 text-orange-300" />
+                <p className="text-white/80 text-xs sm:text-sm font-medium">Growth Rate</p>
+              </div>
+              <p className="text-lg sm:text-3xl font-bold">{Number(growthRate) >= 0 ? '+' : ''}{growthRate}%</p>
+            </div>
+            
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300 col-span-2 sm:col-span-3 lg:col-span-1">
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
+                <Calendar className="w-4 h-4 sm:w-6 sm:h-6 text-pink-300" />
+                <p className="text-white/80 text-xs sm:text-sm font-medium">Upcoming Renewals</p>
+              </div>
+              <p className="text-lg sm:text-3xl font-bold">{upcomingRenewals}</p>
+            </div>
+          </div>
         </div>
       </div>
 
