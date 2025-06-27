@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { User, Mail, Calendar, Shield, Award, TrendingUp, DollarSign, CreditCard, Edit2, Camera, MapPin, Globe } from 'lucide-react';
+import { User, Mail, Calendar, Shield, Award, TrendingUp, DollarSign, CreditCard, Edit2, Camera, MapPin, Globe, Sparkles } from 'lucide-react';
+import { SparklesCore } from '../ui/sparkles';
 import { useAuth } from '../../hooks/useAuth';
 import { useProfile } from '../../hooks/useProfile';
 import { Subscription } from '../../types/subscription';
@@ -108,85 +109,104 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Profile</h1>
-        <p className="text-gray-600">Manage your profile information and view your subscription statistics</p>
-      </div>
+      {/* Enhanced Hero Section with Sparkles */}
+      <div className="relative bg-gradient-to-br from-purple-900 via-violet-800 to-purple-700 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white overflow-hidden">
+        {/* Sparkles Background */}
+        <div className="absolute inset-0 w-full h-full">
+          <SparklesCore
+            id="profile-sparkles"
+            background="transparent"
+            minSize={0.4}
+            maxSize={1.4}
+            particleDensity={90}
+            className="w-full h-full"
+            particleColor="#ffffff"
+            speed={0.8}
+          />
+        </div>
 
-      {/* Profile Card */}
-      <div className="bg-gradient-to-br from-purple-600 via-blue-600 to-emerald-500 rounded-3xl p-8 text-white">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-6 md:space-y-0">
-          <div className="flex items-center space-x-6">
-            <div className="relative">
-              <div className="w-24 h-24 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center text-white font-bold text-3xl overflow-hidden">
-                {profile.avatar ? (
-                  <img 
-                    src={profile.avatar} 
-                    alt="Profile" 
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  profile.displayName.charAt(0).toUpperCase() || 'U'
+        {/* Gradient Overlays */}
+        <div className="absolute inset-0 opacity-25">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-r from-purple-400/30 to-violet-400/30 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-gradient-to-r from-violet-400/30 to-purple-400/30 rounded-full blur-3xl"></div>
+        </div>
+
+        {/* Radial gradient to prevent sharp edges */}
+        <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-purple-900/50 via-violet-800/50 to-purple-700/50 [mask-image:radial-gradient(800px_400px_at_center,transparent_20%,white)]"></div>
+        
+        <div className="relative z-10">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-6 md:space-y-0">
+            <div className="flex items-center space-x-6">
+              <div className="relative">
+                <div className="w-24 h-24 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center text-white font-bold text-3xl overflow-hidden">
+                  {profile.avatar ? (
+                    <img 
+                      src={profile.avatar} 
+                      alt="Profile" 
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    profile.displayName.charAt(0).toUpperCase() || 'U'
+                  )}
+                </div>
+                <button 
+                  onClick={() => setShowEditModal(true)}
+                  className="absolute -bottom-2 -right-2 w-8 h-8 bg-white text-purple-600 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors shadow-lg"
+                >
+                  <Camera className="w-4 h-4" />
+                </button>
+              </div>
+              
+              <div>
+                <h2 className="text-3xl font-bold mb-2">{profile.displayName || 'User'}</h2>
+                <p className="text-white/90 mb-1 flex items-center space-x-2">
+                  <Mail className="w-4 h-4" />
+                  <span>{profile.email}</span>
+                </p>
+                <p className="text-white/80 text-sm flex items-center space-x-2">
+                  <Calendar className="w-4 h-4" />
+                  <span>Member since {memberSince}</span>
+                </p>
+                {profile.location && (
+                  <p className="text-white/80 text-sm flex items-center space-x-2 mt-1">
+                    <MapPin className="w-4 h-4" />
+                    <span>{profile.location}</span>
+                  </p>
+                )}
+                {profile.website && (
+                  <p className="text-white/80 text-sm flex items-center space-x-2 mt-1">
+                    <Globe className="w-4 h-4" />
+                    <a 
+                      href={profile.website} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="hover:text-white transition-colors"
+                    >
+                      {profile.website}
+                    </a>
+                  </p>
+                )}
+                {profile.bio && (
+                  <p className="text-white/90 text-sm mt-2 max-w-md">{profile.bio}</p>
                 )}
               </div>
-              <button 
+            </div>
+
+            <div className="flex space-x-3">
+              <button
                 onClick={() => setShowEditModal(true)}
-                className="absolute -bottom-2 -right-2 w-8 h-8 bg-white text-purple-600 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors shadow-lg"
+                className="px-6 py-3 bg-white/20 backdrop-blur-sm text-white rounded-xl hover:bg-white/30 transition-all duration-200 flex items-center space-x-2"
               >
-                <Camera className="w-4 h-4" />
+                <Edit2 className="w-4 h-4" />
+                <span>Edit Profile</span>
+              </button>
+              <button
+                onClick={handleSignOut}
+                className="px-6 py-3 bg-red-500/20 backdrop-blur-sm text-white rounded-xl hover:bg-red-500/30 transition-all duration-200"
+              >
+                Sign Out
               </button>
             </div>
-            
-            <div>
-              <h2 className="text-3xl font-bold mb-2">{profile.displayName || 'User'}</h2>
-              <p className="text-white/90 mb-1 flex items-center space-x-2">
-                <Mail className="w-4 h-4" />
-                <span>{profile.email}</span>
-              </p>
-              <p className="text-white/80 text-sm flex items-center space-x-2">
-                <Calendar className="w-4 h-4" />
-                <span>Member since {memberSince}</span>
-              </p>
-              {profile.location && (
-                <p className="text-white/80 text-sm flex items-center space-x-2 mt-1">
-                  <MapPin className="w-4 h-4" />
-                  <span>{profile.location}</span>
-                </p>
-              )}
-              {profile.website && (
-                <p className="text-white/80 text-sm flex items-center space-x-2 mt-1">
-                  <Globe className="w-4 h-4" />
-                  <a 
-                    href={profile.website} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="hover:text-white transition-colors"
-                  >
-                    {profile.website}
-                  </a>
-                </p>
-              )}
-              {profile.bio && (
-                <p className="text-white/90 text-sm mt-2 max-w-md">{profile.bio}</p>
-              )}
-            </div>
-          </div>
-
-          <div className="flex space-x-3">
-            <button
-              onClick={() => setShowEditModal(true)}
-              className="px-6 py-3 bg-white/20 backdrop-blur-sm text-white rounded-xl hover:bg-white/30 transition-all duration-200 flex items-center space-x-2"
-            >
-              <Edit2 className="w-4 h-4" />
-              <span>Edit Profile</span>
-            </button>
-            <button
-              onClick={handleSignOut}
-              className="px-6 py-3 bg-red-500/20 backdrop-blur-sm text-white rounded-xl hover:bg-red-500/30 transition-all duration-200"
-            >
-              Sign Out
-            </button>
           </div>
         </div>
       </div>
@@ -198,7 +218,7 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
             <h3 className="text-lg font-semibold text-gray-900 mb-6">Subscription Statistics</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl p-4">
+              <div className="bg-gradient-to-r from-purple-50 to-violet-50 rounded-xl p-4">
                 <div className="flex items-center space-x-3 mb-2">
                   <CreditCard className="w-5 h-5 text-purple-600" />
                   <h4 className="font-medium text-gray-900">Total Subscriptions</h4>
@@ -278,7 +298,7 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
                     key={achievement.id}
                     className={`p-4 rounded-xl border transition-all duration-200 ${
                       achievement.earned
-                        ? 'bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200'
+                        ? 'bg-gradient-to-r from-purple-50 to-violet-50 border-purple-200'
                         : 'bg-gray-50 border-gray-200'
                     }`}
                   >

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Bell, Settings as SettingsIcon, Check, X, Calendar, DollarSign, AlertTriangle, Trash2, BookMarked as MarkAsRead } from 'lucide-react';
+import { Bell, Settings as SettingsIcon, Check, X, Calendar, DollarSign, AlertTriangle, Trash2, BookMarked as MarkAsRead, Sparkles } from 'lucide-react';
+import { SparklesCore } from '../ui/sparkles';
 import { Subscription } from '../../types/subscription';
 import { useNotifications } from '../../hooks/useNotifications';
 import { useSettings } from '../../hooks/useSettings';
@@ -62,11 +63,88 @@ const Notifications: React.FC<NotificationsProps> = ({ subscriptions }) => {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
+      {/* Enhanced Hero Section with Sparkles */}
+      <div className="relative bg-gradient-to-br from-purple-900 via-violet-800 to-purple-700 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white overflow-hidden">
+        {/* Sparkles Background */}
+        <div className="absolute inset-0 w-full h-full">
+          <SparklesCore
+            id="notifications-sparkles"
+            background="transparent"
+            minSize={0.3}
+            maxSize={1.2}
+            particleDensity={80}
+            className="w-full h-full"
+            particleColor="#ffffff"
+            speed={0.9}
+          />
+        </div>
+
+        {/* Gradient Overlays */}
+        <div className="absolute inset-0 opacity-25">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-r from-purple-400/30 to-violet-400/30 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-gradient-to-r from-violet-400/30 to-purple-400/30 rounded-full blur-3xl"></div>
+        </div>
+
+        {/* Radial gradient to prevent sharp edges */}
+        <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-purple-900/50 via-violet-800/50 to-purple-700/50 [mask-image:radial-gradient(800px_400px_at_center,transparent_20%,white)]"></div>
+        
+        <div className="relative z-10">
+          <div className="flex items-center space-x-3 mb-4 sm:mb-6">
+            <Bell className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" />
+            <h1 className="text-2xl sm:text-4xl font-bold">Notifications & Alerts</h1>
+          </div>
+          <p className="text-lg sm:text-xl text-white/90 mb-6 sm:mb-8 max-w-2xl">
+            Stay updated on your subscription renewals and never miss important payment dates
+          </p>
+          
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-6">
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
+                <Bell className="w-4 h-4 sm:w-6 sm:h-6 text-yellow-300" />
+                <p className="text-white/80 text-xs sm:text-sm font-medium">Total</p>
+              </div>
+              <p className="text-lg sm:text-3xl font-bold">{notifications.length}</p>
+            </div>
+            
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
+                <Sparkles className="w-4 h-4 sm:w-6 sm:h-6 text-green-300" />
+                <p className="text-white/80 text-xs sm:text-sm font-medium">Unread</p>
+              </div>
+              <p className="text-lg sm:text-3xl font-bold">{unreadCount}</p>
+            </div>
+            
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
+                <AlertTriangle className="w-4 h-4 sm:w-6 sm:h-6 text-red-300" />
+                <p className="text-white/80 text-xs sm:text-sm font-medium">Urgent</p>
+              </div>
+              <p className="text-lg sm:text-3xl font-bold">{urgentNotifications.length}</p>
+            </div>
+            
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
+                <Calendar className="w-4 h-4 sm:w-6 sm:h-6 text-blue-300" />
+                <p className="text-white/80 text-xs sm:text-sm font-medium">Upcoming</p>
+              </div>
+              <p className="text-lg sm:text-3xl font-bold">{upcomingRenewals.length}</p>
+            </div>
+            
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300 col-span-2 sm:col-span-3 lg:col-span-1">
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
+                <DollarSign className="w-4 h-4 sm:w-6 sm:h-6 text-orange-300" />
+                <p className="text-white/80 text-xs sm:text-sm font-medium">Overdue</p>
+              </div>
+              <p className="text-lg sm:text-3xl font-bold">{overdueSubscriptions.length}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Header Actions */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Notifications</h1>
-          <p className="text-gray-600">Stay updated on your subscription renewals and savings opportunities</p>
+          <p className="text-gray-600">Manage your notification preferences and stay informed</p>
         </div>
         <div className="flex items-center space-x-3">
           <div className="flex items-center space-x-2 bg-purple-100 text-purple-700 px-3 py-1 rounded-full">

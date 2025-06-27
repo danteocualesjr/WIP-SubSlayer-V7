@@ -91,15 +91,15 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
         />
         
         {/* Mobile Sidebar */}
-        <div className="fixed left-0 top-0 h-full w-80 bg-gradient-to-b from-white via-purple-50/30 to-blue-50/30 backdrop-blur-xl border-r border-purple-200/50 z-50 flex flex-col shadow-2xl transform transition-transform duration-300 ease-in-out">
+        <div className="fixed left-0 top-0 h-full w-80 bg-gradient-to-b from-white via-purple-50/30 to-violet-50/30 backdrop-blur-xl border-r border-purple-200/50 z-50 flex flex-col shadow-2xl transform transition-transform duration-300 ease-in-out">
           {/* Mobile Header */}
           <div className="p-6 border-b border-purple-200/50 flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl flex items-center justify-center transform rotate-12 shadow-lg">
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-violet-600 rounded-2xl flex items-center justify-center transform rotate-12 shadow-lg">
                 <Sword className="w-7 h-7 text-white transform -rotate-12" />
               </div>
               <div>
-                <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent">
                   SubSlayer
                 </span>
                 <div className="flex items-center space-x-1 mt-1">
@@ -126,8 +126,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
                   onClick={() => handleNavClick(item.id)}
                   className={`w-full flex items-center space-x-3 px-4 py-4 rounded-2xl font-medium transition-all duration-300 text-left ${
                     activeTab === item.id
-                      ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg shadow-purple-500/25'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50'
+                      ? 'bg-gradient-to-r from-purple-600 to-violet-600 text-white shadow-lg shadow-purple-500/25'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gradient-to-r hover:from-purple-50 hover:to-violet-50'
                   }`}
                 >
                   <Icon className="w-6 h-6" />
@@ -147,8 +147,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
                   onClick={() => handleNavClick(item.id)}
                   className={`w-full flex items-center space-x-3 px-4 py-4 rounded-2xl font-medium transition-all duration-300 text-left ${
                     activeTab === item.id
-                      ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg shadow-purple-500/25'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50'
+                      ? 'bg-gradient-to-r from-purple-600 to-violet-600 text-white shadow-lg shadow-purple-500/25'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gradient-to-r hover:from-purple-50 hover:to-violet-50'
                   }`}
                 >
                   <Icon className="w-6 h-6" />
@@ -176,7 +176,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
       )}
 
       {/* Desktop Sidebar */}
-      <div className={`fixed left-0 top-0 h-full bg-gradient-to-b from-white via-purple-50/30 to-blue-50/30 backdrop-blur-xl border-r border-purple-200/50 z-40 flex-col shadow-xl transition-all duration-300 ease-in-out hidden md:flex ${
+      <div className={`fixed left-0 top-0 h-full bg-gradient-to-b from-white via-purple-50/30 to-violet-50/30 backdrop-blur-xl border-r border-purple-200/50 z-40 flex-col shadow-xl transition-all duration-300 ease-in-out hidden md:flex ${
         isCollapsed ? 'w-20' : 'w-64'
       }`}>
         {/* Logo */}
@@ -184,12 +184,12 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
           isCollapsed ? 'px-4' : 'px-6'
         }`}>
           <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl flex items-center justify-center transform rotate-12 shadow-lg flex-shrink-0">
+            <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-violet-600 rounded-2xl flex items-center justify-center transform rotate-12 shadow-lg flex-shrink-0">
               <Sword className="w-7 h-7 text-white transform -rotate-12" />
             </div>
             {!isCollapsed && (
               <div className="transition-opacity duration-300">
-                <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent">
                   SubSlayer
                 </span>
                 <div className="flex items-center space-x-1 mt-1">
@@ -230,8 +230,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
                     isCollapsed ? 'justify-center p-3' : 'space-x-3 px-4 py-3'
                   } ${
                     activeTab === item.id
-                      ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg shadow-purple-500/25 scale-105'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 hover:scale-105'
+                      ? 'bg-gradient-to-r from-purple-600 to-violet-600 text-white shadow-lg shadow-purple-500/25 scale-105'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gradient-to-r hover:from-purple-50 hover:to-violet-50 hover:scale-105'
                   }`}
                   title={isCollapsed ? item.label : undefined}
                 >
@@ -267,8 +267,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
                     isCollapsed ? 'justify-center p-3' : 'space-x-3 px-4 py-3'
                   } ${
                     activeTab === item.id
-                      ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg shadow-purple-500/25 scale-105'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 hover:scale-105'
+                      ? 'bg-gradient-to-r from-purple-600 to-violet-600 text-white shadow-lg shadow-purple-500/25 scale-105'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gradient-to-r hover:from-purple-50 hover:to-violet-50 hover:scale-105'
                   }`}
                   title={isCollapsed ? item.label : undefined}
                 >

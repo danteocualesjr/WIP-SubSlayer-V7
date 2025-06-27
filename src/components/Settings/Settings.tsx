@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Settings as SettingsIcon, User, Bell, Shield, Palette, Download, Trash2, Save, Check, AlertCircle, Upload } from 'lucide-react';
+import { Settings as SettingsIcon, User, Bell, Shield, Palette, Download, Trash2, Save, Check, AlertCircle, Upload, Sparkles, Cog } from 'lucide-react';
+import { SparklesCore } from '../ui/sparkles';
 import { useAuth } from '../../hooks/useAuth';
 import { useSettings } from '../../hooks/useSettings';
 
@@ -267,7 +268,7 @@ const Settings: React.FC = () => {
               Profile Picture
             </label>
             <div className="flex items-center space-x-4">
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+              <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-violet-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
                 {profile.displayName.charAt(0).toUpperCase() || 'U'}
               </div>
               <button className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center space-x-2">
@@ -496,10 +497,45 @@ const Settings: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
+      {/* Enhanced Hero Section with Sparkles */}
+      <div className="relative bg-gradient-to-br from-purple-900 via-violet-800 to-purple-700 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white overflow-hidden">
+        {/* Sparkles Background */}
+        <div className="absolute inset-0 w-full h-full">
+          <SparklesCore
+            id="settings-sparkles"
+            background="transparent"
+            minSize={0.3}
+            maxSize={1.0}
+            particleDensity={70}
+            className="w-full h-full"
+            particleColor="#ffffff"
+            speed={0.7}
+          />
+        </div>
+
+        {/* Gradient Overlays */}
+        <div className="absolute inset-0 opacity-25">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-r from-purple-400/30 to-violet-400/30 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-gradient-to-r from-violet-400/30 to-purple-400/30 rounded-full blur-3xl"></div>
+        </div>
+
+        {/* Radial gradient to prevent sharp edges */}
+        <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-purple-900/50 via-violet-800/50 to-purple-700/50 [mask-image:radial-gradient(800px_400px_at_center,transparent_20%,white)]"></div>
+        
+        <div className="relative z-10">
+          <div className="flex items-center space-x-3 mb-4 sm:mb-6">
+            <Cog className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" />
+            <h1 className="text-2xl sm:text-4xl font-bold">Settings & Preferences</h1>
+          </div>
+          <p className="text-lg sm:text-xl text-white/90 mb-6 sm:mb-8 max-w-2xl">
+            Customize your SubSlayer experience and manage your account preferences
+          </p>
+        </div>
+      </div>
+
+      {/* Header Actions */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Settings</h1>
-        <p className="text-gray-600">Manage your account settings and preferences</p>
+        <p className="text-gray-600">Configure your account settings and application preferences</p>
       </div>
 
       {/* Success/Error Messages */}
@@ -553,7 +589,7 @@ const Settings: React.FC = () => {
               <button
                 onClick={handleSaveSettings}
                 disabled={isLoading}
-                className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-lg font-medium transition-all duration-200 shadow-lg disabled:opacity-50"
+                className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white rounded-lg font-medium transition-all duration-200 shadow-lg disabled:opacity-50"
               >
                 {isLoading ? (
                   <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
