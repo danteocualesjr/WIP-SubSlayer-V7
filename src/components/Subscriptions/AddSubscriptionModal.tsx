@@ -29,7 +29,7 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
 
   const categories = [
     'AI', 'Entertainment', 'Productivity', 'Development', 'Design', 'Education', 
-    'Health & Fitness', 'News & Media', 'Music', 'Storage', 'Other'
+    'Health & Fitness', 'News & Media', 'Music', 'Storage', 'Social Media', 'Other'
   ];
 
   const currencies = [
