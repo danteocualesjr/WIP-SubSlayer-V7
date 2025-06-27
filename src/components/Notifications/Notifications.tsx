@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bell, Settings as SettingsIcon, Check, X, Calendar, DollarSign, AlertTriangle, Trash2, MarkAsRead } from 'lucide-react';
+import { Bell, Settings as SettingsIcon, Check, X, Calendar, DollarSign, AlertTriangle, Trash2, BookMarked as MarkAsRead } from 'lucide-react';
 import { Subscription } from '../../types/subscription';
 import { useNotifications } from '../../hooks/useNotifications';
 import { useSettings } from '../../hooks/useSettings';
