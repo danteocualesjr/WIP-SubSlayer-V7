@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, Mail, Lock, User, CreditCard, Sparkles, Shield, Zap } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
+import { SparklesCore } from '../ui/sparkles';
 
 const AuthForm: React.FC = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -41,21 +42,35 @@ const AuthForm: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-violet-800 to-purple-700 flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Sparkles Background */}
+      <div className="absolute inset-0 w-full h-full">
+        <SparklesCore
+          id="auth-sparkles"
+          background="transparent"
+          minSize={0.4}
+          maxSize={1.8}
+          particleDensity={150}
+          className="w-full h-full"
+          particleColor="#ffffff"
+          speed={0.5}
+        />
+      </div>
+
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl animate-pulse delay-500"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-violet-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-500"></div>
       </div>
 
       <div className="max-w-md w-full relative z-10">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-blue-500 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl backdrop-blur-sm border border-white/20 transform hover:scale-105 transition-all duration-300">
+          <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-violet-500 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl backdrop-blur-sm border border-white/20 transform hover:scale-105 transition-all duration-300">
             <CreditCard className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-4xl font-bold text-white mb-3 bg-gradient-to-r from-purple-200 to-blue-200 bg-clip-text text-transparent">
+          <h1 className="text-4xl font-bold text-white mb-3 bg-gradient-to-r from-purple-200 to-violet-200 bg-clip-text text-transparent">
             SubSlayer
           </h1>
           <p className="text-white/80 text-lg">Take control of your subscriptions</p>
@@ -136,7 +151,7 @@ const AuthForm: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white py-4 rounded-2xl font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 shadow-xl hover:shadow-2xl hover:scale-105 transform"
+              className="w-full bg-gradient-to-r from-purple-500 to-violet-500 hover:from-purple-600 hover:to-violet-600 text-white py-4 rounded-2xl font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 shadow-xl hover:shadow-2xl hover:scale-105 transform"
             >
               {loading ? (
                 <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -170,19 +185,19 @@ const AuthForm: React.FC = () => {
         {/* Features */}
         <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
           <div className="text-white/80 group hover:text-white transition-colors">
-            <div className="w-12 h-12 bg-gradient-to-br from-purple-400/20 to-blue-400/20 rounded-2xl flex items-center justify-center mx-auto mb-3 backdrop-blur-sm border border-white/10 group-hover:scale-110 transition-transform duration-300">
+            <div className="w-12 h-12 bg-gradient-to-br from-purple-400/20 to-violet-400/20 rounded-2xl flex items-center justify-center mx-auto mb-3 backdrop-blur-sm border border-white/10 group-hover:scale-110 transition-transform duration-300">
               <Sparkles className="w-6 h-6" />
             </div>
             <p className="font-medium">Track Subscriptions</p>
           </div>
           <div className="text-white/80 group hover:text-white transition-colors">
-            <div className="w-12 h-12 bg-gradient-to-br from-purple-400/20 to-blue-400/20 rounded-2xl flex items-center justify-center mx-auto mb-3 backdrop-blur-sm border border-white/10 group-hover:scale-110 transition-transform duration-300">
+            <div className="w-12 h-12 bg-gradient-to-br from-purple-400/20 to-violet-400/20 rounded-2xl flex items-center justify-center mx-auto mb-3 backdrop-blur-sm border border-white/10 group-hover:scale-110 transition-transform duration-300">
               <Shield className="w-6 h-6" />
             </div>
             <p className="font-medium">Save Money</p>
           </div>
           <div className="text-white/80 group hover:text-white transition-colors">
-            <div className="w-12 h-12 bg-gradient-to-br from-purple-400/20 to-blue-400/20 rounded-2xl flex items-center justify-center mx-auto mb-3 backdrop-blur-sm border border-white/10 group-hover:scale-110 transition-transform duration-300">
+            <div className="w-12 h-12 bg-gradient-to-br from-purple-400/20 to-violet-400/20 rounded-2xl flex items-center justify-center mx-auto mb-3 backdrop-blur-sm border border-white/10 group-hover:scale-110 transition-transform duration-300">
               <Zap className="w-6 h-6" />
             </div>
             <p className="font-medium">Get Reminders</p>

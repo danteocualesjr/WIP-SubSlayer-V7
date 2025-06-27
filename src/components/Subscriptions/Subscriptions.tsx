@@ -230,7 +230,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
     return (
       <div className="space-y-6">
         {/* Calendar Hero Section */}
-        <div className="relative bg-gradient-to-br from-purple-600 via-violet-600 to-indigo-600 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white overflow-hidden">
+        <div className="relative bg-gradient-to-br from-purple-900 via-violet-800 to-purple-700 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white overflow-hidden">
           {/* Sparkles Background */}
           <div className="absolute inset-0 w-full h-full">
             <SparklesCore
@@ -248,11 +248,11 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
           {/* Gradient Overlays */}
           <div className="absolute inset-0 opacity-20">
             <div className="absolute top-0 left-1/3 w-80 h-80 bg-gradient-to-r from-purple-400/30 to-violet-400/30 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-0 right-1/3 w-96 h-96 bg-gradient-to-r from-violet-400/30 to-indigo-400/30 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-0 right-1/3 w-96 h-96 bg-gradient-to-r from-violet-400/30 to-purple-400/30 rounded-full blur-3xl"></div>
           </div>
 
           {/* Radial gradient to prevent sharp edges */}
-          <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-purple-600/50 via-violet-600/50 to-indigo-600/50 [mask-image:radial-gradient(800px_400px_at_center,transparent_20%,white)]"></div>
+          <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-purple-900/50 via-violet-800/50 to-purple-700/50 [mask-image:radial-gradient(800px_400px_at_center,transparent_20%,white)]"></div>
           
           <div className="relative z-10">
             <div className="flex items-center space-x-3 mb-4 sm:mb-6">
@@ -320,7 +320,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
   return (
     <div className="space-y-6">
       {/* Enhanced Hero Section with Sparkles */}
-      <div className="relative bg-gradient-to-br from-purple-600 via-violet-600 to-indigo-600 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white overflow-hidden">
+      <div className="relative bg-gradient-to-br from-purple-900 via-violet-800 to-purple-700 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white overflow-hidden">
         {/* Sparkles Background */}
         <div className="absolute inset-0 w-full h-full">
           <SparklesCore
@@ -338,11 +338,11 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
         {/* Gradient Overlays */}
         <div className="absolute inset-0 opacity-30">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-r from-purple-400/20 to-violet-400/20 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-gradient-to-r from-violet-400/20 to-indigo-400/20 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-gradient-to-r from-violet-400/20 to-purple-400/20 rounded-full blur-3xl"></div>
         </div>
 
         {/* Radial gradient to prevent sharp edges */}
-        <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-purple-600/50 via-violet-600/50 to-indigo-600/50 [mask-image:radial-gradient(800px_400px_at_center,transparent_20%,white)]"></div>
+        <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-purple-900/50 via-violet-800/50 to-purple-700/50 [mask-image:radial-gradient(800px_400px_at_center,transparent_20%,white)]"></div>
         
         <div className="relative z-10">
           <div className="flex items-center space-x-3 mb-4 sm:mb-6">
@@ -405,7 +405,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
               </button>
               <button
                 onClick={() => setShowAddModal(true)}
-                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2 shadow-lg"
+                className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2 shadow-lg"
               >
                 <Plus className="w-5 h-5" />
                 <span>Add Subscription</span>
@@ -461,7 +461,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
       )}
 
       {/* Stats */}
-      <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl p-6">
+      <div className="bg-gradient-to-r from-purple-50 to-violet-50 rounded-2xl p-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="text-center">
             <p className="text-2xl font-bold text-gray-900">{subscriptions.length}</p>
@@ -599,7 +599,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
           {!searchTerm && filterStatus === 'all' && filterCategory === 'all' && (
             <button
               onClick={() => setShowAddModal(true)}
-              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2 mx-auto"
+              className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2 mx-auto"
             >
               <Plus className="w-5 h-5" />
               <span>Add Your First Subscription</span>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Check, Star, Zap, Building2, Mail, ArrowRight, Sparkles } from 'lucide-react';
+import { SparklesCore } from '../ui/sparkles';
 
 const Pricing: React.FC = () => {
   const [isAnnual, setIsAnnual] = useState(false);
@@ -43,8 +44,8 @@ const Pricing: React.FC = () => {
         'Priority support',
       ],
       cta: 'Upgrade Now',
-      gradient: 'from-purple-600 to-blue-600',
-      bgGradient: 'from-purple-50 to-blue-50',
+      gradient: 'from-purple-600 to-violet-600',
+      bgGradient: 'from-purple-50 to-violet-50',
       borderColor: 'border-purple-200',
     },
     {
@@ -165,7 +166,7 @@ const Pricing: React.FC = () => {
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-lg font-medium transition-all duration-200"
+              className="flex-1 px-4 py-2 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white rounded-lg font-medium transition-all duration-200"
             >
               Send Message
             </button>
@@ -177,47 +178,72 @@ const Pricing: React.FC = () => {
 
   return (
     <div className="space-y-12">
-      {/* Header */}
-      <div className="text-center space-y-6">
-        <div className="inline-flex items-center space-x-2 bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm font-medium">
-          <Sparkles className="w-4 h-4" />
-          <span>Choose Your Plan</span>
+      {/* Enhanced Hero Section with Sparkles */}
+      <div className="relative bg-gradient-to-br from-purple-900 via-violet-800 to-purple-700 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white overflow-hidden">
+        {/* Sparkles Background */}
+        <div className="absolute inset-0 w-full h-full">
+          <SparklesCore
+            id="pricing-sparkles"
+            background="transparent"
+            minSize={0.3}
+            maxSize={1.4}
+            particleDensity={100}
+            className="w-full h-full"
+            particleColor="#ffffff"
+            speed={1.0}
+          />
         </div>
-        
-        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
-          Simple, transparent pricing
-        </h1>
-        
-        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-          Take control of your subscriptions with plans designed for every need. 
-          Start free and upgrade as you grow.
-        </p>
 
-        {/* Billing Toggle */}
-        <div className="flex items-center justify-center space-x-4">
-          <span className={`text-sm font-medium ${!isAnnual ? 'text-gray-900' : 'text-gray-500'}`}>
-            Monthly
-          </span>
-          <button
-            onClick={() => setIsAnnual(!isAnnual)}
-            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-              isAnnual ? 'bg-purple-600' : 'bg-gray-200'
-            }`}
-          >
-            <span
-              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                isAnnual ? 'translate-x-6' : 'translate-x-1'
-              }`}
-            />
-          </button>
-          <span className={`text-sm font-medium ${isAnnual ? 'text-gray-900' : 'text-gray-500'}`}>
-            Annual
-          </span>
-          {isAnnual && (
-            <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">
-              Save 17%
+        {/* Gradient Overlays */}
+        <div className="absolute inset-0 opacity-25">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-r from-purple-400/30 to-violet-400/30 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-gradient-to-r from-violet-400/30 to-purple-400/30 rounded-full blur-3xl"></div>
+        </div>
+
+        {/* Radial gradient to prevent sharp edges */}
+        <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-purple-900/50 via-violet-800/50 to-purple-700/50 [mask-image:radial-gradient(800px_400px_at_center,transparent_20%,white)]"></div>
+        
+        <div className="relative z-10 text-center">
+          <div className="inline-flex items-center space-x-2 bg-purple-100/20 text-purple-200 px-4 py-2 rounded-full text-sm font-medium mb-6">
+            <Sparkles className="w-4 h-4" />
+            <span>Choose Your Plan</span>
+          </div>
+          
+          <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight mb-6">
+            Simple, transparent pricing
+          </h1>
+          
+          <p className="text-xl text-white/90 max-w-2xl mx-auto mb-8">
+            Take control of your subscriptions with plans designed for every need. 
+            Start free and upgrade as you grow.
+          </p>
+
+          {/* Billing Toggle */}
+          <div className="flex items-center justify-center space-x-4">
+            <span className={`text-sm font-medium ${!isAnnual ? 'text-white' : 'text-white/60'}`}>
+              Monthly
             </span>
-          )}
+            <button
+              onClick={() => setIsAnnual(!isAnnual)}
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                isAnnual ? 'bg-purple-600' : 'bg-white/20'
+              }`}
+            >
+              <span
+                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                  isAnnual ? 'translate-x-6' : 'translate-x-1'
+                }`}
+              />
+            </button>
+            <span className={`text-sm font-medium ${isAnnual ? 'text-white' : 'text-white/60'}`}>
+              Annual
+            </span>
+            {isAnnual && (
+              <span className="bg-green-100/20 text-green-200 px-2 py-1 rounded-full text-xs font-medium">
+                Save 17%
+              </span>
+            )}
+          </div>
         </div>
       </div>
 
@@ -244,7 +270,7 @@ const Pricing: React.FC = () => {
               {/* Popular Badge */}
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                  <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-2 rounded-full text-sm font-semibold flex items-center space-x-1 shadow-lg">
+                  <div className="bg-gradient-to-r from-purple-600 to-violet-600 text-white px-6 py-2 rounded-full text-sm font-semibold flex items-center space-x-1 shadow-lg">
                     <Star className="w-4 h-4 fill-current" />
                     <span>Most Popular</span>
                   </div>
@@ -392,25 +418,41 @@ const Pricing: React.FC = () => {
       {showContactForm && <ContactForm />}
 
       {/* Bottom CTA */}
-      <div className="bg-gradient-to-br from-purple-600 via-blue-600 to-emerald-500 rounded-3xl p-8 md:p-12 text-center text-white">
-        <h2 className="text-3xl md:text-4xl font-bold mb-4">
-          Ready to take control of your subscriptions?
-        </h2>
-        <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-          Join thousands of users who have saved money and time with SubSlayer. 
-          Start your journey today.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button className="bg-white text-purple-600 px-8 py-4 rounded-xl font-semibold hover:bg-gray-100 transition-colors flex items-center justify-center space-x-2">
-            <span>Start Free Trial</span>
-            <ArrowRight className="w-5 h-5" />
-          </button>
-          <button 
-            onClick={handleContactSales}
-            className="bg-white/20 backdrop-blur-sm text-white px-8 py-4 rounded-xl font-semibold hover:bg-white/30 transition-colors border border-white/30"
-          >
-            Talk to Sales
-          </button>
+      <div className="bg-gradient-to-br from-purple-900 via-violet-800 to-purple-700 rounded-3xl p-8 md:p-12 text-center text-white relative overflow-hidden">
+        {/* Sparkles Background */}
+        <div className="absolute inset-0 w-full h-full">
+          <SparklesCore
+            id="cta-sparkles"
+            background="transparent"
+            minSize={0.2}
+            maxSize={1.0}
+            particleDensity={60}
+            className="w-full h-full"
+            particleColor="#ffffff"
+            speed={0.8}
+          />
+        </div>
+        
+        <div className="relative z-10">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            Ready to take control of your subscriptions?
+          </h2>
+          <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
+            Join thousands of users who have saved money and time with SubSlayer. 
+            Start your journey today.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button className="bg-white text-purple-600 px-8 py-4 rounded-xl font-semibold hover:bg-gray-100 transition-colors flex items-center justify-center space-x-2">
+              <span>Start Free Trial</span>
+              <ArrowRight className="w-5 h-5" />
+            </button>
+            <button 
+              onClick={handleContactSales}
+              className="bg-white/20 backdrop-blur-sm text-white px-8 py-4 rounded-xl font-semibold hover:bg-white/30 transition-colors border border-white/30"
+            >
+              Talk to Sales
+            </button>
+          </div>
         </div>
       </div>
     </div>

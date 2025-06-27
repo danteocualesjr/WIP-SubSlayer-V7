@@ -62,7 +62,7 @@ const Analytics: React.FC<AnalyticsProps> = ({
   return (
     <div className="space-y-6 sm:space-y-8">
       {/* Enhanced Hero Section with Sparkles */}
-      <div className="relative bg-gradient-to-br from-purple-600 via-violet-600 to-indigo-600 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white overflow-hidden">
+      <div className="relative bg-gradient-to-br from-purple-900 via-violet-800 to-purple-700 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white overflow-hidden">
         {/* Sparkles Background */}
         <div className="absolute inset-0 w-full h-full">
           <SparklesCore
@@ -80,12 +80,12 @@ const Analytics: React.FC<AnalyticsProps> = ({
         {/* Gradient Overlays */}
         <div className="absolute inset-0 opacity-25">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-r from-purple-400/30 to-violet-400/30 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-gradient-to-r from-violet-400/30 to-indigo-400/30 rounded-full blur-3xl"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-gradient-to-r from-indigo-400/20 to-purple-400/20 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-gradient-to-r from-violet-400/30 to-purple-400/30 rounded-full blur-3xl"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-gradient-to-r from-purple-400/20 to-violet-400/20 rounded-full blur-3xl"></div>
         </div>
 
         {/* Radial gradient to prevent sharp edges */}
-        <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-purple-600/50 via-violet-600/50 to-indigo-600/50 [mask-image:radial-gradient(800px_400px_at_center,transparent_20%,white)]"></div>
+        <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-purple-900/50 via-violet-800/50 to-purple-700/50 [mask-image:radial-gradient(800px_400px_at_center,transparent_20%,white)]"></div>
         
         <div className="relative z-10">
           <div className="flex items-center space-x-3 mb-4 sm:mb-6">
@@ -146,20 +146,20 @@ const Analytics: React.FC<AnalyticsProps> = ({
           title="Average per Subscription"
           value={`$${averagePerSubscription.toFixed(2)}`}
           icon={DollarSign}
-          gradient="bg-gradient-to-br from-purple-500 to-purple-600"
+          gradient="bg-gradient-to-br from-purple-500 to-violet-600"
         />
         <StatsCard
           title="Growth Rate (6m)"
           value={`${Number(growthRate) >= 0 ? '+' : ''}${growthRate}%`}
           changeType={Number(growthRate) >= 0 ? 'negative' : 'positive'}
           icon={TrendingUp}
-          gradient="bg-gradient-to-br from-blue-500 to-blue-600"
+          gradient="bg-gradient-to-br from-blue-500 to-violet-600"
         />
         <StatsCard
           title="Upcoming Renewals"
           value={upcomingRenewals.toString()}
           icon={Calendar}
-          gradient="bg-gradient-to-br from-emerald-500 to-emerald-600"
+          gradient="bg-gradient-to-br from-emerald-500 to-green-600"
         />
         <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-lg border border-purple-100/50 hover:shadow-xl transition-all duration-300 hover:scale-105 transform group">
           <div className="flex items-center justify-between">
@@ -169,7 +169,7 @@ const Analytics: React.FC<AnalyticsProps> = ({
                 {mostExpensiveCategory.name}
               </p>
             </div>
-            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 flex-shrink-0 ml-4">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 flex-shrink-0 ml-4">
               <PieChart className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
             </div>
           </div>
@@ -201,7 +201,7 @@ const Analytics: React.FC<AnalyticsProps> = ({
                 const percentage = monthlyTotal > 0 ? (monthlyCost / monthlyTotal * 100).toFixed(1) : '0';
                 
                 return (
-                  <div key={subscription.id} className="flex items-center justify-between p-4 sm:p-6 bg-gradient-to-r from-purple-50/50 to-blue-50/50 rounded-xl sm:rounded-2xl border border-purple-100/50 hover:shadow-lg transition-all duration-300">
+                  <div key={subscription.id} className="flex items-center justify-between p-4 sm:p-6 bg-gradient-to-r from-purple-50/50 to-violet-50/50 rounded-xl sm:rounded-2xl border border-purple-100/50 hover:shadow-lg transition-all duration-300">
                     <div className="flex items-center space-x-3 sm:space-x-4 flex-1 min-w-0">
                       <div
                         className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center text-white font-bold text-sm shadow-lg flex-shrink-0"
