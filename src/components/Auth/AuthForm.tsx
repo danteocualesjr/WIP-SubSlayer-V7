@@ -72,7 +72,7 @@ const AuthForm: React.FC = () => {
       <div className="max-w-md w-full relative z-10">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center space-x-3 bg-white/10 backdrop-blur-sm rounded-2xl px-6 py-4 mb-8">
+          <div className="inline-flex items-center space-x-3 mb-8">
             <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center transform rotate-12">
               <Sword className="w-5 h-5 text-purple-600 transform -rotate-12" />
             </div>
