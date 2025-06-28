@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DollarSign, TrendingUp, CreditCard, Calendar, Plus, Sparkles, Zap, Star } from 'lucide-react';
+import { DollarSign, TrendingUp, CreditCard, Calendar, Plus, Sparkles, Star } from 'lucide-react';
 import StatsCard from './StatsCard';
 import SpendingChart from './SpendingChart';
 import CategoryChart from './CategoryChart';
@@ -178,7 +178,7 @@ const Dashboard: React.FC<DashboardProps> = ({
             </div>
           </div>
           
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-6 mt-6">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 mt-6">
             <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
               <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
                 <DollarSign className="w-4 h-4 sm:w-6 sm:h-6 text-yellow-300" />
@@ -204,16 +204,6 @@ const Dashboard: React.FC<DashboardProps> = ({
             </div>
             
             <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
-              <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
-                <Zap className="w-4 h-4 sm:w-6 sm:h-6 text-orange-300" />
-                <p className="text-white/80 text-xs sm:text-sm font-medium">Cancelled Subscriptions</p>
-              </div>
-              <p className="text-lg sm:text-3xl font-bold">
-                {subscriptions.filter(sub => sub.status === 'cancelled').length}
-              </p>
-            </div>
-            
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300 col-span-2 sm:col-span-1">
               <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
                 <Calendar className="w-4 h-4 sm:w-6 sm:h-6 text-pink-300" />
                 <p className="text-white/80 text-xs sm:text-sm font-medium">Upcoming Renewals</p>
