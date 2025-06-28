@@ -64,6 +64,13 @@ const Settings: React.FC = () => {
     { code: 'zh', name: '中文' },
   ];
 
+  const dateFormats = [
+    { value: 'MM/DD/YYYY', label: 'MM/DD/YYYY (12/25/2024)', description: 'US Format' },
+    { value: 'DD/MM/YYYY', label: 'DD/MM/YYYY (25/12/2024)', description: 'European Format' },
+    { value: 'YYYY-MM-DD', label: 'YYYY-MM-DD (2024-12-25)', description: 'ISO Format' },
+    { value: 'MMMM DD, YYYY', label: 'December 25, 2024', description: 'Words and Numbers' },
+  ];
+
   const showMessage = (type: 'success' | 'error', message?: string) => {
     if (type === 'success') {
       setShowSuccess(true);
@@ -169,10 +176,15 @@ const Settings: React.FC = () => {
               onChange={(e) => updateSetting('dateFormat', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             >
-              <option value="MM/DD/YYYY">MM/DD/YYYY (US)</option>
-              <option value="DD/MM/YYYY">DD/MM/YYYY (EU)</option>
-              <option value="YYYY-MM-DD">YYYY-MM-DD (ISO)</option>
+              {dateFormats.map((format) => (
+                <option key={format.value} value={format.value}>
+                  {format.label}
+                </option>
+              ))}
             </select>
+            <p className="text-xs text-gray-500 mt-1">
+              {dateFormats.find(f => f.value === settings.dateFormat)?.description}
+            </p>
           </div>
 
           <div>
