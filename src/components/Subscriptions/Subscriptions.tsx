@@ -347,7 +347,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
         <div className="relative z-10">
           <div className="flex items-center space-x-3 mb-4 sm:mb-6">
             <CreditCard className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" />
-            <h1 className="text-2xl sm:text-4xl font-bold">Subscription Management</h1>
+            <h1 className="text-2xl sm:text-4xl font-bold">Subscriptions</h1>
           </div>
           <p className="text-lg sm:text-xl text-white/90 mb-6 sm:mb-8 max-w-2xl">
             Take complete control of your recurring subscriptions and optimize your spending
