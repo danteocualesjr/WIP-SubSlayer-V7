@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
+import { supabase, isSupabaseReady } from '../lib/supabase';
 import { useAuth } from './useAuth';
 import { SpendingData } from '../types/subscription';
 
@@ -55,13 +55,17 @@ export function useSpendingData() {
       setError(null);
       
       // Check if Supabase is properly configured
-      if (!supabase) {
-        throw new Error('Supabase client not initialized');
+      if (!isSupabaseReady()) {
+        console.warn('Supabase not configured, using fallback data');
+        setSpendingData(generateFallbackData());
+        return;
       }
 
       // Verify user is authenticated
       if (!user?.id) {
-        throw new Error('User not authenticated');
+        console.warn('User not authenticated, using fallback data');
+        setSpendingData(generateFallbackData());
+        return;
       }
       
       // Get all subscriptions for the user
@@ -72,7 +76,9 @@ export function useSpendingData() {
 
       if (fetchError) {
         console.error('Supabase fetch error:', fetchError);
-        throw new Error(`Database error: ${fetchError.message}`);
+        // Use fallback data instead of throwing error
+        setSpendingData(generateFallbackData());
+        return;
       }
 
       // Generate spending data for the last 7 months
@@ -141,23 +147,25 @@ export function useSpendingData() {
     } catch (err) {
       console.error('Error generating spending data:', err);
       
-      // Set error message for user feedback
-      if (err instanceof Error) {
-        if (err.message.includes('Failed to fetch')) {
-          setError('Unable to connect to database. Please check your internet connection and try again.');
-        } else if (err.message.includes('Database error')) {
-          setError('Database connection error. Please try again later.');
-        } else if (err.message.includes('not authenticated')) {
-          setError('Authentication required. Please sign in again.');
+      // Always provide fallback data so the UI doesn't break
+      setSpendingData(generateFallbackData());
+      
+      // Only set error for network/connection issues, not for missing config
+      if (isSupabaseReady()) {
+        if (err instanceof Error) {
+          if (err.message.includes('Failed to fetch')) {
+            setError('Unable to connect to database. Please check your internet connection and try again.');
+          } else if (err.message.includes('Database error')) {
+            setError('Database connection error. Please try again later.');
+          } else if (err.message.includes('not authenticated')) {
+            setError('Authentication required. Please sign in again.');
+          } else {
+            setError('An unexpected error occurred. Please try again.');
+          }
         } else {
           setError('An unexpected error occurred. Please try again.');
         }
-      } else {
-        setError('An unexpected error occurred. Please try again.');
       }
-      
-      // Always provide fallback data so the UI doesn't break
-      setSpendingData(generateFallbackData());
     } finally {
       setLoading(false);
     }
