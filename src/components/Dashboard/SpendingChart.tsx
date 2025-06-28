@@ -248,45 +248,6 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
           {renderChart()}
         </ResponsiveContainer>
       </div>
-
-      {/* Insights */}
-      <div className="mt-6 pt-6 border-t border-gray-100">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="flex items-start space-x-3">
-            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-              isPositive ? 'bg-red-100' : 'bg-green-100'
-            }`}>
-              {isPositive ? (
-                <TrendingUp className="w-4 h-4 text-red-600" />
-              ) : (
-                <TrendingDown className="w-4 h-4 text-green-600" />
-              )}
-            </div>
-            <div>
-              <h4 className="font-medium text-gray-900">Monthly Change</h4>
-              <p className="text-sm text-gray-600">
-                {isPositive ? 'Increased' : 'Decreased'} by ${Math.abs(changeAmount).toFixed(2)} 
-                ({Math.abs(changePercentage).toFixed(1)}%) from last month
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start space-x-3">
-            <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-              <BarChart3 className="w-4 h-4 text-blue-600" />
-            </div>
-            <div>
-              <h4 className="font-medium text-gray-900">Spending Pattern</h4>
-              <p className="text-sm text-gray-600">
-                {currentMonth > averageSpending 
-                  ? `${((currentMonth / averageSpending - 1) * 100).toFixed(0)}% above average`
-                  : `${((1 - currentMonth / averageSpending) * 100).toFixed(0)}% below average`
-                }
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
