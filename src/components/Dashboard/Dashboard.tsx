@@ -138,7 +138,7 @@ const Dashboard: React.FC<DashboardProps> = ({
             <h1 className="text-2xl sm:text-4xl font-bold">Welcome back, {getUserName()}</h1>
           </div>
           <p className="text-lg sm:text-xl text-white/90 mb-6 sm:mb-8 max-w-2xl">
-            Take control of your subscriptions and maximize your savings with our premium dashboard
+            Slay your subscription chaos
           </p>
           
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-6">
