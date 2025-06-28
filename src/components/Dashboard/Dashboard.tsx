@@ -229,69 +229,6 @@ const Dashboard: React.FC<DashboardProps> = ({
         </div>
       )}
 
-      {/* Quick Actions for Existing Users */}
-      {subscriptions.length > 0 && (
-        <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-lg border border-purple-100/50">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h3 className="text-lg sm:text-xl font-bold text-gray-900 flex items-center space-x-2">
-                <Star className="w-5 h-5 sm:w-6 sm:h-6 text-purple-500" />
-                <span>Quick Actions</span>
-              </h3>
-              <p className="text-gray-600 mt-1">Manage your subscriptions efficiently</p>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            <button
-              onClick={() => setShowAddModal(true)}
-              className="p-4 sm:p-6 bg-gradient-to-br from-purple-50 to-violet-50 hover:from-purple-100 hover:to-violet-100 rounded-xl sm:rounded-2xl border border-purple-200 transition-all duration-300 text-left group hover:scale-105 transform shadow-lg hover:shadow-xl"
-            >
-              <div className="flex items-center space-x-3 sm:space-x-4">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-purple-600 to-violet-600 rounded-xl sm:rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
-                  <Plus className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                </div>
-                <div>
-                  <h4 className="font-semibold text-gray-900">Add Subscription</h4>
-                  <p className="text-sm text-gray-600">Track a new service</p>
-                </div>
-              </div>
-            </button>
-            
-            <div className="p-4 sm:p-6 bg-gradient-to-br from-emerald-50 to-green-50 rounded-xl sm:rounded-2xl border border-emerald-200 shadow-lg">
-              <div className="flex items-center space-x-3 sm:space-x-4">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-emerald-600 to-green-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg">
-                  <DollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                </div>
-                <div>
-                  <h4 className="font-semibold text-gray-900">Monthly Savings</h4>
-                  <p className="text-lg font-bold text-emerald-600">
-                    ${(subscriptions.filter(s => s.status === 'cancelled').reduce((sum, s) => sum + (s.billingCycle === 'monthly' ? s.cost : s.cost / 12), 0)).toFixed(2)}
-                  </p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="p-4 sm:p-6 bg-gradient-to-br from-orange-50 to-red-50 rounded-xl sm:rounded-2xl border border-orange-200 shadow-lg sm:col-span-2 lg:col-span-1">
-              <div className="flex items-center space-x-3 sm:space-x-4">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-orange-600 to-red-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg">
-                  <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                </div>
-                <div>
-                  <h4 className="font-semibold text-gray-900">Next Renewal</h4>
-                  <p className="text-sm text-gray-600">
-                    {activeSubscriptions.length > 0 
-                      ? new Date(Math.min(...activeSubscriptions.map(s => new Date(s.nextBilling).getTime()))).toLocaleDateString()
-                      : 'No active subscriptions'
-                    }
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Charts and Upcoming Renewals */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
         <SpendingChart data={spendingData} loading={spendingLoading} />
