@@ -133,15 +133,30 @@ const Dashboard: React.FC<DashboardProps> = ({
         <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-purple-900/50 via-violet-800/50 to-purple-700/50 [mask-image:radial-gradient(800px_400px_at_center,transparent_20%,white)]"></div>
         
         <div className="relative z-10">
-          <div className="flex items-center space-x-3 mb-4 sm:mb-6">
-            <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" />
-            <h1 className="text-2xl sm:text-4xl font-bold">Welcome back, {getUserName()}</h1>
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-6 lg:space-y-0">
+            <div>
+              <div className="flex items-center space-x-3 mb-4 sm:mb-6">
+                <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" />
+                <h1 className="text-2xl sm:text-4xl font-bold">Welcome back, {getUserName()}</h1>
+              </div>
+              <p className="text-lg sm:text-xl text-white/90 mb-6 sm:mb-8 max-w-2xl">
+                Slay your subscription chaos
+              </p>
+            </div>
+            
+            {/* Add Subscription Button */}
+            <div className="flex-shrink-0">
+              <button
+                onClick={() => setShowAddModal(true)}
+                className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2 border border-white/30 hover:border-white/50 shadow-lg hover:shadow-xl"
+              >
+                <Plus className="w-5 h-5" />
+                <span>Add Subscription</span>
+              </button>
+            </div>
           </div>
-          <p className="text-lg sm:text-xl text-white/90 mb-6 sm:mb-8 max-w-2xl">
-            Slay your subscription chaos
-          </p>
           
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-6 mt-6">
             <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
               <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
                 <DollarSign className="w-4 h-4 sm:w-6 sm:h-6 text-yellow-300" />
