@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BarChart3, CreditCard, Calculator, Home, Bell, User, Settings, Sword, Tag, Sparkles, ChevronLeft, ChevronRight, Menu, X } from 'lucide-react';
+import { BarChart3, CreditCard, Calculator, Home, Bell, User, Settings, Sword, Tag, Sparkles, Menu, X, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 
 interface SidebarProps {
   activeTab: string;
@@ -202,16 +202,16 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
         </div>
 
         {/* Toggle Button */}
-        <div className="absolute -right-3 top-8 z-50">
+        <div className="absolute -right-4 top-8 z-50">
           <button
             onClick={toggleSidebar}
-            className="w-6 h-6 bg-white border border-purple-200 rounded-full flex items-center justify-center text-purple-600 hover:text-purple-700 hover:bg-purple-50 transition-all duration-200 shadow-md hover:shadow-lg"
+            className="w-8 h-8 bg-white border border-purple-200 rounded-xl flex items-center justify-center text-purple-600 hover:text-purple-700 hover:bg-purple-50 transition-all duration-200 shadow-lg hover:shadow-xl group"
             title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
             {isCollapsed ? (
-              <ChevronRight className="w-3 h-3" />
+              <PanelLeftOpen className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
             ) : (
-              <ChevronLeft className="w-3 h-3" />
+              <PanelLeftClose className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
             )}
           </button>
         </div>
