@@ -7,6 +7,7 @@ export function useSpendingData() {
   const { user } = useAuth();
   const [spendingData, setSpendingData] = useState<SpendingData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -14,6 +15,7 @@ export function useSpendingData() {
     } else {
       setSpendingData([]);
       setLoading(false);
+      setError(null);
     }
 
     // Listen for subscription changes to refresh spending data
@@ -30,20 +32,51 @@ export function useSpendingData() {
     };
   }, [user]);
 
+  const generateFallbackData = () => {
+    // Generate fallback data for the last 7 months
+    const currentDate = new Date();
+    const fallbackMonths = [];
+    
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
+      const monthName = date.toLocaleDateString('en-US', { month: 'short' });
+      fallbackMonths.push({
+        month: monthName,
+        amount: 0
+      });
+    }
+    
+    return fallbackMonths;
+  };
+
   const generateSpendingData = async () => {
     try {
       setLoading(true);
+      setError(null);
+      
+      // Check if Supabase is properly configured
+      if (!supabase) {
+        throw new Error('Supabase client not initialized');
+      }
+
+      // Verify user is authenticated
+      if (!user?.id) {
+        throw new Error('User not authenticated');
+      }
       
       // Get all subscriptions for the user
-      const { data: subscriptions, error } = await supabase
+      const { data: subscriptions, error: fetchError } = await supabase
         .from('subscriptions')
         .select('*')
-        .eq('user_id', user?.id);
+        .eq('user_id', user.id);
 
-      if (error) throw error;
+      if (fetchError) {
+        console.error('Supabase fetch error:', fetchError);
+        throw new Error(`Database error: ${fetchError.message}`);
+      }
 
-      // Generate spending data for the last 7 months (Dec 2024 - Jun 2025)
-      const currentDate = new Date(); // June 26, 2025
+      // Generate spending data for the last 7 months
+      const currentDate = new Date();
       const months = [];
       
       // Generate the last 7 months including current month
@@ -107,20 +140,24 @@ export function useSpendingData() {
       setSpendingData(spendingByMonth);
     } catch (err) {
       console.error('Error generating spending data:', err);
-      // Fallback to current months with zero data
-      const currentDate = new Date();
-      const fallbackMonths = [];
       
-      for (let i = 6; i >= 0; i--) {
-        const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
-        const monthName = date.toLocaleDateString('en-US', { month: 'short' });
-        fallbackMonths.push({
-          month: monthName,
-          amount: 0
-        });
+      // Set error message for user feedback
+      if (err instanceof Error) {
+        if (err.message.includes('Failed to fetch')) {
+          setError('Unable to connect to database. Please check your internet connection and try again.');
+        } else if (err.message.includes('Database error')) {
+          setError('Database connection error. Please try again later.');
+        } else if (err.message.includes('not authenticated')) {
+          setError('Authentication required. Please sign in again.');
+        } else {
+          setError('An unexpected error occurred. Please try again.');
+        }
+      } else {
+        setError('An unexpected error occurred. Please try again.');
       }
       
-      setSpendingData(fallbackMonths);
+      // Always provide fallback data so the UI doesn't break
+      setSpendingData(generateFallbackData());
     } finally {
       setLoading(false);
     }
@@ -129,6 +166,7 @@ export function useSpendingData() {
   return {
     spendingData,
     loading,
+    error,
     refetch: generateSpendingData
   };
 }

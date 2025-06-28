@@ -3,11 +3,40 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables');
+// Enhanced error checking for environment variables
+if (!supabaseUrl) {
+  console.error('VITE_SUPABASE_URL is not defined in environment variables');
+  throw new Error('Missing VITE_SUPABASE_URL environment variable. Please check your .env file.');
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+if (!supabaseAnonKey) {
+  console.error('VITE_SUPABASE_ANON_KEY is not defined in environment variables');
+  throw new Error('Missing VITE_SUPABASE_ANON_KEY environment variable. Please check your .env file.');
+}
+
+// Validate URL format
+try {
+  new URL(supabaseUrl);
+} catch {
+  console.error('Invalid VITE_SUPABASE_URL format:', supabaseUrl);
+  throw new Error('Invalid VITE_SUPABASE_URL format. Please check your .env file.');
+}
+
+// Create Supabase client with error handling
+let supabase;
+try {
+  supabase = createClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+    },
+  });
+} catch (error) {
+  console.error('Failed to create Supabase client:', error);
+  throw new Error('Failed to initialize Supabase client. Please check your configuration.');
+}
+
+export { supabase };
 
 export type Database = {
   public: {
