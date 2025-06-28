@@ -15,8 +15,10 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
     return (
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
         <div className="mb-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Monthly Spending Trend</h3>
-          <p className="text-sm text-gray-600">Track your subscription costs over time</p>
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-2xl font-bold text-gray-900">Monthly Spending Trend</h3>
+            <span className="text-purple-600 font-medium">Last 6 months</span>
+          </div>
         </div>
         <div className="h-80 flex items-center justify-center">
           <div className="w-8 h-8 border-2 border-purple-600/30 border-t-purple-600 rounded-full animate-spin" />
@@ -29,8 +31,10 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
     return (
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
         <div className="mb-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Monthly Spending Trend</h3>
-          <p className="text-sm text-gray-600">Track your subscription costs over time</p>
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-2xl font-bold text-gray-900">Monthly Spending Trend</h3>
+            <span className="text-purple-600 font-medium">Last 6 months</span>
+          </div>
         </div>
         <div className="h-80 flex items-center justify-center">
           <div className="text-center">
@@ -43,25 +47,13 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
     );
   }
 
-  // Calculate trend metrics
-  const currentMonth = data[data.length - 1]?.amount || 0;
-  const previousMonth = data[data.length - 2]?.amount || 0;
-  const changeAmount = currentMonth - previousMonth;
-  const changePercentage = previousMonth > 0 ? ((changeAmount / previousMonth) * 100) : 0;
-  const isPositive = changeAmount >= 0;
-
-  // Calculate total and average
-  const totalSpent = data.reduce((sum, item) => sum + item.amount, 0);
-  const averageSpending = totalSpent / data.length;
-  const highestMonth = Math.max(...data.map(item => item.amount));
-
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-white/95 backdrop-blur-sm border border-gray-200 rounded-xl shadow-lg p-4 min-w-[160px]">
           <p className="text-sm font-medium text-gray-900 mb-2">{label}</p>
           <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 rounded-full bg-gradient-to-r from-purple-600 to-blue-600"></div>
+            <div className="w-3 h-3 rounded-full bg-purple-600"></div>
             <span className="text-sm text-gray-600">Amount:</span>
             <span className="text-lg font-bold text-gray-900">${payload[0].value.toFixed(2)}</span>
           </div>
@@ -83,74 +75,66 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
           <AreaChart {...commonProps}>
             <defs>
               <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.3}/>
-                <stop offset="95%" stopColor="#3B82F6" stopOpacity={0.05}/>
+                <stop offset="0%" stopColor="#a855f7" stopOpacity={0.8}/>
+                <stop offset="100%" stopColor="#a855f7" stopOpacity={0.1}/>
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+            <CartesianGrid strokeDasharray="none" stroke="#f1f5f9" horizontal={true} vertical={false} />
             <XAxis 
               dataKey="month" 
-              stroke="#64748b"
-              fontSize={12}
+              stroke="#9ca3af"
+              fontSize={14}
               tickLine={false}
               axisLine={false}
+              dy={10}
             />
             <YAxis 
-              stroke="#64748b"
-              fontSize={12}
+              stroke="#9ca3af"
+              fontSize={14}
               tickLine={false}
               axisLine={false}
               tickFormatter={(value) => `$${value}`}
+              domain={[0, 'dataMax + 20']}
             />
             <Tooltip content={<CustomTooltip />} />
             <Area
               type="monotone"
               dataKey="amount"
-              stroke="url(#lineGradient)"
+              stroke="#a855f7"
               strokeWidth={3}
               fill="url(#colorGradient)"
-              dot={{ fill: '#8B5CF6', strokeWidth: 2, r: 5 }}
-              activeDot={{ r: 7, fill: '#8B5CF6', stroke: '#fff', strokeWidth: 2 }}
+              dot={false}
+              activeDot={{ r: 6, fill: '#a855f7', stroke: '#fff', strokeWidth: 2 }}
             />
-            <defs>
-              <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#8B5CF6" />
-                <stop offset="100%" stopColor="#3B82F6" />
-              </linearGradient>
-            </defs>
           </AreaChart>
         );
 
       case 'bar':
         return (
           <BarChart {...commonProps}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+            <CartesianGrid strokeDasharray="none" stroke="#f1f5f9" horizontal={true} vertical={false} />
             <XAxis 
               dataKey="month" 
-              stroke="#64748b"
-              fontSize={12}
+              stroke="#9ca3af"
+              fontSize={14}
               tickLine={false}
               axisLine={false}
+              dy={10}
             />
             <YAxis 
-              stroke="#64748b"
-              fontSize={12}
+              stroke="#9ca3af"
+              fontSize={14}
               tickLine={false}
               axisLine={false}
               tickFormatter={(value) => `$${value}`}
+              domain={[0, 'dataMax + 20']}
             />
             <Tooltip content={<CustomTooltip />} />
             <Bar 
               dataKey="amount" 
-              fill="url(#barGradient)"
-              radius={[8, 8, 0, 0]}
+              fill="#a855f7"
+              radius={[4, 4, 0, 0]}
             />
-            <defs>
-              <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#8B5CF6" />
-                <stop offset="100%" stopColor="#3B82F6" />
-              </linearGradient>
-            </defs>
           </BarChart>
         );
 
@@ -162,36 +146,10 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
   return (
     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
       {/* Header with Chart Type Toggle */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Monthly Spending Trend</h3>
-          <p className="text-sm text-gray-600">Track your subscription costs over time</p>
-        </div>
-        
-        {/* Chart Type Selector */}
-        <div className="flex bg-gray-100 rounded-xl p-1">
-          <button
-            onClick={() => setChartType('area')}
-            className={`p-2 rounded-lg transition-all duration-200 ${
-              chartType === 'area'
-                ? 'bg-white text-purple-600 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
-            title="Area Chart"
-          >
-            <Zap className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => setChartType('bar')}
-            className={`p-2 rounded-lg transition-all duration-200 ${
-              chartType === 'bar'
-                ? 'bg-white text-purple-600 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
-            title="Bar Chart"
-          >
-            <BarChart3 className="w-4 h-4" />
-          </button>
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between w-full">
+          <h3 className="text-2xl font-bold text-gray-900">Monthly Spending Trend</h3>
+          <span className="text-purple-600 font-medium">Last 6 months</span>
         </div>
       </div>
 
