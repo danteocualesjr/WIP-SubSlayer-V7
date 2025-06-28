@@ -119,12 +119,12 @@ const AuthForm: React.FC = () => {
                 Email
               </label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white/60 w-5 h-5" />
+                <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white/80 w-5 h-5 z-10" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 bg-white/10 backdrop-blur-sm rounded-2xl text-white placeholder-white/60 focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 border-0 outline-none"
+                  className="w-full pl-12 pr-4 py-4 bg-white/15 rounded-2xl text-white placeholder-white/60 focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 border-0 outline-none"
                   placeholder="Enter your email"
                   required
                 />
@@ -147,12 +147,12 @@ const AuthForm: React.FC = () => {
                 )}
               </div>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white/60 w-5 h-5" />
+                <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white/80 w-5 h-5 z-10" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-12 pr-14 py-4 bg-white/10 backdrop-blur-sm rounded-2xl text-white placeholder-white/60 focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 border-0 outline-none"
+                  className="w-full pl-12 pr-14 py-4 bg-white/15 rounded-2xl text-white placeholder-white/60 focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 border-0 outline-none"
                   placeholder="Enter your password"
                   required
                   minLength={6}
@@ -160,7 +160,7 @@ const AuthForm: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/60 hover:text-white/80 transition-colors"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/80 hover:text-white transition-colors z-10"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
