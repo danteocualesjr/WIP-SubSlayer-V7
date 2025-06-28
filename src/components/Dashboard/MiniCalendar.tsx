@@ -114,17 +114,6 @@ const MiniCalendar: React.FC<MiniCalendarProps> = ({ subscriptions, onSwitchToCa
 
   return (
     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <div className="flex items-center space-x-3 mb-3">
-            <CalendarIcon className="w-5 h-5 text-purple-500" />
-            <h3 className="text-lg font-semibold text-gray-900">Calendar View</h3>
-          </div>
-          <p className="text-sm text-gray-600">Visual overview of renewal dates</p>
-        </div>
-      </div>
-
       {/* Month Navigation */}
       <div className="flex items-center justify-between mb-4">
         <button
