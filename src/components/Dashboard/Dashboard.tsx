@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DollarSign, TrendingUp, CreditCard, Calendar, Plus, Sparkles, Zap, Star } from 'lucide-react';
+import { DollarSign, TrendingUp, CreditCard, Calendar, Plus, Sparkles, Zap, Star, AlertTriangle, Target, TrendingDown } from 'lucide-react';
 import StatsCard from './StatsCard';
 import SpendingChart from './SpendingChart';
 import UpcomingRenewals from './UpcomingRenewals';
@@ -72,6 +72,97 @@ const Dashboard: React.FC<DashboardProps> = ({
     }
     return 'User';
   };
+
+  // Calculate insights
+  const getSubscriptionInsights = () => {
+    const insights = [];
+    
+    // High cost subscriptions
+    const highCostSubs = activeSubscriptions.filter(sub => {
+      const monthlyCost = sub.billingCycle === 'monthly' ? sub.cost : sub.cost / 12;
+      return monthlyCost > 20;
+    });
+    
+    if (highCostSubs.length > 0) {
+      const totalHighCost = highCostSubs.reduce((sum, sub) => {
+        const monthlyCost = sub.billingCycle === 'monthly' ? sub.cost : sub.cost / 12;
+        return sum + monthlyCost;
+      }, 0);
+      
+      insights.push({
+        type: 'warning',
+        title: 'High-Cost Subscriptions',
+        description: `${highCostSubs.length} subscription${highCostSubs.length > 1 ? 's' : ''} cost over $20/month`,
+        value: `$${totalHighCost.toFixed(2)}/mo`,
+        icon: AlertTriangle,
+        color: 'text-orange-600',
+        bgColor: 'bg-orange-50',
+        borderColor: 'border-orange-200'
+      });
+    }
+    
+    // Upcoming renewals in next 7 days
+    const urgentRenewals = activeSubscriptions.filter(sub => {
+      const renewalDate = new Date(sub.nextBilling);
+      const now = new Date();
+      const sevenDaysFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+      return renewalDate >= now && renewalDate <= sevenDaysFromNow;
+    });
+    
+    if (urgentRenewals.length > 0) {
+      const urgentTotal = urgentRenewals.reduce((sum, sub) => sum + sub.cost, 0);
+      insights.push({
+        type: 'urgent',
+        title: 'Renewals This Week',
+        description: `${urgentRenewals.length} subscription${urgentRenewals.length > 1 ? 's' : ''} renewing soon`,
+        value: `$${urgentTotal.toFixed(2)}`,
+        icon: Calendar,
+        color: 'text-red-600',
+        bgColor: 'bg-red-50',
+        borderColor: 'border-red-200'
+      });
+    }
+    
+    // Spending trend
+    if (spendingData.length >= 2) {
+      const isIncreasing = Number(spendingChange) > 0;
+      insights.push({
+        type: isIncreasing ? 'warning' : 'positive',
+        title: 'Spending Trend',
+        description: `${isIncreasing ? 'Increased' : 'Decreased'} from last month`,
+        value: `${Number(spendingChange) >= 0 ? '+' : ''}${spendingChange}%`,
+        icon: isIncreasing ? TrendingUp : TrendingDown,
+        color: isIncreasing ? 'text-red-600' : 'text-green-600',
+        bgColor: isIncreasing ? 'bg-red-50' : 'bg-green-50',
+        borderColor: isIncreasing ? 'border-red-200' : 'border-green-200'
+      });
+    }
+    
+    // Optimization opportunity
+    const cancelledSavings = subscriptions
+      .filter(sub => sub.status === 'cancelled')
+      .reduce((sum, sub) => {
+        const monthlyCost = sub.billingCycle === 'monthly' ? sub.cost : sub.cost / 12;
+        return sum + monthlyCost;
+      }, 0);
+    
+    if (cancelledSavings > 0) {
+      insights.push({
+        type: 'positive',
+        title: 'Money Saved',
+        description: 'From cancelled subscriptions',
+        value: `$${cancelledSavings.toFixed(2)}/mo`,
+        icon: Target,
+        color: 'text-green-600',
+        bgColor: 'bg-green-50',
+        borderColor: 'border-green-200'
+      });
+    }
+    
+    return insights.slice(0, 3); // Show max 3 insights
+  };
+
+  const insights = getSubscriptionInsights();
 
   const handleAddSubscription = (subscriptionData: Omit<Subscription, 'id' | 'createdAt'>) => {
     if (onAddSubscription) {
@@ -214,66 +305,58 @@ const Dashboard: React.FC<DashboardProps> = ({
         </div>
       )}
 
-      {/* Quick Actions for Existing Users */}
+      {/* Subscription Insights for Existing Users */}
       {subscriptions.length > 0 && (
         <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-lg border border-purple-100/50">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h3 className="text-lg sm:text-xl font-bold text-gray-900 flex items-center space-x-2">
                 <Star className="w-5 h-5 sm:w-6 sm:h-6 text-purple-500" />
-                <span>Quick Actions</span>
+                <span>Subscription Insights</span>
               </h3>
-              <p className="text-gray-600 mt-1">Manage your subscriptions efficiently</p>
+              <p className="text-gray-600 mt-1">Key metrics and recommendations for your subscriptions</p>
             </div>
-          </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             <button
               onClick={() => setShowAddModal(true)}
-              className="p-4 sm:p-6 bg-gradient-to-br from-purple-50 to-violet-50 hover:from-purple-100 hover:to-violet-100 rounded-xl sm:rounded-2xl border border-purple-200 transition-all duration-300 text-left group hover:scale-105 transform shadow-lg hover:shadow-xl"
+              className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl font-medium transition-all duration-300 flex items-center space-x-2 shadow-lg hover:shadow-xl"
             >
-              <div className="flex items-center space-x-3 sm:space-x-4">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-purple-600 to-violet-600 rounded-xl sm:rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
-                  <Plus className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                </div>
-                <div>
-                  <h4 className="font-semibold text-gray-900">Add Subscription</h4>
-                  <p className="text-sm text-gray-600">Track a new service</p>
-                </div>
-              </div>
+              <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="hidden sm:inline">Add Subscription</span>
             </button>
-            
-            <div className="p-4 sm:p-6 bg-gradient-to-br from-emerald-50 to-green-50 rounded-xl sm:rounded-2xl border border-emerald-200 shadow-lg">
-              <div className="flex items-center space-x-3 sm:space-x-4">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-emerald-600 to-green-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg">
-                  <DollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                </div>
-                <div>
-                  <h4 className="font-semibold text-gray-900">Monthly Savings</h4>
-                  <p className="text-lg font-bold text-emerald-600">
-                    ${(subscriptions.filter(s => s.status === 'cancelled').reduce((sum, s) => sum + (s.billingCycle === 'monthly' ? s.cost : s.cost / 12), 0)).toFixed(2)}
-                  </p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="p-4 sm:p-6 bg-gradient-to-br from-orange-50 to-red-50 rounded-xl sm:rounded-2xl border border-orange-200 shadow-lg sm:col-span-2 lg:col-span-1">
-              <div className="flex items-center space-x-3 sm:space-x-4">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-orange-600 to-red-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg">
-                  <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                </div>
-                <div>
-                  <h4 className="font-semibold text-gray-900">Next Renewal</h4>
-                  <p className="text-sm text-gray-600">
-                    {activeSubscriptions.length > 0 
-                      ? new Date(Math.min(...activeSubscriptions.map(s => new Date(s.nextBilling).getTime()))).toLocaleDateString()
-                      : 'No active subscriptions'
-                    }
-                  </p>
-                </div>
-              </div>
-            </div>
           </div>
+          
+          {insights.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              {insights.map((insight, index) => {
+                const Icon = insight.icon;
+                return (
+                  <div
+                    key={index}
+                    className={`p-4 sm:p-6 rounded-xl sm:rounded-2xl border transition-all duration-300 hover:shadow-lg ${insight.bgColor} ${insight.borderColor}`}
+                  >
+                    <div className="flex items-start justify-between mb-3">
+                      <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl ${insight.bgColor} flex items-center justify-center border ${insight.borderColor}`}>
+                        <Icon className={`w-5 h-5 sm:w-6 sm:h-6 ${insight.color}`} />
+                      </div>
+                      <span className={`text-lg sm:text-xl font-bold ${insight.color}`}>
+                        {insight.value}
+                      </span>
+                    </div>
+                    <h4 className="font-semibold text-gray-900 mb-1">{insight.title}</h4>
+                    <p className="text-sm text-gray-600">{insight.description}</p>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-gradient-to-br from-purple-100 to-violet-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Star className="w-8 h-8 text-purple-500" />
+              </div>
+              <h4 className="font-semibold text-gray-900 mb-2">All Looking Good!</h4>
+              <p className="text-gray-600">Your subscriptions are well-managed. Keep up the great work!</p>
+            </div>
+          )}
         </div>
       )}
 
