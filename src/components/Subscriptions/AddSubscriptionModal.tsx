@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { X, Plus, Sparkles } from 'lucide-react';
+import { X, Plus, Sparkles, Palette, Check } from 'lucide-react';
 import { Subscription } from '../../types/subscription';
 import { useSettings } from '../../hooks/useSettings';
 
@@ -101,10 +101,33 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
     { code: 'NCL', name: 'CFP Franc', symbol: '₣' },
   ];
 
-  const colors = [
-    '#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EF4444',
-    '#F97316', '#84CC16', '#06B6D4', '#8B5CF6', '#EC4899'
-  ];
+  // Enhanced color palette with better organization
+  const colorPalette = {
+    popular: [
+      { name: 'Purple', value: '#8B5CF6' },
+      { name: 'Blue', value: '#3B82F6' },
+      { name: 'Green', value: '#10B981' },
+      { name: 'Orange', value: '#F59E0B' },
+      { name: 'Red', value: '#EF4444' },
+      { name: 'Pink', value: '#EC4899' },
+    ],
+    vibrant: [
+      { name: 'Violet', value: '#7C3AED' },
+      { name: 'Indigo', value: '#6366F1' },
+      { name: 'Cyan', value: '#06B6D4' },
+      { name: 'Emerald', value: '#059669' },
+      { name: 'Lime', value: '#84CC16' },
+      { name: 'Amber', value: '#F59E0B' },
+    ],
+    muted: [
+      { name: 'Slate', value: '#64748B' },
+      { name: 'Gray', value: '#6B7280' },
+      { name: 'Zinc', value: '#71717A' },
+      { name: 'Stone', value: '#78716C' },
+      { name: 'Neutral', value: '#737373' },
+      { name: 'Warm Gray', value: '#8B7355' },
+    ]
+  };
 
   // Initialize form data when modal opens or subscription changes
   useEffect(() => {
@@ -204,6 +227,14 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
     if (e.target === e.currentTarget) {
       onClose();
     }
+  };
+
+  const getColorName = (colorValue: string) => {
+    for (const category of Object.values(colorPalette)) {
+      const color = category.find(c => c.value === colorValue);
+      if (color) return color.name;
+    }
+    return 'Custom';
   };
 
   if (!isOpen) return null;
@@ -348,22 +379,80 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
             </select>
           </div>
 
+          {/* Enhanced Color Picker */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-3">
-              Color
+              <div className="flex items-center space-x-2">
+                <Palette className="w-4 h-4" />
+                <span>Color Theme</span>
+              </div>
             </label>
-            <div className="flex flex-wrap gap-2 sm:gap-3">
-              {colors.map((color) => (
-                <button
-                  key={color}
-                  type="button"
-                  onClick={() => setFormData({ ...formData, color })}
-                  className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl border-2 transition-all duration-200 hover:scale-110 ${
-                    formData.color === color ? 'border-gray-900 scale-110 shadow-lg' : 'border-gray-200 hover:border-gray-400'
-                  }`}
-                  style={{ backgroundColor: color }}
-                />
+            
+            {/* Color Preview */}
+            <div className="flex items-center space-x-3 mb-4 p-3 bg-gray-50 rounded-xl">
+              <div 
+                className="w-8 h-8 rounded-xl shadow-md border-2 border-white"
+                style={{ backgroundColor: formData.color }}
+              />
+              <div>
+                <p className="text-sm font-medium text-gray-900">{getColorName(formData.color)}</p>
+                <p className="text-xs text-gray-500">{formData.color}</p>
+              </div>
+            </div>
+
+            {/* Color Categories */}
+            <div className="space-y-4">
+              {Object.entries(colorPalette).map(([categoryName, colors]) => (
+                <div key={categoryName}>
+                  <h4 className="text-xs font-medium text-gray-600 mb-2 uppercase tracking-wide">
+                    {categoryName}
+                  </h4>
+                  <div className="grid grid-cols-6 gap-2">
+                    {colors.map((color) => (
+                      <button
+                        key={color.value}
+                        type="button"
+                        onClick={() => setFormData({ ...formData, color: color.value })}
+                        className={`relative w-10 h-10 rounded-xl transition-all duration-200 hover:scale-110 hover:shadow-lg group ${
+                          formData.color === color.value 
+                            ? 'ring-2 ring-gray-900 ring-offset-2 scale-110 shadow-lg' 
+                            : 'hover:ring-2 hover:ring-gray-400 hover:ring-offset-1'
+                        }`}
+                        style={{ backgroundColor: color.value }}
+                        title={color.name}
+                      >
+                        {formData.color === color.value && (
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <Check className="w-4 h-4 text-white drop-shadow-lg" />
+                          </div>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               ))}
+            </div>
+
+            {/* Custom Color Input */}
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <label className="block text-xs font-medium text-gray-600 mb-2">
+                Custom Color
+              </label>
+              <div className="flex items-center space-x-3">
+                <input
+                  type="color"
+                  value={formData.color}
+                  onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+                  className="w-12 h-10 rounded-xl border border-gray-300 cursor-pointer"
+                />
+                <input
+                  type="text"
+                  value={formData.color}
+                  onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  placeholder="#8B5CF6"
+                />
+              </div>
             </div>
           </div>
 
