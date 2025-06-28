@@ -6,6 +6,8 @@ import UpcomingRenewals from './UpcomingRenewals';
 import AddSubscriptionModal from '../Subscriptions/AddSubscriptionModal';
 import { SparklesCore } from '../ui/sparkles';
 import { Subscription, SpendingData } from '../../types/subscription';
+import { useAuth } from '../../hooks/useAuth';
+import { useProfile } from '../../hooks/useProfile';
 
 interface DashboardProps {
   subscriptions: Subscription[];
@@ -24,6 +26,8 @@ const Dashboard: React.FC<DashboardProps> = ({
   onEditSubscription,
   onSwitchToCalendar 
 }) => {
+  const { user } = useAuth();
+  const { profile } = useProfile();
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingSubscription, setEditingSubscription] = useState<Subscription | null>(null);
   
@@ -57,6 +61,17 @@ const Dashboard: React.FC<DashboardProps> = ({
   };
 
   const upcomingRenewalsCount = getUpcomingRenewalsCount();
+
+  // Get user's display name
+  const getUserName = () => {
+    if (profile.displayName) {
+      return profile.displayName;
+    }
+    if (user?.email) {
+      return user.email.split('@')[0];
+    }
+    return 'User';
+  };
 
   const handleAddSubscription = (subscriptionData: Omit<Subscription, 'id' | 'createdAt'>) => {
     if (onAddSubscription) {
@@ -120,7 +135,7 @@ const Dashboard: React.FC<DashboardProps> = ({
         <div className="relative z-10">
           <div className="flex items-center space-x-3 mb-4 sm:mb-6">
             <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" />
-            <h1 className="text-2xl sm:text-4xl font-bold">Welcome back to SubSlayer</h1>
+            <h1 className="text-2xl sm:text-4xl font-bold">Welcome back, {getUserName()}</h1>
           </div>
           <p className="text-lg sm:text-xl text-white/90 mb-6 sm:mb-8 max-w-2xl">
             Take control of your subscriptions and maximize your savings with our premium dashboard
