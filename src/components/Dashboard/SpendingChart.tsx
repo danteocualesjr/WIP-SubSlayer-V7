@@ -242,45 +242,6 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
         </div>
       </div>
 
-      {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl p-4">
-          <div className="flex items-center space-x-2 mb-1">
-            <div className={`w-2 h-2 rounded-full ${isPositive ? 'bg-red-500' : 'bg-green-500'}`}></div>
-            <p className="text-sm font-medium text-gray-700">This Month</p>
-          </div>
-          <p className="text-2xl font-bold text-gray-900">${currentMonth.toFixed(2)}</p>
-          <div className="flex items-center space-x-1 mt-1">
-            {isPositive ? (
-              <TrendingUp className="w-3 h-3 text-red-500" />
-            ) : (
-              <TrendingDown className="w-3 h-3 text-green-500" />
-            )}
-            <span className={`text-xs font-medium ${isPositive ? 'text-red-600' : 'text-green-600'}`}>
-              {isPositive ? '+' : ''}{changePercentage.toFixed(1)}%
-            </span>
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-r from-emerald-50 to-green-50 rounded-xl p-4">
-          <p className="text-sm font-medium text-gray-700 mb-1">Average</p>
-          <p className="text-2xl font-bold text-emerald-600">${averageSpending.toFixed(2)}</p>
-          <p className="text-xs text-gray-500 mt-1">per month</p>
-        </div>
-
-        <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl p-4">
-          <p className="text-sm font-medium text-gray-700 mb-1">Highest</p>
-          <p className="text-2xl font-bold text-orange-600">${highestMonth.toFixed(2)}</p>
-          <p className="text-xs text-gray-500 mt-1">peak spending</p>
-        </div>
-
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4">
-          <p className="text-sm font-medium text-gray-700 mb-1">Total</p>
-          <p className="text-2xl font-bold text-blue-600">${totalSpent.toFixed(2)}</p>
-          <p className="text-xs text-gray-500 mt-1">all time</p>
-        </div>
-      </div>
-
       {/* Chart */}
       <div className="h-80">
         <ResponsiveContainer width="100%" height="100%">
