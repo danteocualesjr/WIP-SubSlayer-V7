@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff, Mail, Lock, ArrowRight, Sword } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, CreditCard, Sparkles, Shield, Zap } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { SparklesCore } from '../ui/sparkles';
 
@@ -41,11 +41,6 @@ const AuthForm: React.FC = () => {
     }
   };
 
-  const handleGoogleSignIn = () => {
-    // Placeholder for Google sign-in functionality
-    console.log('Google sign-in clicked');
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-violet-800 to-purple-700 flex items-center justify-center p-4 relative overflow-hidden">
       {/* Sparkles Background */}
@@ -72,59 +67,42 @@ const AuthForm: React.FC = () => {
       <div className="max-w-md w-full relative z-10">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center space-x-3 mb-8">
-            <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center transform rotate-12">
-              <Sword className="w-5 h-5 text-purple-600 transform -rotate-12" />
-            </div>
-            <span className="text-2xl font-bold text-white">
-              SubSlayer
-            </span>
+          <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-violet-500 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl backdrop-blur-sm border border-white/20 transform hover:scale-105 transition-all duration-300">
+            <CreditCard className="w-10 h-10 text-white" />
           </div>
-          
-          <h1 className="text-4xl font-bold text-white mb-3">
-            Welcome back
+          <h1 className="text-4xl font-bold text-white mb-3 bg-gradient-to-r from-purple-200 to-violet-200 bg-clip-text text-transparent">
+            SubSlayer
           </h1>
-          <p className="text-white/80 text-lg">
-            Sign in to your account
-          </p>
+          <p className="text-white/80 text-lg">Take control of your subscriptions</p>
         </div>
 
         {/* Auth Form */}
-        <div className="space-y-6">
-          {/* Google Sign In Button */}
-          <button
-            onClick={handleGoogleSignIn}
-            className="w-full flex items-center justify-center space-x-3 px-6 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white hover:bg-white/20 transition-all duration-300"
-          >
-            <div className="w-5 h-5 bg-white rounded-full flex items-center justify-center">
-              <span className="text-xs font-bold text-gray-800">G</span>
-            </div>
-            <span className="font-medium">Continue with Google</span>
-          </button>
-
-          {/* Divider */}
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-white/20"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-transparent text-white/60">or</span>
-            </div>
+        <div className="bg-white/10 backdrop-blur-2xl rounded-3xl p-8 border border-white/20 shadow-2xl">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-white mb-3">
+              {isSignUp ? 'Create Account' : 'Welcome Back'}
+            </h2>
+            <p className="text-white/80 text-lg">
+              {isSignUp 
+                ? 'Start managing your subscriptions today' 
+                : 'Sign in to your account'
+              }
+            </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email */}
             <div>
               <label className="block text-white/90 text-sm font-medium mb-3">
-                Email
+                Email Address
               </label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white/80 w-5 h-5 z-10" />
+                <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white/60 w-5 h-5" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 bg-white/15 rounded-2xl text-white placeholder-white/60 focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 border-0 outline-none"
+                  className="w-full pl-12 pr-4 py-4 bg-white/10 border border-white/20 rounded-2xl text-white placeholder-white/60 focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 backdrop-blur-sm"
                   placeholder="Enter your email"
                   required
                 />
@@ -133,26 +111,16 @@ const AuthForm: React.FC = () => {
 
             {/* Password */}
             <div>
-              <div className="flex items-center justify-between mb-3">
-                <label className="block text-white/90 text-sm font-medium">
-                  Password
-                </label>
-                {!isSignUp && (
-                  <button
-                    type="button"
-                    className="text-white/60 hover:text-white/80 text-sm underline transition-colors"
-                  >
-                    Forgot password?
-                  </button>
-                )}
-              </div>
+              <label className="block text-white/90 text-sm font-medium mb-3">
+                Password
+              </label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white/80 w-5 h-5 z-10" />
+                <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white/60 w-5 h-5" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-12 pr-14 py-4 bg-white/15 rounded-2xl text-white placeholder-white/60 focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 border-0 outline-none"
+                  className="w-full pl-12 pr-14 py-4 bg-white/10 border border-white/20 rounded-2xl text-white placeholder-white/60 focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 backdrop-blur-sm"
                   placeholder="Enter your password"
                   required
                   minLength={6}
@@ -160,7 +128,7 @@ const AuthForm: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/80 hover:text-white transition-colors z-10"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/60 hover:text-white/80 transition-colors"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -183,46 +151,56 @@ const AuthForm: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-white hover:bg-gray-100 text-gray-900 py-4 rounded-2xl font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 shadow-xl hover:shadow-2xl border-0 outline-none"
+              className="w-full bg-gradient-to-r from-purple-500 to-violet-500 hover:from-purple-600 hover:to-violet-600 text-white py-4 rounded-2xl font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 shadow-xl hover:shadow-2xl hover:scale-105 transform"
             >
               {loading ? (
-                <div className="w-6 h-6 border-2 border-gray-400 border-t-gray-900 rounded-full animate-spin" />
+                <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
                 <>
-                  <span>{isSignUp ? 'Sign up' : 'Sign In'}</span>
-                  <ArrowRight className="w-5 h-5" />
+                  <User className="w-5 h-5" />
+                  <span>{isSignUp ? 'Create Account' : 'Sign In'}</span>
                 </>
               )}
             </button>
           </form>
 
           {/* Toggle Form */}
-          <div className="text-center">
-            <span className="text-white/60">
-              {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
-            </span>
+          <div className="mt-8 text-center">
             <button
               onClick={() => {
                 setIsSignUp(!isSignUp);
                 setError(null);
                 setMessage(null);
               }}
-              className="text-white hover:text-white/80 transition-colors font-medium underline"
+              className="text-white/80 hover:text-white transition-colors text-lg font-medium"
             >
-              {isSignUp ? 'Sign in' : 'Sign up'}
+              {isSignUp 
+                ? 'Already have an account? Sign in' 
+                : "Don't have an account? Sign up"
+              }
             </button>
           </div>
+        </div>
 
-          {/* Terms and Privacy */}
-          <div className="text-center text-xs text-white/50">
-            <span>By continuing, you agree to our </span>
-            <button className="underline hover:text-white/70 transition-colors">
-              Terms of Service
-            </button>
-            <span> and </span>
-            <button className="underline hover:text-white/70 transition-colors">
-              Privacy Policy
-            </button>
+        {/* Features */}
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+          <div className="text-white/80 group hover:text-white transition-colors">
+            <div className="w-12 h-12 bg-gradient-to-br from-purple-400/20 to-violet-400/20 rounded-2xl flex items-center justify-center mx-auto mb-3 backdrop-blur-sm border border-white/10 group-hover:scale-110 transition-transform duration-300">
+              <Sparkles className="w-6 h-6" />
+            </div>
+            <p className="font-medium">Track Subscriptions</p>
+          </div>
+          <div className="text-white/80 group hover:text-white transition-colors">
+            <div className="w-12 h-12 bg-gradient-to-br from-purple-400/20 to-violet-400/20 rounded-2xl flex items-center justify-center mx-auto mb-3 backdrop-blur-sm border border-white/10 group-hover:scale-110 transition-transform duration-300">
+              <Shield className="w-6 h-6" />
+            </div>
+            <p className="font-medium">Save Money</p>
+          </div>
+          <div className="text-white/80 group hover:text-white transition-colors">
+            <div className="w-12 h-12 bg-gradient-to-br from-purple-400/20 to-violet-400/20 rounded-2xl flex items-center justify-center mx-auto mb-3 backdrop-blur-sm border border-white/10 group-hover:scale-110 transition-transform duration-300">
+              <Zap className="w-6 h-6" />
+            </div>
+            <p className="font-medium">Get Reminders</p>
           </div>
         </div>
       </div>
