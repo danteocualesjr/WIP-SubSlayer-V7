@@ -107,8 +107,8 @@ const Dashboard: React.FC<DashboardProps> = ({
 
   return (
     <div className="space-y-6 sm:space-y-8">
-      {/* Reduced Hero Section with Sparkles */}
-      <div className="relative bg-gradient-to-br from-purple-900 via-violet-800 to-purple-700 rounded-2xl sm:rounded-3xl p-4 sm:p-6 text-white overflow-hidden">
+      {/* Compact Hero Section with Sparkles */}
+      <div className="relative bg-gradient-to-br from-purple-900 via-violet-800 to-purple-700 rounded-2xl p-4 sm:p-5 text-white overflow-hidden">
         {/* Sparkles Background */}
         <div className="absolute inset-0 w-full h-full">
           <SparklesCore
@@ -133,55 +133,51 @@ const Dashboard: React.FC<DashboardProps> = ({
         <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-purple-900/50 via-violet-800/50 to-purple-700/50 [mask-image:radial-gradient(800px_400px_at_center,transparent_20%,white)]"></div>
         
         <div className="relative z-10">
-          <div className="flex items-center space-x-3 mb-3 sm:mb-4">
-            <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-300" />
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">Welcome back, {getUserName()}</h1>
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center space-x-2">
+              <Sparkles className="w-5 h-5 text-yellow-300" />
+              <h1 className="text-lg sm:text-xl font-bold">Welcome back, {getUserName()}</h1>
+            </div>
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 flex items-center space-x-1"
+            >
+              <Plus className="w-4 h-4" />
+              <span className="hidden sm:inline">Add Subscription</span>
+            </button>
           </div>
-          <p className="text-base sm:text-lg text-white/90 mb-4 sm:mb-6 max-w-2xl">
-            Take control of your subscriptions and maximize your savings
-          </p>
           
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-4">
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg sm:rounded-xl p-2 sm:p-4 border border-white/20 hover:bg-white/20 transition-all duration-300">
-              <div className="flex items-center space-x-1 sm:space-x-2 mb-1">
-                <DollarSign className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-300" />
-                <p className="text-white/80 text-xs font-medium">Monthly Total</p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
+              <div className="flex items-center space-x-1 mb-1">
+                <DollarSign className="w-3 h-3 text-yellow-300" />
+                <p className="text-white/80 text-xs font-medium">Monthly</p>
               </div>
-              <p className="text-sm sm:text-lg lg:text-xl font-bold">${monthlyTotal.toFixed(2)}</p>
+              <p className="text-lg font-bold">${monthlyTotal.toFixed(2)}</p>
             </div>
             
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg sm:rounded-xl p-2 sm:p-4 border border-white/20 hover:bg-white/20 transition-all duration-300">
-              <div className="flex items-center space-x-1 sm:space-x-2 mb-1">
-                <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 text-green-300" />
-                <p className="text-white/80 text-xs font-medium">Annual Projection</p>
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
+              <div className="flex items-center space-x-1 mb-1">
+                <TrendingUp className="w-3 h-3 text-green-300" />
+                <p className="text-white/80 text-xs font-medium">Annual</p>
               </div>
-              <p className="text-sm sm:text-lg lg:text-xl font-bold">${annualTotal.toFixed(2)}</p>
+              <p className="text-lg font-bold">${annualTotal.toFixed(2)}</p>
             </div>
             
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg sm:rounded-xl p-2 sm:p-4 border border-white/20 hover:bg-white/20 transition-all duration-300">
-              <div className="flex items-center space-x-1 sm:space-x-2 mb-1">
-                <CreditCard className="w-3 h-3 sm:w-4 sm:h-4 text-blue-300" />
-                <p className="text-white/80 text-xs font-medium">Active Subscriptions</p>
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
+              <div className="flex items-center space-x-1 mb-1">
+                <CreditCard className="w-3 h-3 text-blue-300" />
+                <p className="text-white/80 text-xs font-medium">Active</p>
               </div>
-              <p className="text-sm sm:text-lg lg:text-xl font-bold">{activeSubscriptions.length}</p>
+              <p className="text-lg font-bold">{activeSubscriptions.length}</p>
             </div>
             
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg sm:rounded-xl p-2 sm:p-4 border border-white/20 hover:bg-white/20 transition-all duration-300">
-              <div className="flex items-center space-x-1 sm:space-x-2 mb-1">
-                <Zap className="w-3 h-3 sm:w-4 sm:h-4 text-orange-300" />
-                <p className="text-white/80 text-xs font-medium">Cancelled</p>
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
+              <div className="flex items-center space-x-1 mb-1">
+                <Calendar className="w-3 h-3 text-pink-300" />
+                <p className="text-white/80 text-xs font-medium">Renewals</p>
               </div>
-              <p className="text-sm sm:text-lg lg:text-xl font-bold">
-                {subscriptions.filter(sub => sub.status === 'cancelled').length}
-              </p>
-            </div>
-            
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg sm:rounded-xl p-2 sm:p-4 border border-white/20 hover:bg-white/20 transition-all duration-300 col-span-2 sm:col-span-1">
-              <div className="flex items-center space-x-1 sm:space-x-2 mb-1">
-                <Calendar className="w-3 h-3 sm:w-4 sm:h-4 text-pink-300" />
-                <p className="text-white/80 text-xs font-medium">Upcoming Renewals</p>
-              </div>
-              <p className="text-sm sm:text-lg lg:text-xl font-bold">{upcomingRenewalsCount}</p>
+              <p className="text-lg font-bold">{upcomingRenewalsCount}</p>
             </div>
           </div>
         </div>
