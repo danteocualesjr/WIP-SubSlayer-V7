@@ -48,6 +48,12 @@ const MiniCalendar: React.FC<MiniCalendarProps> = ({ subscriptions, onSwitchToCa
     return date < today;
   };
 
+  const handleViewAllSubscriptions = () => {
+    // Navigate to subscriptions tab
+    const event = new CustomEvent('navigateToTab', { detail: { tab: 'subscriptions' } });
+    window.dispatchEvent(event);
+  };
+
   const renderCalendarDays = () => {
     const daysInMonth = getDaysInMonth(currentDate);
     const firstDay = getFirstDayOfMonth(currentDate);
@@ -186,7 +192,7 @@ const MiniCalendar: React.FC<MiniCalendarProps> = ({ subscriptions, onSwitchToCa
 
       {/* View All Subscriptions Button */}
       <button
-        onClick={onSwitchToCalendar}
+        onClick={handleViewAllSubscriptions}
         className="w-full px-4 py-3 bg-gradient-to-r from-purple-50 to-violet-50 hover:from-purple-100 hover:to-violet-100 text-purple-700 rounded-xl text-sm font-medium transition-all duration-200 border border-purple-200 hover:border-purple-300 flex items-center justify-center space-x-2"
       >
         <CalendarIcon className="w-4 h-4" />

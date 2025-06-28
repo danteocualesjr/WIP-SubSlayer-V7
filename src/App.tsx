@@ -71,6 +71,20 @@ function App() {
     };
   }, []);
 
+  // Listen for tab navigation events from dashboard components
+  useEffect(() => {
+    const handleNavigateToTab = (event: CustomEvent) => {
+      const { tab } = event.detail;
+      setActiveTab(tab);
+    };
+
+    window.addEventListener('navigateToTab', handleNavigateToTab as EventListener);
+    
+    return () => {
+      window.removeEventListener('navigateToTab', handleNavigateToTab as EventListener);
+    };
+  }, []);
+
   // Apply theme from settings
   useEffect(() => {
     const root = document.documentElement;
