@@ -229,15 +229,15 @@ const Dashboard: React.FC<DashboardProps> = ({
         </div>
       )}
 
-      {/* Charts and Upcoming Renewals */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
-        <SpendingChart data={spendingData} loading={spendingLoading} />
-        <UpcomingRenewals 
-          subscriptions={subscriptions} 
-          onSwitchToCalendar={handleSwitchToCalendar}
-          onEditSubscription={handleEditSubscription}
-        />
-      </div>
+      {/* Monthly Spending Trend */}
+      <SpendingChart data={spendingData} loading={spendingLoading} />
+
+      {/* Upcoming Renewals */}
+      <UpcomingRenewals 
+        subscriptions={subscriptions} 
+        onSwitchToCalendar={handleSwitchToCalendar}
+        onEditSubscription={handleEditSubscription}
+      />
 
       {/* Add/Edit Subscription Modal */}
       <AddSubscriptionModal
