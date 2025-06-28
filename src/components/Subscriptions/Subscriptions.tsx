@@ -255,13 +255,28 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
           <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-purple-900/50 via-violet-800/50 to-purple-700/50 [mask-image:radial-gradient(800px_400px_at_center,transparent_20%,white)]"></div>
           
           <div className="relative z-10">
-            <div className="flex items-center space-x-3 mb-4 sm:mb-6">
-              <CalendarIcon className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" />
-              <h1 className="text-2xl sm:text-4xl font-bold">Subscription Calendar</h1>
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-6 lg:space-y-0">
+              <div>
+                <div className="flex items-center space-x-3 mb-4 sm:mb-6">
+                  <CalendarIcon className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" />
+                  <h1 className="text-2xl sm:text-4xl font-bold">Subscription Calendar</h1>
+                </div>
+                <p className="text-lg sm:text-xl text-white/90 mb-6 sm:mb-8 max-w-2xl">
+                  Visualize your renewal dates and never miss a payment again
+                </p>
+              </div>
+              
+              {/* Action Button */}
+              <div className="flex-shrink-0">
+                <button
+                  onClick={() => setShowAddModal(true)}
+                  className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2 border border-white/30 hover:border-white/50 shadow-lg hover:shadow-xl"
+                >
+                  <Plus className="w-5 h-5" />
+                  <span>Add Subscription</span>
+                </button>
+              </div>
             </div>
-            <p className="text-lg sm:text-xl text-white/90 mb-6 sm:mb-8 max-w-2xl">
-              Visualize your renewal dates and never miss a payment again
-            </p>
           </div>
         </div>
 
@@ -345,15 +360,30 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
         <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-purple-900/50 via-violet-800/50 to-purple-700/50 [mask-image:radial-gradient(800px_400px_at_center,transparent_20%,white)]"></div>
         
         <div className="relative z-10">
-          <div className="flex items-center space-x-3 mb-4 sm:mb-6">
-            <CreditCard className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" />
-            <h1 className="text-2xl sm:text-4xl font-bold">Subscriptions</h1>
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-6 lg:space-y-0">
+            <div>
+              <div className="flex items-center space-x-3 mb-4 sm:mb-6">
+                <CreditCard className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" />
+                <h1 className="text-2xl sm:text-4xl font-bold">Subscriptions</h1>
+              </div>
+              <p className="text-lg sm:text-xl text-white/90 mb-6 sm:mb-8 max-w-2xl">
+                Take complete control of your recurring subscriptions and optimize your spending
+              </p>
+            </div>
+            
+            {/* Action Button */}
+            <div className="flex-shrink-0">
+              <button
+                onClick={() => setShowAddModal(true)}
+                className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2 border border-white/30 hover:border-white/50 shadow-lg hover:shadow-xl"
+              >
+                <Plus className="w-5 h-5" />
+                <span>Add Subscription</span>
+              </button>
+            </div>
           </div>
-          <p className="text-lg sm:text-xl text-white/90 mb-6 sm:mb-8 max-w-2xl">
-            Take complete control of your recurring subscriptions and optimize your spending
-          </p>
           
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 mt-6">
             <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
               <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
                 <CreditCard className="w-4 h-4 sm:w-6 sm:h-6 text-yellow-300" />
@@ -396,21 +426,12 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
         </div>
         <div className="flex space-x-3">
           {!isSelectionMode ? (
-            <>
-              <button
-                onClick={() => setIsSelectionMode(true)}
-                className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2"
-              >
-                <span>Select</span>
-              </button>
-              <button
-                onClick={() => setShowAddModal(true)}
-                className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2 shadow-lg"
-              >
-                <Plus className="w-5 h-5" />
-                <span>Add Subscription</span>
-              </button>
-            </>
+            <button
+              onClick={() => setIsSelectionMode(true)}
+              className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2"
+            >
+              <span>Select</span>
+            </button>
           ) : (
             <>
               <button
