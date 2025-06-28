@@ -169,10 +169,10 @@ const Dashboard: React.FC<DashboardProps> = ({
             <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
               <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
                 <Zap className="w-4 h-4 sm:w-6 sm:h-6 text-orange-300" />
-                <p className="text-white/80 text-xs sm:text-sm font-medium">Paused Subscriptions</p>
+                <p className="text-white/80 text-xs sm:text-sm font-medium">Cancelled Subscriptions</p>
               </div>
               <p className="text-lg sm:text-3xl font-bold">
-                {subscriptions.filter(sub => sub.status === 'paused').length}
+                {subscriptions.filter(sub => sub.status === 'cancelled').length}
               </p>
             </div>
             
@@ -251,7 +251,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                 <div>
                   <h4 className="font-semibold text-gray-900">Monthly Savings</h4>
                   <p className="text-lg font-bold text-emerald-600">
-                    ${(subscriptions.filter(s => s.status === 'paused').reduce((sum, s) => sum + (s.billingCycle === 'monthly' ? s.cost : s.cost / 12), 0)).toFixed(2)}
+                    ${(subscriptions.filter(s => s.status === 'cancelled').reduce((sum, s) => sum + (s.billingCycle === 'monthly' ? s.cost : s.cost / 12), 0)).toFixed(2)}
                   </p>
                 </div>
               </div>
