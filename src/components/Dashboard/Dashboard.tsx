@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DollarSign, TrendingUp, CreditCard, Calendar, Plus, Sparkles, Zap, Star, AlertTriangle, Target, TrendingDown } from 'lucide-react';
+import { DollarSign, TrendingUp, CreditCard, Calendar, Plus, Sparkles, Zap } from 'lucide-react';
 import StatsCard from './StatsCard';
 import SpendingChart from './SpendingChart';
 import UpcomingRenewals from './UpcomingRenewals';
@@ -72,97 +72,6 @@ const Dashboard: React.FC<DashboardProps> = ({
     }
     return 'User';
   };
-
-  // Calculate insights
-  const getSubscriptionInsights = () => {
-    const insights = [];
-    
-    // High cost subscriptions
-    const highCostSubs = activeSubscriptions.filter(sub => {
-      const monthlyCost = sub.billingCycle === 'monthly' ? sub.cost : sub.cost / 12;
-      return monthlyCost > 20;
-    });
-    
-    if (highCostSubs.length > 0) {
-      const totalHighCost = highCostSubs.reduce((sum, sub) => {
-        const monthlyCost = sub.billingCycle === 'monthly' ? sub.cost : sub.cost / 12;
-        return sum + monthlyCost;
-      }, 0);
-      
-      insights.push({
-        type: 'warning',
-        title: 'High-Cost Subscriptions',
-        description: `${highCostSubs.length} subscription${highCostSubs.length > 1 ? 's' : ''} cost over $20/month`,
-        value: `$${totalHighCost.toFixed(2)}/mo`,
-        icon: AlertTriangle,
-        color: 'text-orange-600',
-        bgColor: 'bg-orange-50',
-        borderColor: 'border-orange-200'
-      });
-    }
-    
-    // Upcoming renewals in next 7 days
-    const urgentRenewals = activeSubscriptions.filter(sub => {
-      const renewalDate = new Date(sub.nextBilling);
-      const now = new Date();
-      const sevenDaysFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-      return renewalDate >= now && renewalDate <= sevenDaysFromNow;
-    });
-    
-    if (urgentRenewals.length > 0) {
-      const urgentTotal = urgentRenewals.reduce((sum, sub) => sum + sub.cost, 0);
-      insights.push({
-        type: 'urgent',
-        title: 'Renewals This Week',
-        description: `${urgentRenewals.length} subscription${urgentRenewals.length > 1 ? 's' : ''} renewing soon`,
-        value: `$${urgentTotal.toFixed(2)}`,
-        icon: Calendar,
-        color: 'text-red-600',
-        bgColor: 'bg-red-50',
-        borderColor: 'border-red-200'
-      });
-    }
-    
-    // Spending trend
-    if (spendingData.length >= 2) {
-      const isIncreasing = Number(spendingChange) > 0;
-      insights.push({
-        type: isIncreasing ? 'warning' : 'positive',
-        title: 'Spending Trend',
-        description: `${isIncreasing ? 'Increased' : 'Decreased'} from last month`,
-        value: `${Number(spendingChange) >= 0 ? '+' : ''}${spendingChange}%`,
-        icon: isIncreasing ? TrendingUp : TrendingDown,
-        color: isIncreasing ? 'text-red-600' : 'text-green-600',
-        bgColor: isIncreasing ? 'bg-red-50' : 'bg-green-50',
-        borderColor: isIncreasing ? 'border-red-200' : 'border-green-200'
-      });
-    }
-    
-    // Optimization opportunity
-    const cancelledSavings = subscriptions
-      .filter(sub => sub.status === 'cancelled')
-      .reduce((sum, sub) => {
-        const monthlyCost = sub.billingCycle === 'monthly' ? sub.cost : sub.cost / 12;
-        return sum + monthlyCost;
-      }, 0);
-    
-    if (cancelledSavings > 0) {
-      insights.push({
-        type: 'positive',
-        title: 'Money Saved',
-        description: 'From cancelled subscriptions',
-        value: `$${cancelledSavings.toFixed(2)}/mo`,
-        icon: Target,
-        color: 'text-green-600',
-        bgColor: 'bg-green-50',
-        borderColor: 'border-green-200'
-      });
-    }
-    
-    return insights.slice(0, 3); // Show max 3 insights
-  };
-
-  const insights = getSubscriptionInsights();
 
   const handleAddSubscription = (subscriptionData: Omit<Subscription, 'id' | 'createdAt'>) => {
     if (onAddSubscription) {
@@ -302,61 +211,6 @@ const Dashboard: React.FC<DashboardProps> = ({
               <span>Add Your First Subscription</span>
             </button>
           </div>
-        </div>
-      )}
-
-      {/* Subscription Insights for Existing Users */}
-      {subscriptions.length > 0 && (
-        <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-lg border border-purple-100/50">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h3 className="text-lg sm:text-xl font-bold text-gray-900 flex items-center space-x-2">
-                <Star className="w-5 h-5 sm:w-6 sm:h-6 text-purple-500" />
-                <span>Subscription Insights</span>
-              </h3>
-              <p className="text-gray-600 mt-1">Key metrics and recommendations for your subscriptions</p>
-            </div>
-            <button
-              onClick={() => setShowAddModal(true)}
-              className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl font-medium transition-all duration-300 flex items-center space-x-2 shadow-lg hover:shadow-xl"
-            >
-              <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
-              <span className="hidden sm:inline">Add Subscription</span>
-            </button>
-          </div>
-          
-          {insights.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              {insights.map((insight, index) => {
-                const Icon = insight.icon;
-                return (
-                  <div
-                    key={index}
-                    className={`p-4 sm:p-6 rounded-xl sm:rounded-2xl border transition-all duration-300 hover:shadow-lg ${insight.bgColor} ${insight.borderColor}`}
-                  >
-                    <div className="flex items-start justify-between mb-3">
-                      <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl ${insight.bgColor} flex items-center justify-center border ${insight.borderColor}`}>
-                        <Icon className={`w-5 h-5 sm:w-6 sm:h-6 ${insight.color}`} />
-                      </div>
-                      <span className={`text-lg sm:text-xl font-bold ${insight.color}`}>
-                        {insight.value}
-                      </span>
-                    </div>
-                    <h4 className="font-semibold text-gray-900 mb-1">{insight.title}</h4>
-                    <p className="text-sm text-gray-600">{insight.description}</p>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="text-center py-8">
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-100 to-violet-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Star className="w-8 h-8 text-purple-500" />
-              </div>
-              <h4 className="font-semibold text-gray-900 mb-2">All Looking Good!</h4>
-              <p className="text-gray-600">Your subscriptions are well-managed. Keep up the great work!</p>
-            </div>
-          )}
         </div>
       )}
 
