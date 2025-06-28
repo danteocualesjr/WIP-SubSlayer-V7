@@ -127,12 +127,12 @@ const UpcomingRenewals: React.FC<UpcomingRenewalsProps> = ({
           </div>
         </div>
         
-        {/* View Full Calendar Button */}
+        {/* View All Subscriptions Button */}
         <button
           onClick={onSwitchToCalendar}
           className="w-full mt-3 px-3 py-2 bg-purple-50 hover:bg-purple-100 text-purple-700 rounded-lg text-sm font-medium transition-colors"
         >
-          View Full Calendar
+          View All Subscriptions
         </button>
       </div>
     );
@@ -231,14 +231,14 @@ const UpcomingRenewals: React.FC<UpcomingRenewalsProps> = ({
             })
           )}
           
-          {/* View Full Calendar Button */}
+          {/* View All Subscriptions Button */}
           {upcomingRenewals.length > 0 && (
             <button
               onClick={onSwitchToCalendar}
               className="w-full mt-4 px-4 py-2 bg-purple-50 hover:bg-purple-100 text-purple-700 rounded-lg text-sm font-medium transition-colors flex items-center justify-center space-x-2"
             >
               <Calendar className="w-4 h-4" />
-              <span>View Full Calendar</span>
+              <span>View All Subscriptions</span>
             </button>
           )}
         </div>

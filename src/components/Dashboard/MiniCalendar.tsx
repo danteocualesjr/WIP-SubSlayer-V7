@@ -184,13 +184,13 @@ const MiniCalendar: React.FC<MiniCalendarProps> = ({ subscriptions, onSwitchToCa
         </div>
       </div>
 
-      {/* View Full Calendar Button */}
+      {/* View All Subscriptions Button */}
       <button
         onClick={onSwitchToCalendar}
         className="w-full px-4 py-3 bg-gradient-to-r from-purple-50 to-violet-50 hover:from-purple-100 hover:to-violet-100 text-purple-700 rounded-xl text-sm font-medium transition-all duration-200 border border-purple-200 hover:border-purple-300 flex items-center justify-center space-x-2"
       >
         <CalendarIcon className="w-4 h-4" />
-        <span>View Full Calendar</span>
+        <span>View All Subscriptions</span>
       </button>
     </div>
   );
