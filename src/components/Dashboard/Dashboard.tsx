@@ -107,8 +107,8 @@ const Dashboard: React.FC<DashboardProps> = ({
 
   return (
     <div className="space-y-6 sm:space-y-8">
-      {/* Compact Hero Section with Sparkles */}
-      <div className="relative bg-gradient-to-br from-purple-900 via-violet-800 to-purple-700 rounded-2xl p-4 sm:p-5 text-white overflow-hidden">
+      {/* Enhanced Hero Section with Sparkles */}
+      <div className="relative bg-gradient-to-br from-purple-900 via-violet-800 to-purple-700 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white overflow-hidden">
         {/* Sparkles Background */}
         <div className="absolute inset-0 w-full h-full">
           <SparklesCore
@@ -133,51 +133,55 @@ const Dashboard: React.FC<DashboardProps> = ({
         <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-purple-900/50 via-violet-800/50 to-purple-700/50 [mask-image:radial-gradient(800px_400px_at_center,transparent_20%,white)]"></div>
         
         <div className="relative z-10">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center space-x-2">
-              <Sparkles className="w-5 h-5 text-yellow-300" />
-              <h1 className="text-lg sm:text-xl font-bold">Welcome back, {getUserName()}</h1>
-            </div>
-            <button
-              onClick={() => setShowAddModal(true)}
-              className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 flex items-center space-x-1"
-            >
-              <Plus className="w-4 h-4" />
-              <span className="hidden sm:inline">Add Subscription</span>
-            </button>
+          <div className="flex items-center space-x-3 mb-4 sm:mb-6">
+            <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" />
+            <h1 className="text-2xl sm:text-4xl font-bold">Welcome back, {getUserName()}</h1>
           </div>
+          <p className="text-lg sm:text-xl text-white/90 mb-6 sm:mb-8 max-w-2xl">
+            Take control of your subscriptions and maximize your savings with our premium dashboard
+          </p>
           
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
-              <div className="flex items-center space-x-1 mb-1">
-                <DollarSign className="w-3 h-3 text-yellow-300" />
-                <p className="text-white/80 text-xs font-medium">Monthly</p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-6">
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
+                <DollarSign className="w-4 h-4 sm:w-6 sm:h-6 text-yellow-300" />
+                <p className="text-white/80 text-xs sm:text-sm font-medium">Monthly Total</p>
               </div>
-              <p className="text-lg font-bold">${monthlyTotal.toFixed(2)}</p>
+              <p className="text-lg sm:text-3xl font-bold">${monthlyTotal.toFixed(2)}</p>
             </div>
             
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
-              <div className="flex items-center space-x-1 mb-1">
-                <TrendingUp className="w-3 h-3 text-green-300" />
-                <p className="text-white/80 text-xs font-medium">Annual</p>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
+                <TrendingUp className="w-4 h-4 sm:w-6 sm:h-6 text-green-300" />
+                <p className="text-white/80 text-xs sm:text-sm font-medium">Annual Projection</p>
               </div>
-              <p className="text-lg font-bold">${annualTotal.toFixed(2)}</p>
+              <p className="text-lg sm:text-3xl font-bold">${annualTotal.toFixed(2)}</p>
             </div>
             
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
-              <div className="flex items-center space-x-1 mb-1">
-                <CreditCard className="w-3 h-3 text-blue-300" />
-                <p className="text-white/80 text-xs font-medium">Active</p>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
+                <CreditCard className="w-4 h-4 sm:w-6 sm:h-6 text-blue-300" />
+                <p className="text-white/80 text-xs sm:text-sm font-medium">Active Subscriptions</p>
               </div>
-              <p className="text-lg font-bold">{activeSubscriptions.length}</p>
+              <p className="text-lg sm:text-3xl font-bold">{activeSubscriptions.length}</p>
             </div>
             
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
-              <div className="flex items-center space-x-1 mb-1">
-                <Calendar className="w-3 h-3 text-pink-300" />
-                <p className="text-white/80 text-xs font-medium">Renewals</p>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
+                <Zap className="w-4 h-4 sm:w-6 sm:h-6 text-orange-300" />
+                <p className="text-white/80 text-xs sm:text-sm font-medium">Cancelled Subscriptions</p>
               </div>
-              <p className="text-lg font-bold">{upcomingRenewalsCount}</p>
+              <p className="text-lg sm:text-3xl font-bold">
+                {subscriptions.filter(sub => sub.status === 'cancelled').length}
+              </p>
+            </div>
+            
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300 col-span-2 sm:col-span-1">
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
+                <Calendar className="w-4 h-4 sm:w-6 sm:h-6 text-pink-300" />
+                <p className="text-white/80 text-xs sm:text-sm font-medium">Upcoming Renewals</p>
+              </div>
+              <p className="text-lg sm:text-3xl font-bold">{upcomingRenewalsCount}</p>
             </div>
           </div>
         </div>
