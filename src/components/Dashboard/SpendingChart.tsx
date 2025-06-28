@@ -197,49 +197,10 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
 
   return (
     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-      {/* Header with Chart Type Toggle */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Monthly Spending Trend</h3>
-          <p className="text-sm text-gray-600">Track your subscription costs over time</p>
-        </div>
-        
-        {/* Chart Type Selector */}
-        <div className="flex bg-gray-100 rounded-xl p-1">
-          <button
-            onClick={() => setChartType('area')}
-            className={`p-2 rounded-lg transition-all duration-200 ${
-              chartType === 'area'
-                ? 'bg-white text-purple-600 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
-            title="Area Chart"
-          >
-            <Zap className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => setChartType('line')}
-            className={`p-2 rounded-lg transition-all duration-200 ${
-              chartType === 'line'
-                ? 'bg-white text-purple-600 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
-            title="Line Chart"
-          >
-            <Activity className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => setChartType('bar')}
-            className={`p-2 rounded-lg transition-all duration-200 ${
-              chartType === 'bar'
-                ? 'bg-white text-purple-600 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
-            title="Bar Chart"
-          >
-            <BarChart3 className="w-4 h-4" />
-          </button>
-        </div>
+      {/* Header */}
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">Monthly Spending Trend</h3>
+        <p className="text-sm text-gray-600">Track your subscription costs over time</p>
       </div>
 
       {/* Chart */}
