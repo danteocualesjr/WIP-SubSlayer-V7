@@ -4,6 +4,7 @@ import StatsCard from './StatsCard';
 import SpendingChart from './SpendingChart';
 import CategoryChart from './CategoryChart';
 import UpcomingRenewals from './UpcomingRenewals';
+import MiniCalendar from './MiniCalendar';
 import AddSubscriptionModal from '../Subscriptions/AddSubscriptionModal';
 import { SparklesCore } from '../ui/sparkles';
 import { Subscription, SpendingData } from '../../types/subscription';
@@ -256,12 +257,18 @@ const Dashboard: React.FC<DashboardProps> = ({
         <CategoryChart data={categoryData} />
       </div>
 
-      {/* Upcoming Renewals */}
-      <UpcomingRenewals 
-        subscriptions={subscriptions} 
-        onSwitchToCalendar={handleSwitchToCalendar}
-        onEditSubscription={handleEditSubscription}
-      />
+      {/* Upcoming Renewals and Calendar View */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+        <UpcomingRenewals 
+          subscriptions={subscriptions} 
+          onSwitchToCalendar={handleSwitchToCalendar}
+          onEditSubscription={handleEditSubscription}
+        />
+        <MiniCalendar 
+          subscriptions={subscriptions}
+          onSwitchToCalendar={handleSwitchToCalendar}
+        />
+      </div>
 
       {/* Add/Edit Subscription Modal */}
       <AddSubscriptionModal
