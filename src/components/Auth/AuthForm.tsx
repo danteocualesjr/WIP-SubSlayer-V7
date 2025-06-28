@@ -72,7 +72,7 @@ const AuthForm: React.FC = () => {
       <div className="max-w-md w-full relative z-10">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center space-x-3 bg-white/10 backdrop-blur-sm rounded-2xl px-6 py-4 border border-white/20 mb-8">
+          <div className="inline-flex items-center space-x-3 bg-white/10 backdrop-blur-sm rounded-2xl px-6 py-4 mb-8">
             <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center transform rotate-12">
               <Sword className="w-5 h-5 text-purple-600 transform -rotate-12" />
             </div>
@@ -124,7 +124,7 @@ const AuthForm: React.FC = () => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 bg-white/10 border border-white/20 rounded-2xl text-white placeholder-white/60 focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 backdrop-blur-sm"
+                  className="w-full pl-12 pr-4 py-4 bg-white/10 backdrop-blur-sm rounded-2xl text-white placeholder-white/60 focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 border-0 outline-none"
                   placeholder="Enter your email"
                   required
                 />
@@ -152,7 +152,7 @@ const AuthForm: React.FC = () => {
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-12 pr-14 py-4 bg-white/10 border border-white/20 rounded-2xl text-white placeholder-white/60 focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 backdrop-blur-sm"
+                  className="w-full pl-12 pr-14 py-4 bg-white/10 backdrop-blur-sm rounded-2xl text-white placeholder-white/60 focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 border-0 outline-none"
                   placeholder="Enter your password"
                   required
                   minLength={6}
@@ -183,7 +183,7 @@ const AuthForm: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-white hover:bg-gray-100 text-gray-900 py-4 rounded-2xl font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 shadow-xl hover:shadow-2xl"
+              className="w-full bg-white hover:bg-gray-100 text-gray-900 py-4 rounded-2xl font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 shadow-xl hover:shadow-2xl border-0 outline-none"
             >
               {loading ? (
                 <div className="w-6 h-6 border-2 border-gray-400 border-t-gray-900 rounded-full animate-spin" />
