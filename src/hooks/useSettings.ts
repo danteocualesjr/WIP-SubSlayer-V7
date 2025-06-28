@@ -148,6 +148,12 @@ export function useSettings() {
         return d.toLocaleDateString('en-GB');
       case 'YYYY-MM-DD':
         return d.toISOString().split('T')[0];
+      case 'MMMM D, YYYY':
+        return d.toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        });
       case 'MM/DD/YYYY':
       default:
         return d.toLocaleDateString('en-US');
