@@ -9,7 +9,7 @@ interface SpendingChartProps {
 }
 
 const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) => {
-  const [chartType, setChartType] = useState<'area' | 'line' | 'bar'>('area');
+  const [chartType, setChartType] = useState<'area' | 'bar'>('area');
 
   if (loading) {
     return (
@@ -121,42 +121,6 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
           </AreaChart>
         );
 
-      case 'line':
-        return (
-          <LineChart {...commonProps}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-            <XAxis 
-              dataKey="month" 
-              stroke="#64748b"
-              fontSize={12}
-              tickLine={false}
-              axisLine={false}
-            />
-            <YAxis 
-              stroke="#64748b"
-              fontSize={12}
-              tickLine={false}
-              axisLine={false}
-              tickFormatter={(value) => `$${value}`}
-            />
-            <Tooltip content={<CustomTooltip />} />
-            <Line 
-              type="monotone" 
-              dataKey="amount" 
-              stroke="url(#lineGradient)" 
-              strokeWidth={4}
-              dot={{ fill: '#8B5CF6', strokeWidth: 3, r: 6 }}
-              activeDot={{ r: 8, fill: '#8B5CF6', stroke: '#fff', strokeWidth: 3 }}
-            />
-            <defs>
-              <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#8B5CF6" />
-                <stop offset="100%" stopColor="#3B82F6" />
-              </linearGradient>
-            </defs>
-          </LineChart>
-        );
-
       case 'bar':
         return (
           <BarChart {...commonProps}>
@@ -197,10 +161,38 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
 
   return (
     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-      {/* Header */}
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">Monthly Spending Trend</h3>
-        <p className="text-sm text-gray-600">Track your subscription costs over time</p>
+      {/* Header with Chart Type Toggle */}
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Monthly Spending Trend</h3>
+          <p className="text-sm text-gray-600">Track your subscription costs over time</p>
+        </div>
+        
+        {/* Chart Type Selector */}
+        <div className="flex bg-gray-100 rounded-xl p-1">
+          <button
+            onClick={() => setChartType('area')}
+            className={`p-2 rounded-lg transition-all duration-200 ${
+              chartType === 'area'
+                ? 'bg-white text-purple-600 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
+            }`}
+            title="Area Chart"
+          >
+            <Zap className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => setChartType('bar')}
+            className={`p-2 rounded-lg transition-all duration-200 ${
+              chartType === 'bar'
+                ? 'bg-white text-purple-600 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
+            }`}
+            title="Bar Chart"
+          >
+            <BarChart3 className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       {/* Chart */}
