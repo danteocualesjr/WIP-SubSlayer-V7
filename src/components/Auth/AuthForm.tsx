@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff, Mail, Lock, User, CreditCard, Sparkles, Shield, Zap } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, Sword, Sparkles, Shield, Zap } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { SparklesCore } from '../ui/sparkles';
 
@@ -67,8 +67,8 @@ const AuthForm: React.FC = () => {
       <div className="max-w-md w-full relative z-10">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-violet-500 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl backdrop-blur-sm border border-white/20 transform hover:scale-105 transition-all duration-300">
-            <CreditCard className="w-10 h-10 text-white" />
+          <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-violet-500 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl backdrop-blur-sm border border-white/20 transform hover:scale-105 transition-all duration-300 rotate-12">
+            <Sword className="w-10 h-10 text-white transform -rotate-12" />
           </div>
           <h1 className="text-4xl font-bold text-white mb-3 bg-gradient-to-r from-purple-200 to-violet-200 bg-clip-text text-transparent">
             SubSlayer
