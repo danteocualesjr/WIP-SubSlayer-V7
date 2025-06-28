@@ -1,6 +1,7 @@
 import React from 'react';
 import { Calendar, DollarSign, MoreVertical, Pause, Trash2, Edit, Check } from 'lucide-react';
 import { Subscription } from '../../types/subscription';
+import { useSettings } from '../../hooks/useSettings';
 
 interface SubscriptionListItemProps {
   subscription: Subscription;
@@ -23,6 +24,7 @@ const SubscriptionListItem: React.FC<SubscriptionListItemProps> = ({
   onSelect,
   onDeleteClick
 }) => {
+  const { formatDate } = useSettings();
   const [showActions, setShowActions] = React.useState(false);
 
   const getDaysUntilRenewal = () => {
@@ -129,7 +131,7 @@ const SubscriptionListItem: React.FC<SubscriptionListItemProps> = ({
         <div className="col-span-2">
           <div className="flex flex-col">
             <span className="text-sm text-gray-900">
-              {new Date(subscription.nextBilling).toLocaleDateString()}
+              {formatDate(subscription.nextBilling)}
             </span>
             <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium w-fit ${
               isUrgent 

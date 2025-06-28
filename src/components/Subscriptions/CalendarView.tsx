@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from 'lucide-react';
 import { Subscription } from '../../types/subscription';
+import { useSettings } from '../../hooks/useSettings';
 
 interface CalendarViewProps {
   subscriptions: Subscription[];
 }
 
 const CalendarView: React.FC<CalendarViewProps> = ({ subscriptions }) => {
+  const { formatDate } = useSettings();
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const getDaysInMonth = (date: Date) => {
@@ -266,11 +268,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({ subscriptions }) => {
                       <div>
                         <h4 className="font-medium text-gray-900">{subscription.name}</h4>
                         <p className="text-sm text-gray-600">
-                          {renewalDate.toLocaleDateString('en-US', { 
-                            weekday: 'long', 
-                            month: 'long', 
-                            day: 'numeric' 
-                          })}
+                          {formatDate(subscription.nextBilling)}
                         </p>
                       </div>
                     </div>

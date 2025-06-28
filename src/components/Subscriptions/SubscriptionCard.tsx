@@ -1,6 +1,7 @@
 import React from 'react';
 import { Calendar, DollarSign, MoreVertical, Pause, Trash2, Edit, Check } from 'lucide-react';
 import { Subscription } from '../../types/subscription';
+import { useSettings } from '../../hooks/useSettings';
 
 interface SubscriptionCardProps {
   subscription: Subscription;
@@ -23,6 +24,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   onSelect,
   onDeleteClick
 }) => {
+  const { formatDate } = useSettings();
   const [showActions, setShowActions] = React.useState(false);
 
   const getDaysUntilRenewal = () => {
@@ -185,7 +187,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
           <Calendar className="w-4 h-4 text-gray-500" />
           <span className="text-sm text-gray-600">Next billing:</span>
           <span className="text-sm font-medium text-gray-900">
-            {new Date(subscription.nextBilling).toLocaleDateString()}
+            {formatDate(subscription.nextBilling)}
           </span>
         </div>
         <div className={`flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium ${

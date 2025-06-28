@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Calendar, Clock, AlertCircle, Grid3X3 } from 'lucide-react';
 import { Subscription } from '../../types/subscription';
+import { useSettings } from '../../hooks/useSettings';
 
 interface UpcomingRenewalsProps {
   subscriptions: Subscription[];
@@ -13,6 +14,7 @@ const UpcomingRenewals: React.FC<UpcomingRenewalsProps> = ({
   onSwitchToCalendar,
   onEditSubscription 
 }) => {
+  const { settings, formatDate } = useSettings();
   const [viewMode, setViewMode] = useState<'list' | 'mini-calendar'>('list');
 
   const getUpcomingRenewals = () => {
@@ -212,7 +214,7 @@ const UpcomingRenewals: React.FC<UpcomingRenewalsProps> = ({
                         {subscription.name}
                       </h4>
                       <p className="text-sm text-gray-600">
-                        {new Date(subscription.nextBilling).toLocaleDateString()}
+                        {formatDate(subscription.nextBilling)}
                       </p>
                     </div>
                   </div>
