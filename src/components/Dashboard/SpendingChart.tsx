@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, BarChart, Bar } from 'recharts';
-import { TrendingUp, TrendingDown, BarChart3, Activity, Zap } from 'lucide-react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { TrendingUp, TrendingDown, BarChart3, Zap } from 'lucide-react';
 import { SpendingData } from '../../types/subscription';
 
 interface SpendingChartProps {
@@ -9,7 +9,7 @@ interface SpendingChartProps {
 }
 
 const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) => {
-  const [chartType, setChartType] = useState<'area' | 'bar'>('area');
+  const [chartType, setChartType] = useState<'curve' | 'bar'>('curve');
 
   if (loading) {
     return (
@@ -34,7 +34,7 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
         </div>
         <div className="h-80 flex items-center justify-center">
           <div className="text-center">
-            <Activity className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <Zap className="w-16 h-16 text-gray-300 mx-auto mb-4" />
             <p className="text-gray-500 mb-2">No spending data available</p>
             <p className="text-sm text-gray-400">Add some subscriptions to see your spending trends</p>
           </div>
@@ -58,12 +58,14 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white/95 backdrop-blur-sm border border-gray-200 rounded-xl shadow-lg p-4 min-w-[160px]">
-          <p className="text-sm font-medium text-gray-900 mb-2">{label}</p>
+        <div className="bg-white/95 backdrop-blur-sm border border-purple-200 rounded-xl shadow-xl p-4 min-w-[160px]">
+          <p className="text-sm font-semibold text-gray-900 mb-2">{label}</p>
           <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 rounded-full bg-gradient-to-r from-purple-600 to-blue-600"></div>
+            <div className="w-3 h-3 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 shadow-sm"></div>
             <span className="text-sm text-gray-600">Amount:</span>
-            <span className="text-lg font-bold text-gray-900">${payload[0].value.toFixed(2)}</span>
+            <span className="text-lg font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+              ${payload[0].value.toFixed(2)}
+            </span>
           </div>
         </div>
       );
@@ -78,22 +80,38 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
     };
 
     switch (chartType) {
-      case 'area':
+      case 'curve':
         return (
-          <AreaChart {...commonProps}>
+          <LineChart {...commonProps}>
             <defs>
-              <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.3}/>
-                <stop offset="95%" stopColor="#3B82F6" stopOpacity={0.05}/>
+              <linearGradient id="strokeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#8B5CF6" />
+                <stop offset="50%" stopColor="#3B82F6" />
+                <stop offset="100%" stopColor="#06B6D4" />
               </linearGradient>
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                <feMerge> 
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+              <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+                <feDropShadow dx="0" dy="4" stdDeviation="8" floodColor="#8B5CF6" floodOpacity="0.3"/>
+              </filter>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+            <CartesianGrid 
+              strokeDasharray="3 3" 
+              stroke="#f1f5f9" 
+              strokeOpacity={0.6}
+            />
             <XAxis 
               dataKey="month" 
               stroke="#64748b"
               fontSize={12}
               tickLine={false}
               axisLine={false}
+              tick={{ fill: '#64748b', fontWeight: 500 }}
             />
             <YAxis 
               stroke="#64748b"
@@ -101,36 +119,61 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
               tickLine={false}
               axisLine={false}
               tickFormatter={(value) => `$${value}`}
+              tick={{ fill: '#64748b', fontWeight: 500 }}
             />
             <Tooltip content={<CustomTooltip />} />
-            <Area
+            <Line
               type="monotone"
               dataKey="amount"
-              stroke="url(#lineGradient)"
-              strokeWidth={3}
-              fill="url(#colorGradient)"
-              dot={{ fill: '#8B5CF6', strokeWidth: 2, r: 5 }}
-              activeDot={{ r: 7, fill: '#8B5CF6', stroke: '#fff', strokeWidth: 2 }}
+              stroke="url(#strokeGradient)"
+              strokeWidth={4}
+              fill="none"
+              dot={{ 
+                fill: '#8B5CF6', 
+                strokeWidth: 3, 
+                r: 6,
+                stroke: '#fff',
+                filter: 'url(#shadow)'
+              }}
+              activeDot={{ 
+                r: 8, 
+                fill: '#8B5CF6', 
+                stroke: '#fff', 
+                strokeWidth: 3,
+                filter: 'url(#glow)',
+                style: { 
+                  filter: 'drop-shadow(0 0 8px rgba(139, 92, 246, 0.6))'
+                }
+              }}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{
+                filter: 'drop-shadow(0 2px 4px rgba(139, 92, 246, 0.2))'
+              }}
             />
-            <defs>
-              <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#8B5CF6" />
-                <stop offset="100%" stopColor="#3B82F6" />
-              </linearGradient>
-            </defs>
-          </AreaChart>
+          </LineChart>
         );
 
       case 'bar':
         return (
           <BarChart {...commonProps}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+            <defs>
+              <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#8B5CF6" />
+                <stop offset="100%" stopColor="#3B82F6" />
+              </linearGradient>
+              <filter id="barShadow" x="-50%" y="-50%" width="200%" height="200%">
+                <feDropShadow dx="0" dy="4" stdDeviation="6" floodColor="#8B5CF6" floodOpacity="0.25"/>
+              </filter>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" strokeOpacity={0.6} />
             <XAxis 
               dataKey="month" 
               stroke="#64748b"
               fontSize={12}
               tickLine={false}
               axisLine={false}
+              tick={{ fill: '#64748b', fontWeight: 500 }}
             />
             <YAxis 
               stroke="#64748b"
@@ -138,19 +181,17 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
               tickLine={false}
               axisLine={false}
               tickFormatter={(value) => `$${value}`}
+              tick={{ fill: '#64748b', fontWeight: 500 }}
             />
             <Tooltip content={<CustomTooltip />} />
             <Bar 
               dataKey="amount" 
               fill="url(#barGradient)"
               radius={[8, 8, 0, 0]}
+              style={{
+                filter: 'url(#barShadow)'
+              }}
             />
-            <defs>
-              <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#8B5CF6" />
-                <stop offset="100%" stopColor="#3B82F6" />
-              </linearGradient>
-            </defs>
           </BarChart>
         );
 
@@ -171,13 +212,13 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
         {/* Chart Type Selector */}
         <div className="flex bg-gray-100 rounded-xl p-1">
           <button
-            onClick={() => setChartType('area')}
+            onClick={() => setChartType('curve')}
             className={`p-2 rounded-lg transition-all duration-200 ${
-              chartType === 'area'
+              chartType === 'curve'
                 ? 'bg-white text-purple-600 shadow-sm'
                 : 'text-gray-600 hover:text-gray-900'
             }`}
-            title="Area Chart"
+            title="Smooth Curve Chart"
           >
             <Zap className="w-4 h-4" />
           </button>
