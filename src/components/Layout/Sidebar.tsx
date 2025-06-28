@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BarChart3, CreditCard, Calculator, Home, Bell, User, Settings, Sword, Tag, Sparkles, ChevronLeft, ChevronRight, Menu, X } from 'lucide-react';
+import { BarChart3, CreditCard, Calculator, Home, Bell, User, Settings, Sword, Tag, ChevronLeft, ChevronRight, Menu, X } from 'lucide-react';
 
 interface SidebarProps {
   activeTab: string;
@@ -102,8 +102,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
                 <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent">
                   SubSlayer
                 </span>
-                <div className="flex items-center space-x-1 mt-1">
-                  <Sparkles className="w-3 h-3 text-purple-500" />
+                <div className="mt-1">
                   <span className="text-xs text-purple-600 font-medium">Beta</span>
                 </div>
               </div>
@@ -192,8 +191,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
                 <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent">
                   SubSlayer
                 </span>
-                <div className="flex items-center space-x-1 mt-1">
-                  <Sparkles className="w-3 h-3 text-purple-500" />
+                <div className="mt-1">
                   <span className="text-xs text-purple-600 font-medium">Beta</span>
                 </div>
               </div>
