@@ -172,7 +172,6 @@ const Settings: React.FC = () => {
               <option value="MM/DD/YYYY">MM/DD/YYYY (US)</option>
               <option value="DD/MM/YYYY">DD/MM/YYYY (EU)</option>
               <option value="YYYY-MM-DD">YYYY-MM-DD (ISO)</option>
-              <option value="MMMM D, YYYY">November 9, 1981 (Words)</option>
             </select>
           </div>
 
