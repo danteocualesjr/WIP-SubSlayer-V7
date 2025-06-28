@@ -181,28 +181,6 @@ const AuthForm: React.FC = () => {
             </button>
           </div>
         </div>
-
-        {/* Features */}
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-          <div className="text-white/80 group hover:text-white transition-colors">
-            <div className="w-12 h-12 bg-gradient-to-br from-purple-400/20 to-violet-400/20 rounded-2xl flex items-center justify-center mx-auto mb-3 backdrop-blur-sm border border-white/10 group-hover:scale-110 transition-transform duration-300">
-              <Sparkles className="w-6 h-6" />
-            </div>
-            <p className="font-medium">Track Subscriptions</p>
-          </div>
-          <div className="text-white/80 group hover:text-white transition-colors">
-            <div className="w-12 h-12 bg-gradient-to-br from-purple-400/20 to-violet-400/20 rounded-2xl flex items-center justify-center mx-auto mb-3 backdrop-blur-sm border border-white/10 group-hover:scale-110 transition-transform duration-300">
-              <Shield className="w-6 h-6" />
-            </div>
-            <p className="font-medium">Save Money</p>
-          </div>
-          <div className="text-white/80 group hover:text-white transition-colors">
-            <div className="w-12 h-12 bg-gradient-to-br from-purple-400/20 to-violet-400/20 rounded-2xl flex items-center justify-center mx-auto mb-3 backdrop-blur-sm border border-white/10 group-hover:scale-110 transition-transform duration-300">
-              <Zap className="w-6 h-6" />
-            </div>
-            <p className="font-medium">Get Reminders</p>
-          </div>
-        </div>
       </div>
     </div>
   );
