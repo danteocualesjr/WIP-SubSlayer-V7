@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DollarSign, TrendingUp, CreditCard, Calendar, Plus, Sparkles, Zap } from 'lucide-react';
+import { DollarSign, TrendingUp, CreditCard, Calendar, Plus, Sparkles, Zap, Share2 } from 'lucide-react';
 import StatsCard from './StatsCard';
 import SpendingChart from './SpendingChart';
 import UpcomingRenewals from './UpcomingRenewals';
@@ -105,6 +105,65 @@ const Dashboard: React.FC<DashboardProps> = ({
     }
   };
 
+  const handleSocialShare = () => {
+    const shareText = `I'm using SubSlayer to manage my ${activeSubscriptions.length} subscriptions and saving $${(monthlyTotal * 0.15).toFixed(2)}/month! 💰 Take control of your subscription chaos at`;
+    const shareUrl = window.location.origin;
+    
+    if (navigator.share) {
+      // Use native sharing if available
+      navigator.share({
+        title: 'SubSlayer - Subscription Management',
+        text: shareText,
+        url: shareUrl,
+      }).catch(console.error);
+    } else {
+      // Fallback to social media links
+      const encodedText = encodeURIComponent(shareText);
+      const encodedUrl = encodeURIComponent(shareUrl);
+      
+      // Create a simple share menu
+      const shareMenu = document.createElement('div');
+      shareMenu.className = 'fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4';
+      shareMenu.innerHTML = `
+        <div class="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Share SubSlayer</h3>
+          <div class="space-y-3">
+            <a href="https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}" target="_blank" class="flex items-center space-x-3 p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
+              <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                <span class="text-white text-sm font-bold">𝕏</span>
+              </div>
+              <span class="font-medium text-gray-900">Share on X (Twitter)</span>
+            </a>
+            <a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}" target="_blank" class="flex items-center space-x-3 p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
+              <div class="w-8 h-8 bg-blue-700 rounded-full flex items-center justify-center">
+                <span class="text-white text-sm font-bold">in</span>
+              </div>
+              <span class="font-medium text-gray-900">Share on LinkedIn</span>
+            </a>
+            <button onclick="navigator.clipboard.writeText('${shareText} ${shareUrl}').then(() => alert('Link copied to clipboard!'))" class="flex items-center space-x-3 p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors w-full text-left">
+              <div class="w-8 h-8 bg-gray-500 rounded-full flex items-center justify-center">
+                <span class="text-white text-sm">📋</span>
+              </div>
+              <span class="font-medium text-gray-900">Copy Link</span>
+            </button>
+          </div>
+          <button onclick="this.parentElement.parentElement.remove()" class="mt-4 w-full px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors">
+            Close
+          </button>
+        </div>
+      `;
+      
+      document.body.appendChild(shareMenu);
+      
+      // Remove on backdrop click
+      shareMenu.addEventListener('click', (e) => {
+        if (e.target === shareMenu) {
+          shareMenu.remove();
+        }
+      });
+    }
+  };
+
   return (
     <div className="space-y-6 sm:space-y-8">
       {/* Enhanced Hero Section with Sparkles */}
@@ -144,8 +203,16 @@ const Dashboard: React.FC<DashboardProps> = ({
               </p>
             </div>
             
-            {/* Add Subscription Button */}
-            <div className="flex-shrink-0">
+            {/* Action Buttons */}
+            <div className="flex-shrink-0 flex space-x-3">
+              <button
+                onClick={handleSocialShare}
+                className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-4 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2 border border-white/30 hover:border-white/50 shadow-lg hover:shadow-xl"
+              >
+                <Share2 className="w-5 h-5" />
+                <span className="hidden sm:inline">Share</span>
+              </button>
+              
               <button
                 onClick={() => setShowAddModal(true)}
                 className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2 border border-white/30 hover:border-white/50 shadow-lg hover:shadow-xl"
