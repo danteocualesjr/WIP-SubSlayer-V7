@@ -4,6 +4,7 @@ import StatsCard from './StatsCard';
 import SpendingChart from './SpendingChart';
 import UpcomingRenewals from './UpcomingRenewals';
 import AddSubscriptionModal from '../Subscriptions/AddSubscriptionModal';
+import ShareModal from './ShareModal';
 import { SparklesCore } from '../ui/sparkles';
 import { Subscription, SpendingData } from '../../types/subscription';
 import { useAuth } from '../../hooks/useAuth';
@@ -29,8 +30,8 @@ const Dashboard: React.FC<DashboardProps> = ({
   const { user } = useAuth();
   const { profile } = useProfile();
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
   const [editingSubscription, setEditingSubscription] = useState<Subscription | null>(null);
-  const [isSharing, setIsSharing] = useState(false);
   
   const activeSubscriptions = subscriptions.filter(sub => sub.status === 'active');
   
@@ -106,80 +107,6 @@ const Dashboard: React.FC<DashboardProps> = ({
     }
   };
 
-  const handleSocialShare = async () => {
-    // Prevent multiple simultaneous share operations
-    if (isSharing) {
-      return;
-    }
-
-    setIsSharing(true);
-
-    try {
-      const shareText = `I'm using SubSlayer to manage my ${activeSubscriptions.length} subscriptions and saving $${(monthlyTotal * 0.15).toFixed(2)}/month! 💰 Take control of your subscription chaos at`;
-      const shareUrl = window.location.origin;
-      
-      if (navigator.share) {
-        // Use native sharing if available
-        await navigator.share({
-          title: 'SubSlayer - Subscription Management',
-          text: shareText,
-          url: shareUrl,
-        });
-      } else {
-        // Fallback to social media links
-        const encodedText = encodeURIComponent(shareText);
-        const encodedUrl = encodeURIComponent(shareUrl);
-        
-        // Create a simple share menu
-        const shareMenu = document.createElement('div');
-        shareMenu.className = 'fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4';
-        shareMenu.innerHTML = `
-          <div class="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Share SubSlayer</h3>
-            <div class="space-y-3">
-              <a href="https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}" target="_blank" class="flex items-center space-x-3 p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
-                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                  <span class="text-white text-sm font-bold">𝕏</span>
-                </div>
-                <span class="font-medium text-gray-900">Share on X (Twitter)</span>
-              </a>
-              <a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}" target="_blank" class="flex items-center space-x-3 p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
-                <div class="w-8 h-8 bg-blue-700 rounded-full flex items-center justify-center">
-                  <span class="text-white text-sm font-bold">in</span>
-                </div>
-                <span class="font-medium text-gray-900">Share on LinkedIn</span>
-              </a>
-              <button onclick="navigator.clipboard.writeText('${shareText} ${shareUrl}').then(() => alert('Link copied to clipboard!'))" class="flex items-center space-x-3 p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors w-full text-left">
-                <div class="w-8 h-8 bg-gray-500 rounded-full flex items-center justify-center">
-                  <span class="text-white text-sm">📋</span>
-                </div>
-                <span class="font-medium text-gray-900">Copy Link</span>
-              </button>
-            </div>
-            <button onclick="this.parentElement.parentElement.remove()" class="mt-4 w-full px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors">
-              Close
-            </button>
-          </div>
-        `;
-        
-        document.body.appendChild(shareMenu);
-        
-        // Remove on backdrop click
-        shareMenu.addEventListener('click', (e) => {
-          if (e.target === shareMenu) {
-            shareMenu.remove();
-          }
-        });
-      }
-    } catch (error) {
-      // Handle share cancellation and other errors silently
-      // The "Share canceled" error is expected when user dismisses the dialog
-      console.log('Share operation cancelled or failed:', error);
-    } finally {
-      setIsSharing(false);
-    }
-  };
-
   return (
     <div className="space-y-6 sm:space-y-8">
       {/* Enhanced Hero Section with Sparkles */}
@@ -222,14 +149,11 @@ const Dashboard: React.FC<DashboardProps> = ({
             {/* Action Buttons */}
             <div className="flex-shrink-0 flex space-x-3">
               <button
-                onClick={handleSocialShare}
-                disabled={isSharing}
-                className={`bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-4 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2 border border-white/30 hover:border-white/50 shadow-lg hover:shadow-xl ${
-                  isSharing ? 'opacity-50 cursor-not-allowed' : ''
-                }`}
+                onClick={() => setShowShareModal(true)}
+                className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-4 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2 border border-white/30 hover:border-white/50 shadow-lg hover:shadow-xl"
               >
                 <Share2 className="w-5 h-5" />
-                <span className="hidden sm:inline">{isSharing ? 'Sharing...' : 'Share'}</span>
+                <span className="hidden sm:inline">Share</span>
               </button>
               
               <button
@@ -331,6 +255,14 @@ const Dashboard: React.FC<DashboardProps> = ({
         onClose={handleModalClose}
         onAdd={editingSubscription ? handleSaveEdit : handleAddSubscription}
         subscription={editingSubscription || undefined}
+      />
+
+      {/* Share Modal */}
+      <ShareModal
+        isOpen={showShareModal}
+        onClose={() => setShowShareModal(false)}
+        subscriptions={subscriptions}
+        monthlyTotal={monthlyTotal}
       />
     </div>
   );
