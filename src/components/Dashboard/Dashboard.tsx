@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { DollarSign, TrendingUp, CreditCard, Calendar, Plus, Sparkles, Zap, Star } from 'lucide-react';
 import StatsCard from './StatsCard';
 import SpendingChart from './SpendingChart';
+import CategoryChart from './CategoryChart';
 import UpcomingRenewals from './UpcomingRenewals';
 import AddSubscriptionModal from '../Subscriptions/AddSubscriptionModal';
 import { SparklesCore } from '../ui/sparkles';
@@ -72,6 +73,26 @@ const Dashboard: React.FC<DashboardProps> = ({
     }
     return 'User';
   };
+
+  // Generate category data for pie chart
+  const generateCategoryData = () => {
+    const categoryTotals = activeSubscriptions.reduce((acc, sub) => {
+      const monthlyCost = sub.billingCycle === 'monthly' ? sub.cost : sub.cost / 12;
+      const category = sub.category || 'Uncategorized';
+      acc[category] = (acc[category] || 0) + monthlyCost;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const colors = ['#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#F97316', '#84CC16', '#06B6D4', '#EC4899'];
+    
+    return Object.entries(categoryTotals).map(([name, value], index) => ({
+      name,
+      value,
+      color: colors[index % colors.length]
+    }));
+  };
+
+  const categoryData = generateCategoryData();
 
   const handleAddSubscription = (subscriptionData: Omit<Subscription, 'id' | 'createdAt'>) => {
     if (onAddSubscription) {
@@ -229,8 +250,11 @@ const Dashboard: React.FC<DashboardProps> = ({
         </div>
       )}
 
-      {/* Monthly Spending Trend */}
-      <SpendingChart data={spendingData} loading={spendingLoading} />
+      {/* Charts Grid - Monthly Spending Trend and Spending by Category */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+        <SpendingChart data={spendingData} loading={spendingLoading} />
+        <CategoryChart data={categoryData} />
+      </div>
 
       {/* Upcoming Renewals */}
       <UpcomingRenewals 
