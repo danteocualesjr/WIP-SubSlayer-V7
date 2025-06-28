@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, Clock, AlertCircle } from 'lucide-react';
+import { Calendar, Clock, AlertCircle, ArrowRight } from 'lucide-react';
 import { Subscription } from '../../types/subscription';
 import { useSettings } from '../../hooks/useSettings';
 
@@ -43,6 +43,13 @@ const UpcomingRenewals: React.FC<UpcomingRenewalsProps> = ({
     if (onEditSubscription) {
       onEditSubscription(subscription);
     }
+  };
+
+  const handleViewAllSubscriptions = () => {
+    // Navigate to subscriptions tab
+    window.dispatchEvent(new CustomEvent('navigateToTab', { 
+      detail: { tab: 'subscriptions' } 
+    }));
   };
 
   return (
@@ -105,6 +112,17 @@ const UpcomingRenewals: React.FC<UpcomingRenewalsProps> = ({
             );
           })
         )}
+      </div>
+
+      {/* View All Subscriptions Button */}
+      <div className="mt-6 pt-4 border-t border-gray-100">
+        <button
+          onClick={handleViewAllSubscriptions}
+          className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-purple-50 to-violet-50 hover:from-purple-100 hover:to-violet-100 text-purple-700 rounded-xl font-medium transition-all duration-200 border border-purple-200 hover:border-purple-300 group"
+        >
+          <span>View All Subscriptions</span>
+          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
+        </button>
       </div>
     </div>
   );
