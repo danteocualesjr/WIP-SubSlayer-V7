@@ -419,11 +419,8 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
         </div>
       </div>
 
-      {/* Header Actions */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
-        <div>
-          <p className="text-gray-600">Manage all your recurring subscriptions in one place</p>
-        </div>
+      {/* Header Actions - Removed the description text and Select button */}
+      <div className="flex justify-end">
         <div className="flex space-x-3">
           {!isSelectionMode ? (
             <button
