@@ -481,32 +481,6 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
         </div>
       )}
 
-      {/* Stats */}
-      <div className="bg-gradient-to-r from-purple-50 to-violet-50 rounded-2xl p-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="text-center">
-            <p className="text-2xl font-bold text-gray-900">{subscriptions.length}</p>
-            <p className="text-sm text-gray-600">Total Subscriptions</p>
-          </div>
-          <div className="text-center">
-            <p className="text-2xl font-bold text-green-600">
-              {subscriptions.filter(sub => sub.status === 'active').length}
-            </p>
-            <p className="text-sm text-gray-600">Active</p>
-          </div>
-          <div className="text-center">
-            <p className="text-2xl font-bold text-yellow-600">
-              {subscriptions.filter(sub => sub.status === 'paused').length}
-            </p>
-            <p className="text-sm text-gray-600">Paused</p>
-          </div>
-          <div className="text-center">
-            <p className="text-2xl font-bold text-purple-600">${totalMonthlySpend.toFixed(2)}</p>
-            <p className="text-sm text-gray-600">Monthly Total</p>
-          </div>
-        </div>
-      </div>
-
       {/* Filters, Sort, and View Toggle */}
       <div className="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4">
         <div className="relative flex-1">
