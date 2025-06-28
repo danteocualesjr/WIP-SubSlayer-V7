@@ -163,13 +163,13 @@ const Analytics: React.FC<AnalyticsProps> = ({
         />
         <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-lg border border-purple-100/50 hover:shadow-xl transition-all duration-300 hover:scale-105 transform group">
           <div className="flex items-center justify-between">
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0 pr-4">
               <p className="text-sm font-medium text-gray-600 mb-3">Top Category</p>
-              <p className="text-2xl sm:text-4xl font-bold text-gray-900 mb-3 truncate" title={mostExpensiveCategory.name}>
+              <p className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 break-words leading-tight" title={mostExpensiveCategory.name}>
                 {mostExpensiveCategory.name}
               </p>
             </div>
-            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 flex-shrink-0 ml-4">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
               <PieChart className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
             </div>
           </div>
