@@ -4,6 +4,7 @@ import { Subscription } from '../../types/subscription';
 import { useSettings } from '../../hooks/useSettings';
 
 interface AddSubscriptionModalProps {
+  
   isOpen: boolean;
   onClose: () => void;
   onAdd: (subscription: Omit<Subscription, 'id' | 'createdAt'>) => void;
