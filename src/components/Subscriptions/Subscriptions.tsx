@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, Filter, Grid3X3, List, Trash2, X, Calendar as CalendarIcon, ArrowUpDown, ArrowUp, ArrowDown, CreditCard, Sparkles } from 'lucide-react';
+import { Plus, Search, Filter, Grid3X3, List, Trash2, X, Calendar as CalendarIcon, ArrowUpDown, ArrowUp, ArrowDown, CreditCard, Sparkles, CheckSquare, Square } from 'lucide-react';
 import SubscriptionCard from './SubscriptionCard';
 import SubscriptionListItem from './SubscriptionListItem';
 import CalendarView from './CalendarView';
@@ -590,6 +590,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
               onClick={() => setIsSelectionMode(true)}
               className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-3 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2"
             >
+              <CheckSquare className="w-4 h-4" />
               <span>Select</span>
             </button>
           )}
@@ -639,7 +640,20 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
           <div className="px-6 py-4 bg-gray-50 border-b border-gray-100">
             <div className="grid grid-cols-12 gap-4 text-sm font-medium text-gray-600">
-              {isSelectionMode && <div className="col-span-1">Select</div>}
+              {isSelectionMode && (
+                <div className="col-span-1 flex items-center">
+                  <button
+                    onClick={handleSelectAll}
+                    className="flex items-center space-x-2 hover:text-gray-900 transition-colors"
+                  >
+                    {selectedSubscriptions.length === sortedSubscriptions.length ? (
+                      <CheckSquare className="w-4 h-4 text-purple-600" />
+                    ) : (
+                      <Square className="w-4 h-4" />
+                    )}
+                  </button>
+                </div>
+              )}
               <div className={isSelectionMode ? "col-span-3" : "col-span-4"}>
                 <button
                   onClick={() => handleSort('name')}
