@@ -424,20 +424,20 @@ USER QUESTION: ${message.trim()}`;
     <>
       {/* Chat Widget */}
       {isOpen && (
-        <div className={`fixed bottom-4 right-4 bg-white rounded-3xl shadow-2xl border border-gray-100 z-50 transition-all duration-300 ${
+        <div className={`fixed bottom-4 right-4 bg-white rounded-2xl shadow-2xl border border-gray-200 z-50 transition-all duration-300 ${
           isMinimized ? 'w-80 h-16' : 'w-96 h-[600px]'
         }`}>
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-gray-100 rounded-t-3xl">
+          <div className="flex items-center justify-between p-4 border-b border-gray-100 bg-gradient-to-r from-purple-600 to-violet-600 text-white rounded-t-2xl">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-violet-600 rounded-full flex items-center justify-center">
-                <MessageCircle className="w-5 h-5 text-white" />
+              <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                <Bot className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900">Messages</h3>
-                <p className="text-xs text-gray-500">
+                <h3 className="font-semibold">SubSlayer</h3>
+                <p className="text-xs text-white/80">
                   {subscriptions.length > 0 
-                    ? `${subscriptions.filter(s => s.status === 'active').length} active subscriptions`
+                    ? `Managing ${subscriptions.filter(s => s.status === 'active').length} active subscriptions`
                     : 'Your subscription assistant'
                   }
                 </p>
@@ -446,15 +446,15 @@ USER QUESTION: ${message.trim()}`;
             <div className="flex items-center space-x-2">
               <button
                 onClick={toggleMinimize}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                className="p-1 hover:bg-white/20 rounded-lg transition-colors"
               >
-                {isMinimized ? <Maximize2 className="w-4 h-4 text-gray-500" /> : <Minimize2 className="w-4 h-4 text-gray-500" />}
+                {isMinimized ? <Maximize2 className="w-4 h-4" /> : <Minimize2 className="w-4 h-4" />}
               </button>
               <button
                 onClick={closeWidget}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                className="p-1 hover:bg-white/20 rounded-lg transition-colors"
               >
-                <X className="w-4 h-4 text-gray-500" />
+                <X className="w-4 h-4" />
               </button>
             </div>
           </div>
@@ -462,7 +462,7 @@ USER QUESTION: ${message.trim()}`;
           {!isMinimized && (
             <>
               {/* Messages */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-4 h-[480px] bg-gray-50">
+              <div className="flex-1 overflow-y-auto p-4 space-y-4 h-[480px]">
                 {messages.length === 0 && isLoading && (
                   <div className="flex items-center justify-center h-full">
                     <div className="flex items-center space-x-2 text-gray-500">
@@ -482,25 +482,25 @@ USER QUESTION: ${message.trim()}`;
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                       message.type === 'user' 
                         ? 'bg-purple-600 text-white' 
-                        : 'bg-white border border-gray-200 text-gray-600'
+                        : 'bg-gray-100 text-gray-600'
                     }`}>
                       {message.type === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
                     </div>
-                    <div className={`max-w-[280px] p-4 rounded-3xl ${
+                    <div className={`max-w-[280px] p-3 rounded-2xl ${
                       message.type === 'user'
-                        ? 'bg-purple-600 text-white rounded-br-lg'
-                        : 'bg-white text-gray-900 border border-gray-200 rounded-bl-lg'
+                        ? 'bg-purple-600 text-white'
+                        : 'bg-gray-100 text-gray-900'
                     }`}>
                       {message.type === 'assistant' ? (
                         <div className="prose prose-sm max-w-none">
                           <ReactMarkdown
                             components={{
-                              p: ({ children }) => <p className="mb-2 last:mb-0 text-sm leading-relaxed">{children}</p>,
-                              ul: ({ children }) => <ul className="list-disc list-inside mb-2 text-sm">{children}</ul>,
-                              ol: ({ children }) => <ol className="list-decimal list-inside mb-2 text-sm">{children}</ol>,
-                              li: ({ children }) => <li className="mb-1 text-sm">{children}</li>,
-                              code: ({ children }) => <code className="bg-gray-100 px-1 py-0.5 rounded text-xs">{children}</code>,
-                              pre: ({ children }) => <pre className="bg-gray-100 p-2 rounded text-xs overflow-x-auto">{children}</pre>,
+                              p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+                              ul: ({ children }) => <ul className="list-disc list-inside mb-2">{children}</ul>,
+                              ol: ({ children }) => <ol className="list-decimal list-inside mb-2">{children}</ol>,
+                              li: ({ children }) => <li className="mb-1">{children}</li>,
+                              code: ({ children }) => <code className="bg-gray-200 px-1 py-0.5 rounded text-sm">{children}</code>,
+                              pre: ({ children }) => <pre className="bg-gray-200 p-2 rounded text-sm overflow-x-auto">{children}</pre>,
                               strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
                               em: ({ children }) => <em className="italic">{children}</em>,
                             }}
@@ -512,7 +512,7 @@ USER QUESTION: ${message.trim()}`;
                           )}
                         </div>
                       ) : (
-                        <p className="text-sm leading-relaxed">{message.content}</p>
+                        <p className="text-sm">{message.content}</p>
                       )}
                     </div>
                   </div>
@@ -521,8 +521,8 @@ USER QUESTION: ${message.trim()}`;
               </div>
 
               {/* Input */}
-              <div className="p-4 bg-white rounded-b-3xl border-t border-gray-100">
-                <form onSubmit={handleSubmit} className="flex items-center space-x-3">
+              <div className="p-4 border-t border-gray-100">
+                <form onSubmit={handleSubmit} className="flex items-center space-x-2">
                   <input
                     ref={inputRef}
                     type="text"
@@ -530,16 +530,16 @@ USER QUESTION: ${message.trim()}`;
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyPress={handleKeyPress}
                     placeholder={subscriptions.length > 0 
-                      ? "Ask about your subscriptions..." 
-                      : "Message..."
+                      ? "Ask about your subscriptions, spending, or renewals..." 
+                      : "Ask me anything about subscription management..."
                     }
-                    className="flex-1 px-4 py-3 bg-gray-100 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
                     disabled={isLoading || !runId}
                   />
                   <button
                     type="submit"
                     disabled={!inputValue.trim() || isLoading || !runId}
-                    className="w-10 h-10 bg-purple-600 text-white rounded-full hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
+                    className="p-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     {isLoading ? (
                       <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -558,7 +558,7 @@ USER QUESTION: ${message.trim()}`;
       {!isOpen && (
         <button
           onClick={toggleWidget}
-          className="fixed bottom-6 right-6 w-14 h-14 bg-white hover:bg-gray-50 text-gray-700 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center z-50 group border border-gray-200"
+          className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center z-50 group"
         >
           <MessageCircle className="w-6 h-6 group-hover:scale-110 transition-transform duration-200" />
         </button>
