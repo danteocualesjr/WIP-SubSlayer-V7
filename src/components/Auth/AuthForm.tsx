@@ -3,12 +3,8 @@ import { Eye, EyeOff, Mail, Lock, ArrowRight, Sword } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { SparklesCore } from '../ui/sparkles';
 
-interface AuthFormProps {
-  initialMode?: 'signin' | 'signup';
-}
-
-const AuthForm: React.FC<AuthFormProps> = ({ initialMode = 'signin' }) => {
-  const [isSignUp, setIsSignUp] = useState(initialMode === 'signup');
+const AuthForm: React.FC = () => {
+  const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -86,10 +82,10 @@ const AuthForm: React.FC<AuthFormProps> = ({ initialMode = 'signin' }) => {
           </div>
           
           <h1 className="text-4xl font-bold text-white mb-3">
-            {isSignUp ? 'Join SubSlayer' : 'Welcome back'}
+            Welcome back
           </h1>
           <p className="text-white/80 text-lg">
-            {isSignUp ? 'Start managing your subscriptions today' : 'Sign in to your account'}
+            Sign in to your account
           </p>
         </div>
 
@@ -193,7 +189,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ initialMode = 'signin' }) => {
                 <div className="w-6 h-6 border-2 border-gray-400 border-t-gray-900 rounded-full animate-spin" />
               ) : (
                 <>
-                  <span>{isSignUp ? 'Create Account' : 'Sign In'}</span>
+                  <span>{isSignUp ? 'Sign up' : 'Sign In'}</span>
                   <ArrowRight className="w-5 h-5" />
                 </>
               )}
