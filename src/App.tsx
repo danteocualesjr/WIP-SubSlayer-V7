@@ -39,7 +39,7 @@ function App() {
   const [isMobile, setIsMobile] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Move all useCallback and useMemo hooks to the top level
+  // Memoize all callback functions to prevent unnecessary re-renders
   const handleEditSubscription = useCallback((id: string, subscriptionData: any) => {
     updateSubscription(id, subscriptionData);
   }, [updateSubscription]);
@@ -58,7 +58,7 @@ function App() {
     }, 100);
   }, []);
 
-  // Update category data based on current subscriptions
+  // Update category data based on current subscriptions - memoized to prevent recalculation
   const currentCategoryData = useMemo(() => {
     const categoryTotals = subscriptions
       .filter(sub => sub.status === 'active')
@@ -78,7 +78,8 @@ function App() {
     }));
   }, [subscriptions]);
 
-  const renderActiveTab = useCallback(() => {
+  // Memoize the render function to prevent unnecessary re-renders
+  const renderActiveTab = useMemo(() => {
     if (subscriptionsLoading && (activeTab === 'dashboard' || activeTab === 'subscriptions' || activeTab === 'analytics' || activeTab === 'simulator')) {
       return (
         <div className="flex items-center justify-center py-12">
@@ -265,7 +266,7 @@ function App() {
         isMobile ? 'ml-0' : (sidebarCollapsed ? 'ml-20' : 'ml-64')
       }`}>
         <div className="max-w-7xl mx-auto">
-          {renderActiveTab()}
+          {renderActiveTab}
         </div>
       </main>
       
@@ -275,4 +276,4 @@ function App() {
   );
 }
 
-export default App;
+export default React.memo(App);

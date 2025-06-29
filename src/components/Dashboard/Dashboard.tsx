@@ -136,29 +136,25 @@ const Dashboard: React.FC<DashboardProps> = ({
     <div className="space-y-6 sm:space-y-8">
       {/* Enhanced Hero Section with Sparkles */}
       <div className="relative bg-gradient-to-br from-purple-900 via-violet-800 to-purple-700 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white overflow-hidden">
-        {/* Sparkles Background - Use stable key and reduced settings */}
-        <div className="absolute inset-0 w-full h-full">
-          <SparklesCore
-            id="dashboard-sparkles"
-            background="transparent"
-            minSize={0.3}
-            maxSize={1.0}
-            particleDensity={60}
-            className="w-full h-full"
-            particleColor="#ffffff"
-            speed={0.6}
-          />
-        </div>
+        {/* Sparkles Background - Minimal settings for performance */}
+        <SparklesCore
+          id="dashboard-sparkles-stable"
+          background="transparent"
+          minSize={0.5}
+          maxSize={1.5}
+          particleDensity={40}
+          className="absolute inset-0"
+          particleColor="#ffffff"
+          speed={0.5}
+        />
 
-        {/* Gradient Overlays */}
-        <div className="absolute inset-0 opacity-30">
+        {/* Static gradient overlays - no animation */}
+        <div className="absolute inset-0 opacity-20">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-r from-purple-400/20 to-violet-400/20 rounded-full blur-3xl"></div>
           <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-gradient-to-r from-violet-400/20 to-purple-400/20 rounded-full blur-3xl"></div>
         </div>
 
-        {/* Radial gradient to prevent sharp edges */}
-        <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-purple-900/50 via-violet-800/50 to-purple-700/50 [mask-image:radial-gradient(800px_400px_at_center,transparent_20%,white)]"></div>
-        
+        {/* Content */}
         <div className="relative z-10">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-6 lg:space-y-0">
             <div>

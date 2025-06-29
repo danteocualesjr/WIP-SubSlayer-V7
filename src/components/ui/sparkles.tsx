@@ -19,9 +19,10 @@ type ParticlesProps = {
   particleDensity?: number;
 };
 
-// Global initialization state to prevent multiple initializations
+// Global state to prevent multiple initializations and reduce complexity
 let globalInitialized = false;
 let globalInitPromise: Promise<void> | null = null;
+const globalContainers = new Map<string, Container>();
 
 export const SparklesCore = React.memo((props: ParticlesProps) => {
   const {
@@ -39,20 +40,37 @@ export const SparklesCore = React.memo((props: ParticlesProps) => {
   const [particlesReady, setParticlesReady] = useState(false);
   const controls = useAnimation();
   const containerRef = useRef<Container | null>(null);
+  const mountedRef = useRef(true);
 
-  // Stable ID generation - use provided id or generate once
-  const stableId = useMemo(() => id || `sparkles-${Math.random().toString(36).substr(2, 9)}`, [id]);
+  // Stable ID generation - use provided id or generate once and cache
+  const stableId = useMemo(() => {
+    if (id) return id;
+    // Create a stable ID based on component position and props
+    const propsHash = JSON.stringify({ minSize, maxSize, speed, particleColor, particleDensity });
+    return `sparkles-${btoa(propsHash).slice(0, 8)}`;
+  }, [id, minSize, maxSize, speed, particleColor, particleDensity]);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
   useEffect(() => {
     // Use global initialization to prevent multiple engine initializations
     if (globalInitialized) {
-      setInit(true);
+      if (mountedRef.current) {
+        setInit(true);
+      }
       return;
     }
 
     if (globalInitPromise) {
       globalInitPromise.then(() => {
-        setInit(true);
+        if (mountedRef.current) {
+          setInit(true);
+        }
       });
       return;
     }
@@ -61,30 +79,47 @@ export const SparklesCore = React.memo((props: ParticlesProps) => {
       await loadSlim(engine);
     }).then(() => {
       globalInitialized = true;
-      setInit(true);
+      if (mountedRef.current) {
+        setInit(true);
+      }
+    }).catch((error) => {
+      console.warn('Failed to initialize particles engine:', error);
+      if (mountedRef.current) {
+        setInit(true); // Still set to true to prevent infinite loading
+      }
     });
   }, []);
 
   // Trigger animation only after component is mounted and particles are ready
   useEffect(() => {
-    if (init && particlesReady) {
+    if (init && particlesReady && mountedRef.current) {
       controls.start({
         opacity: 1,
         transition: {
-          duration: 1,
+          duration: 0.5, // Faster animation
         },
       });
     }
   }, [init, particlesReady, controls]);
 
   const particlesLoaded = useCallback(async (container?: Container) => {
-    if (container) {
+    if (container && mountedRef.current) {
       containerRef.current = container;
+      globalContainers.set(stableId, container);
       setParticlesReady(true);
     }
-  }, []);
+  }, [stableId]);
 
-  // Memoize particles options to prevent recreation on every render
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (containerRef.current) {
+        globalContainers.delete(stableId);
+      }
+    };
+  }, [stableId]);
+
+  // Simplified and highly optimized particles options
   const particlesOptions = useMemo(() => ({
     background: {
       color: {
@@ -95,37 +130,22 @@ export const SparklesCore = React.memo((props: ParticlesProps) => {
       enable: false,
       zIndex: 1,
     },
-    fpsLimit: 60, // Reduced from 120 to improve performance
+    fpsLimit: 30, // Further reduced for better performance
     interactivity: {
       events: {
         onClick: {
-          enable: false, // Disabled to reduce complexity
-          mode: "push",
+          enable: false,
         },
         onHover: {
           enable: false,
-          mode: "repulse",
         },
-        resize: true as any,
-      },
-      modes: {
-        push: {
-          quantity: 2, // Reduced from 4
-        },
-        repulse: {
-          distance: 100, // Reduced from 200
-          duration: 0.2, // Reduced from 0.4
-        },
+        resize: false, // Disable resize events to prevent re-renders
       },
     },
     particles: {
       bounce: {
-        horizontal: {
-          value: 1,
-        },
-        vertical: {
-          value: 1,
-        },
+        horizontal: { value: 1 },
+        vertical: { value: 1 },
       },
       collisions: {
         enable: false,
@@ -142,26 +162,26 @@ export const SparklesCore = React.memo((props: ParticlesProps) => {
         random: false,
         speed: {
           min: 0.1,
-          max: speed || 1,
+          max: Math.min(speed || 1, 0.8), // Cap speed for better performance
         },
         straight: false,
       },
       number: {
         density: {
           enable: true,
-          width: 800,
-          height: 800,
+          width: 1200,
+          height: 1200,
         },
-        value: particleDensity || 80, // Reduced default from 120
+        value: Math.min(particleDensity || 60, 60), // Cap particle count
       },
       opacity: {
         value: {
           min: 0.1,
-          max: 0.8, // Reduced from 1
+          max: 0.6, // Reduced opacity for subtlety
         },
         animation: {
           enable: true,
-          speed: (speed || 4) * 0.5, // Slower animation
+          speed: Math.min((speed || 4) * 0.3, 1), // Much slower animation
           sync: false,
           mode: "auto",
           startValue: "random",
@@ -173,39 +193,62 @@ export const SparklesCore = React.memo((props: ParticlesProps) => {
       size: {
         value: {
           min: minSize || 1,
-          max: maxSize || 3,
+          max: Math.min(maxSize || 2, 2), // Cap size
         },
         animation: {
-          enable: false, // Disabled size animation for better performance
+          enable: false, // Completely disable size animation
         },
       },
       stroke: {
         width: 0,
       },
       links: {
-        enable: false, // Disabled links for better performance
+        enable: false,
       },
     },
-    detectRetina: true,
+    detectRetina: false, // Disable retina detection for consistency
+    smooth: true,
+    style: {
+      position: "absolute",
+    },
   }), [background, particleColor, particleDensity, speed, minSize, maxSize]);
 
   // Don't render anything until initialized
   if (!init) {
-    return null;
+    return (
+      <div className={cn("opacity-0", className)} style={{ pointerEvents: 'none' }}>
+        <div className="w-full h-full" />
+      </div>
+    );
   }
 
   return (
     <motion.div 
       animate={controls} 
       className={cn("opacity-0", className)}
-      style={{ pointerEvents: 'none' }} // Prevent interaction issues
+      style={{ 
+        pointerEvents: 'none',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: 1,
+      }}
     >
       <Particles
         key={stableId}
         id={stableId}
-        className={cn("h-full w-full")}
+        className="w-full h-full"
         particlesLoaded={particlesLoaded}
         options={particlesOptions}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+        }}
       />
     </motion.div>
   );
