@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, DollarSign, Pause, Trash2, Edit, Check } from 'lucide-react';
+import { Calendar, DollarSign, Sword, Trash2, Edit, Check } from 'lucide-react';
 import { Subscription } from '../../types/subscription';
 import { useSettings } from '../../hooks/useSettings';
 
@@ -78,7 +78,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
     onEdit(subscription);
   };
 
-  const handleToggleClick = (e: React.MouseEvent) => {
+  const handleCancelClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onToggleStatus(subscription.id);
   };
@@ -115,11 +115,11 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
               <Edit className="w-4 h-4" />
             </button>
             <button
-              onClick={handleToggleClick}
-              className="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-all duration-200"
-              title={subscription.status === 'active' ? 'Pause subscription' : 'Resume subscription'}
+              onClick={handleCancelClick}
+              className="p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-all duration-200"
+              title={subscription.status === 'active' ? 'Cancel subscription' : 'Reactivate subscription'}
             >
-              <Pause className="w-4 h-4" />
+              <Sword className="w-4 h-4" />
             </button>
             <button
               onClick={handleDeleteClick}
