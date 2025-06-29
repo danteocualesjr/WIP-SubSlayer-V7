@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Calculator, TrendingDown, DollarSign, Calendar, Target, Zap, Sparkles } from 'lucide-react';
-import { SparklesCore } from '../ui/sparkles';
 import { Subscription } from '../../types/subscription';
 
 interface CostSimulatorProps {
@@ -44,31 +43,14 @@ const CostSimulator: React.FC<CostSimulatorProps> = ({ subscriptions }) => {
 
   return (
     <div className="space-y-8">
-      {/* Enhanced Hero Section with Sparkles */}
+      {/* Enhanced Hero Section - NO SPARKLES */}
       <div className="relative bg-gradient-to-br from-purple-900 via-violet-800 to-purple-700 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white overflow-hidden">
-        {/* Sparkles Background */}
-        <div className="absolute inset-0 w-full h-full">
-          <SparklesCore
-            id="cost-simulator-sparkles"
-            background="transparent"
-            minSize={0.5}
-            maxSize={1.6}
-            particleDensity={90}
-            className="w-full h-full"
-            particleColor="#ffffff"
-            speed={1.4}
-          />
-        </div>
-
-        {/* Gradient Overlays */}
+        {/* Static gradient overlays only */}
         <div className="absolute inset-0 opacity-25">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-r from-purple-400/30 to-violet-400/30 rounded-full blur-3xl"></div>
           <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-gradient-to-r from-violet-400/30 to-purple-400/30 rounded-full blur-3xl"></div>
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-gradient-to-r from-purple-400/20 to-violet-400/20 rounded-full blur-3xl"></div>
         </div>
-
-        {/* Radial gradient to prevent sharp edges */}
-        <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-purple-900/50 via-violet-800/50 to-purple-700/50 [mask-image:radial-gradient(800px_400px_at_center,transparent_20%,white)]"></div>
         
         <div className="relative z-10">
           <div className="flex items-center space-x-3 mb-4 sm:mb-6">

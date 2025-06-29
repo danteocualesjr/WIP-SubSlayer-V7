@@ -6,7 +6,6 @@ import CategoryChart from './CategoryChart';
 import UpcomingRenewals from './UpcomingRenewals';
 import MiniCalendar from './MiniCalendar';
 import AddSubscriptionModal from '../Subscriptions/AddSubscriptionModal';
-import { SparklesCore } from '../ui/sparkles';
 import { Subscription, SpendingData } from '../../types/subscription';
 import { useAuth } from '../../hooks/useAuth';
 import { useProfile } from '../../hooks/useProfile';
@@ -134,21 +133,9 @@ const Dashboard: React.FC<DashboardProps> = ({
 
   return (
     <div className="space-y-6 sm:space-y-8">
-      {/* Enhanced Hero Section with Sparkles */}
+      {/* Enhanced Hero Section - NO SPARKLES */}
       <div className="relative bg-gradient-to-br from-purple-900 via-violet-800 to-purple-700 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white overflow-hidden">
-        {/* Sparkles Background - Minimal settings for performance */}
-        <SparklesCore
-          id="dashboard-sparkles-stable"
-          background="transparent"
-          minSize={0.5}
-          maxSize={1.5}
-          particleDensity={40}
-          className="absolute inset-0"
-          particleColor="#ffffff"
-          speed={0.5}
-        />
-
-        {/* Static gradient overlays - no animation */}
+        {/* Static gradient overlays only */}
         <div className="absolute inset-0 opacity-20">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-r from-purple-400/20 to-violet-400/20 rounded-full blur-3xl"></div>
           <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-gradient-to-r from-violet-400/20 to-purple-400/20 rounded-full blur-3xl"></div>
