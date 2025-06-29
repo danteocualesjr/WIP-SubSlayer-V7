@@ -29,7 +29,7 @@ const StatsCard: React.FC<StatsCardProps> = ({
       <div className="flex items-center justify-between">
         <div className="flex-1 min-w-0 pr-4">
           <p className="text-sm font-medium text-gray-600 mb-3">{title}</p>
-          <p className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 break-words leading-tight" title={value}>
+          <p className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 break-words leading-tight truncate" title={value}>
             {value}
           </p>
           {change && (
