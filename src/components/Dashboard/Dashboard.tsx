@@ -6,6 +6,7 @@ import CategoryChart from './CategoryChart';
 import UpcomingRenewals from './UpcomingRenewals';
 import MiniCalendar from './MiniCalendar';
 import AddSubscriptionModal from '../Subscriptions/AddSubscriptionModal';
+import { SparklesCore } from '../ui/sparkles';
 import { Subscription, SpendingData } from '../../types/subscription';
 import { useAuth } from '../../hooks/useAuth';
 import { useProfile } from '../../hooks/useProfile';
@@ -133,15 +134,32 @@ const Dashboard: React.FC<DashboardProps> = ({
 
   return (
     <div className="space-y-6 sm:space-y-8">
-      {/* Enhanced Hero Section - NO SPARKLES */}
+      {/* Enhanced Hero Section with Sparkles */}
       <div className="relative bg-gradient-to-br from-purple-900 via-violet-800 to-purple-700 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white overflow-hidden">
-        {/* Static gradient overlays only */}
-        <div className="absolute inset-0 opacity-20">
+        {/* Sparkles Background - Use stable key to prevent re-initialization */}
+        <div className="absolute inset-0 w-full h-full">
+          <SparklesCore
+            key="dashboard-sparkles-stable"
+            id="dashboard-sparkles"
+            background="transparent"
+            minSize={0.4}
+            maxSize={1.2}
+            particleDensity={80}
+            className="w-full h-full"
+            particleColor="#ffffff"
+            speed={0.8}
+          />
+        </div>
+
+        {/* Gradient Overlays */}
+        <div className="absolute inset-0 opacity-30">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-r from-purple-400/20 to-violet-400/20 rounded-full blur-3xl"></div>
           <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-gradient-to-r from-violet-400/20 to-purple-400/20 rounded-full blur-3xl"></div>
         </div>
 
-        {/* Content */}
+        {/* Radial gradient to prevent sharp edges */}
+        <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-purple-900/50 via-violet-800/50 to-purple-700/50 [mask-image:radial-gradient(800px_400px_at_center,transparent_20%,white)]"></div>
+        
         <div className="relative z-10">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-6 lg:space-y-0">
             <div>

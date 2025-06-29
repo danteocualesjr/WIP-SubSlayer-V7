@@ -18,17 +18,6 @@ import { useSpendingData } from './hooks/useSpendingData';
 import { useSettings } from './hooks/useSettings';
 import { useNotifications } from './hooks/useNotifications';
 
-// Create stable component instances to prevent re-mounting
-const StableDashboard = React.memo(Dashboard);
-const StableSubscriptions = React.memo(Subscriptions);
-const StableAnalytics = React.memo(Analytics);
-const StableCostSimulator = React.memo(CostSimulator);
-const StableNotifications = React.memo(Notifications);
-const StableSettings = React.memo(Settings);
-const StableProfile = React.memo(Profile);
-const StablePricing = React.memo(Pricing);
-const StableSwordiePage = React.memo(SwordiePage);
-
 function App() {
   const { user, loading: authLoading } = useAuth();
   const { settings } = useSettings();
@@ -49,126 +38,6 @@ function App() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  // Memoize all callback functions to prevent unnecessary re-renders
-  const handleEditSubscription = useCallback((id: string, subscriptionData: any) => {
-    updateSubscription(id, subscriptionData);
-  }, [updateSubscription]);
-
-  const handleBulkDelete = useCallback((ids: string[]) => {
-    bulkDeleteSubscriptions(ids);
-  }, [bulkDeleteSubscriptions]);
-
-  const handleSwitchToCalendar = useCallback(() => {
-    setActiveTab('subscriptions');
-    // Small delay to ensure the subscriptions component is rendered
-    setTimeout(() => {
-      // This will be handled by the Subscriptions component to switch to calendar view
-      const event = new CustomEvent('switchToCalendarView');
-      window.dispatchEvent(event);
-    }, 100);
-  }, []);
-
-  // Update category data based on current subscriptions - memoized to prevent recalculation
-  const currentCategoryData = useMemo(() => {
-    const categoryTotals = subscriptions
-      .filter(sub => sub.status === 'active')
-      .reduce((acc, sub) => {
-        const monthlyCost = sub.billingCycle === 'monthly' ? sub.cost : sub.cost / 12;
-        const category = sub.category || 'Uncategorized';
-        acc[category] = (acc[category] || 0) + monthlyCost;
-        return acc;
-      }, {} as Record<string, number>);
-
-    const colors = ['#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#F97316', '#84CC16', '#06B6D4', '#EC4899'];
-    
-    return Object.entries(categoryTotals).map(([name, value], index) => ({
-      name,
-      value,
-      color: colors[index % colors.length]
-    }));
-  }, [subscriptions]);
-
-  // Create stable component props to prevent re-renders
-  const dashboardProps = useMemo(() => ({
-    subscriptions,
-    spendingData,
-    spendingLoading,
-    onAddSubscription: addSubscription,
-    onEditSubscription: handleEditSubscription,
-    onSwitchToCalendar: handleSwitchToCalendar,
-  }), [subscriptions, spendingData, spendingLoading, addSubscription, handleEditSubscription, handleSwitchToCalendar]);
-
-  const subscriptionsProps = useMemo(() => ({
-    subscriptions,
-    onAddSubscription: addSubscription,
-    onEditSubscription: handleEditSubscription,
-    onDeleteSubscription: deleteSubscription,
-    onToggleSubscriptionStatus: toggleSubscriptionStatus,
-    onBulkDelete: handleBulkDelete,
-  }), [subscriptions, addSubscription, handleEditSubscription, deleteSubscription, toggleSubscriptionStatus, handleBulkDelete]);
-
-  const analyticsProps = useMemo(() => ({
-    subscriptions,
-    spendingData,
-    categoryData: currentCategoryData,
-    spendingLoading,
-  }), [subscriptions, spendingData, currentCategoryData, spendingLoading]);
-
-  const costSimulatorProps = useMemo(() => ({
-    subscriptions,
-  }), [subscriptions]);
-
-  const notificationsProps = useMemo(() => ({
-    subscriptions,
-  }), [subscriptions]);
-
-  const profileProps = useMemo(() => ({
-    subscriptions,
-  }), [subscriptions]);
-
-  // Memoize the render function to prevent unnecessary re-renders
-  const renderActiveTab = useMemo(() => {
-    if (subscriptionsLoading && (activeTab === 'dashboard' || activeTab === 'subscriptions' || activeTab === 'analytics' || activeTab === 'simulator')) {
-      return (
-        <div className="flex items-center justify-center py-12">
-          <div className="w-8 h-8 border-2 border-purple-600/30 border-t-purple-600 rounded-full animate-spin" />
-        </div>
-      );
-    }
-
-    switch (activeTab) {
-      case 'dashboard':
-        return <StableDashboard {...dashboardProps} />;
-      case 'subscriptions':
-        return <StableSubscriptions {...subscriptionsProps} />;
-      case 'analytics':
-        return <StableAnalytics {...analyticsProps} />;
-      case 'simulator':
-        return <StableCostSimulator {...costSimulatorProps} />;
-      case 'swordie':
-        return <StableSwordiePage />;
-      case 'notifications':
-        return <StableNotifications {...notificationsProps} />;
-      case 'settings':
-        return <StableSettings />;
-      case 'profile':
-        return <StableProfile {...profileProps} />;
-      case 'pricing':
-        return <StablePricing />;
-      default:
-        return <StableDashboard {...dashboardProps} />;
-    }
-  }, [
-    activeTab,
-    subscriptionsLoading,
-    dashboardProps,
-    subscriptionsProps,
-    analyticsProps,
-    costSimulatorProps,
-    notificationsProps,
-    profileProps,
-  ]);
 
   // Listen for sidebar toggle events
   useEffect(() => {
@@ -269,6 +138,124 @@ function App() {
     return <AuthForm />;
   }
 
+  const handleEditSubscription = useCallback((id: string, subscriptionData: any) => {
+    updateSubscription(id, subscriptionData);
+  }, [updateSubscription]);
+
+  const handleBulkDelete = useCallback((ids: string[]) => {
+    bulkDeleteSubscriptions(ids);
+  }, [bulkDeleteSubscriptions]);
+
+  const handleSwitchToCalendar = useCallback(() => {
+    setActiveTab('subscriptions');
+    // Small delay to ensure the subscriptions component is rendered
+    setTimeout(() => {
+      // This will be handled by the Subscriptions component to switch to calendar view
+      const event = new CustomEvent('switchToCalendarView');
+      window.dispatchEvent(event);
+    }, 100);
+  }, []);
+
+  // Update category data based on current subscriptions
+  const currentCategoryData = useMemo(() => {
+    const categoryTotals = subscriptions
+      .filter(sub => sub.status === 'active')
+      .reduce((acc, sub) => {
+        const monthlyCost = sub.billingCycle === 'monthly' ? sub.cost : sub.cost / 12;
+        const category = sub.category || 'Uncategorized';
+        acc[category] = (acc[category] || 0) + monthlyCost;
+        return acc;
+      }, {} as Record<string, number>);
+
+    const colors = ['#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#F97316', '#84CC16', '#06B6D4', '#EC4899'];
+    
+    return Object.entries(categoryTotals).map(([name, value], index) => ({
+      name,
+      value,
+      color: colors[index % colors.length]
+    }));
+  }, [subscriptions]);
+
+  const renderActiveTab = useCallback(() => {
+    if (subscriptionsLoading && (activeTab === 'dashboard' || activeTab === 'subscriptions' || activeTab === 'analytics' || activeTab === 'simulator')) {
+      return (
+        <div className="flex items-center justify-center py-12">
+          <div className="w-8 h-8 border-2 border-purple-600/30 border-t-purple-600 rounded-full animate-spin" />
+        </div>
+      );
+    }
+
+    switch (activeTab) {
+      case 'dashboard':
+        return (
+          <Dashboard 
+            subscriptions={subscriptions} 
+            spendingData={spendingData}
+            spendingLoading={spendingLoading}
+            onAddSubscription={addSubscription}
+            onEditSubscription={handleEditSubscription}
+            onSwitchToCalendar={handleSwitchToCalendar}
+          />
+        );
+      case 'subscriptions':
+        return (
+          <Subscriptions
+            subscriptions={subscriptions}
+            onAddSubscription={addSubscription}
+            onEditSubscription={handleEditSubscription}
+            onDeleteSubscription={deleteSubscription}
+            onToggleSubscriptionStatus={toggleSubscriptionStatus}
+            onBulkDelete={handleBulkDelete}
+          />
+        );
+      case 'analytics':
+        return (
+          <Analytics
+            subscriptions={subscriptions}
+            spendingData={spendingData}
+            categoryData={currentCategoryData}
+            spendingLoading={spendingLoading}
+          />
+        );
+      case 'simulator':
+        return <CostSimulator subscriptions={subscriptions} />;
+      case 'swordie':
+        return <SwordiePage />;
+      case 'notifications':
+        return <Notifications subscriptions={subscriptions} />;
+      case 'settings':
+        return <Settings />;
+      case 'profile':
+        return <Profile subscriptions={subscriptions} />;
+      case 'pricing':
+        return <Pricing />;
+      default:
+        return (
+          <Dashboard 
+            subscriptions={subscriptions} 
+            spendingData={spendingData}
+            spendingLoading={spendingLoading}
+            onAddSubscription={addSubscription}
+            onEditSubscription={handleEditSubscription}
+            onSwitchToCalendar={handleSwitchToCalendar}
+          />
+        );
+    }
+  }, [
+    activeTab,
+    subscriptions,
+    spendingData,
+    spendingLoading,
+    subscriptionsLoading,
+    currentCategoryData,
+    addSubscription,
+    handleEditSubscription,
+    deleteSubscription,
+    toggleSubscriptionStatus,
+    handleBulkDelete,
+    handleSwitchToCalendar
+  ]);
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -277,7 +264,7 @@ function App() {
         isMobile ? 'ml-0' : (sidebarCollapsed ? 'ml-20' : 'ml-64')
       }`}>
         <div className="max-w-7xl mx-auto">
-          {renderActiveTab}
+          {renderActiveTab()}
         </div>
       </main>
       
@@ -287,4 +274,4 @@ function App() {
   );
 }
 
-export default React.memo(App);
+export default App;

@@ -3,20 +3,25 @@ import { TrendingUp, DollarSign, Calendar, PieChart, Sparkles, Star, BarChart3, 
 import StatsCard from '../Dashboard/StatsCard';
 import SpendingChart from '../Dashboard/SpendingChart';
 import CategoryChart from './CategoryChart';
+import { SparklesCore } from '../ui/sparkles';
 import { Subscription, SpendingData, CategoryData } from '../../types/subscription';
 
 interface AnalyticsProps {
+  
   subscriptions: Subscription[];
   spendingData: SpendingData[];
   categoryData: CategoryData[];
   spendingLoading?: boolean;
+  
 }
 
 const Analytics: React.FC<AnalyticsProps> = ({ 
+  
   subscriptions, 
   spendingData, 
   categoryData, 
   spendingLoading = false 
+  
 }) => {
   const activeSubscriptions = subscriptions.filter(sub => sub.status === 'active');
   
@@ -56,14 +61,31 @@ const Analytics: React.FC<AnalyticsProps> = ({
 
   return (
     <div className="space-y-6 sm:space-y-8">
-      {/* Enhanced Hero Section - NO SPARKLES */}
+      {/* Enhanced Hero Section with Sparkles */}
       <div className="relative bg-gradient-to-br from-purple-900 via-violet-800 to-purple-700 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white overflow-hidden">
-        {/* Static gradient overlays only */}
+        {/* Sparkles Background */}
+        <div className="absolute inset-0 w-full h-full">
+          <SparklesCore
+            id="analytics-sparkles"
+            background="transparent"
+            minSize={0.3}
+            maxSize={1.4}
+            particleDensity={120}
+            className="w-full h-full"
+            particleColor="#ffffff"
+            speed={1.2}
+          />
+        </div>
+
+        {/* Gradient Overlays */}
         <div className="absolute inset-0 opacity-25">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-r from-purple-400/30 to-violet-400/30 rounded-full blur-3xl"></div>
           <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-gradient-to-r from-violet-400/30 to-purple-400/30 rounded-full blur-3xl"></div>
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-gradient-to-r from-purple-400/20 to-violet-400/20 rounded-full blur-3xl"></div>
         </div>
+
+        {/* Radial gradient to prevent sharp edges */}
+        <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-purple-900/50 via-violet-800/50 to-purple-700/50 [mask-image:radial-gradient(800px_400px_at_center,transparent_20%,white)]"></div>
         
         <div className="relative z-10">
           <div className="flex items-center space-x-3 mb-4 sm:mb-6">
