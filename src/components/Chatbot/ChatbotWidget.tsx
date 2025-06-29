@@ -43,7 +43,7 @@ const ChatbotWidget: React.FC = () => {
     }
   }, [isOpen, hasInitialized]);
 
-  // Generate subscription context for the AI
+  // Generate comprehensive subscription context for the AI
   const generateSubscriptionContext = () => {
     const activeSubscriptions = subscriptions.filter(sub => sub.status === 'active');
     const pausedSubscriptions = subscriptions.filter(sub => sub.status === 'paused');
@@ -61,6 +61,13 @@ const ChatbotWidget: React.FC = () => {
     const upcomingRenewals = activeSubscriptions.filter(sub => {
       const renewalDate = new Date(sub.nextBilling);
       return renewalDate >= now && renewalDate <= thirtyDaysFromNow;
+    }).map(sub => {
+      const renewalDate = new Date(sub.nextBilling);
+      const daysUntil = Math.ceil((renewalDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+      return {
+        ...sub,
+        daysUntil
+      };
     });
 
     // Group by category
@@ -71,52 +78,75 @@ const ChatbotWidget: React.FC = () => {
       return acc;
     }, {} as Record<string, typeof subscriptions>);
 
-    const context = {
+    // Calculate category spending
+    const categoryBreakdown = Object.entries(subscriptionsByCategory).map(([category, subs]) => {
+      const activeSubs = subs.filter(s => s.status === 'active');
+      const monthlyTotal = activeSubs.reduce((sum, s) => 
+        sum + (s.billingCycle === 'monthly' ? s.cost : s.cost / 12), 0
+      );
+      return {
+        category,
+        count: subs.length,
+        activeCount: activeSubs.length,
+        monthlyTotal,
+        annualTotal: monthlyTotal * 12,
+        subscriptions: activeSubs.map(s => ({
+          name: s.name,
+          cost: s.cost,
+          billingCycle: s.billingCycle,
+          nextBilling: s.nextBilling
+        }))
+      };
+    });
+
+    return {
       user: {
         email: user?.email,
         currency: settings.currency,
         reminderDays: settings.reminderDays,
-        dateFormat: settings.dateFormat
+        dateFormat: settings.dateFormat,
+        theme: settings.theme
       },
       subscriptions: {
         total: subscriptions.length,
         active: activeSubscriptions.length,
         paused: pausedSubscriptions.length,
         cancelled: cancelledSubscriptions.length,
-        list: subscriptions.map(sub => ({
+        allSubscriptions: subscriptions.map(sub => ({
+          id: sub.id,
           name: sub.name,
           description: sub.description,
           cost: sub.cost,
           currency: sub.currency,
           billingCycle: sub.billingCycle,
           nextBilling: sub.nextBilling,
-          category: sub.category,
+          category: sub.category || 'Uncategorized',
           status: sub.status,
-          createdAt: sub.createdAt
+          color: sub.color,
+          createdAt: sub.createdAt,
+          daysUntilRenewal: sub.status === 'active' ? Math.ceil((new Date(sub.nextBilling).getTime() - now.getTime()) / (1000 * 60 * 60 * 24)) : null
         }))
       },
       spending: {
         monthlyTotal: totalMonthlySpend,
         annualTotal: totalAnnualSpend,
-        averagePerSubscription: activeSubscriptions.length > 0 ? totalMonthlySpend / activeSubscriptions.length : 0
+        averagePerSubscription: activeSubscriptions.length > 0 ? totalMonthlySpend / activeSubscriptions.length : 0,
+        formattedMonthlyTotal: formatCurrency(totalMonthlySpend),
+        formattedAnnualTotal: formatCurrency(totalAnnualSpend)
       },
       upcomingRenewals: upcomingRenewals.map(sub => ({
         name: sub.name,
         cost: sub.cost,
+        formattedCost: formatCurrency(sub.cost),
         nextBilling: sub.nextBilling,
-        daysUntil: Math.ceil((new Date(sub.nextBilling).getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+        daysUntil: sub.daysUntil,
+        category: sub.category || 'Uncategorized',
+        isUrgent: sub.daysUntil <= 3,
+        isWarning: sub.daysUntil <= 7 && sub.daysUntil > 3
       })),
       categories: Object.keys(subscriptionsByCategory),
-      categoryBreakdown: Object.entries(subscriptionsByCategory).map(([category, subs]) => ({
-        category,
-        count: subs.length,
-        monthlyTotal: subs.filter(s => s.status === 'active').reduce((sum, s) => 
-          sum + (s.billingCycle === 'monthly' ? s.cost : s.cost / 12), 0
-        )
-      }))
+      categoryBreakdown: categoryBreakdown.sort((a, b) => b.monthlyTotal - a.monthlyTotal)
     };
-
-    return context;
   };
 
   const initializeChat = async () => {
@@ -130,25 +160,45 @@ const ChatbotWidget: React.FC = () => {
       
       const subscriptionContext = generateSubscriptionContext();
       
+      // Create a comprehensive context message
+      const contextMessage = `You are SubSlayer AI, a helpful assistant for managing subscriptions. You have COMPLETE ACCESS to the user's subscription data:
+
+SUBSCRIPTION OVERVIEW:
+- Total subscriptions: ${subscriptionContext.subscriptions.total}
+- Active: ${subscriptionContext.subscriptions.active}
+- Paused: ${subscriptionContext.subscriptions.paused}
+- Cancelled: ${subscriptionContext.subscriptions.cancelled}
+
+SPENDING SUMMARY:
+- Monthly total: ${subscriptionContext.spending.formattedMonthlyTotal}
+- Annual total: ${subscriptionContext.spending.formattedAnnualTotal}
+- Average per subscription: ${formatCurrency(subscriptionContext.spending.averagePerSubscription)}
+
+UPCOMING RENEWALS (Next 30 days): ${subscriptionContext.upcomingRenewals.length} subscriptions
+${subscriptionContext.upcomingRenewals.map(r => `- ${r.name}: ${r.formattedCost} in ${r.daysUntil} days (${r.nextBilling})`).join('\n')}
+
+CATEGORIES:
+${subscriptionContext.categoryBreakdown.map(cat => `- ${cat.category}: ${cat.activeCount} active subscriptions, ${formatCurrency(cat.monthlyTotal)}/month`).join('\n')}
+
+ALL SUBSCRIPTIONS:
+${subscriptionContext.subscriptions.allSubscriptions.map(sub => 
+  `- ${sub.name} (${sub.status}): ${formatCurrency(sub.cost)}/${sub.billingCycle}, Category: ${sub.category}, Next billing: ${sub.nextBilling}${sub.daysUntilRenewal ? ` (${sub.daysUntilRenewal} days)` : ''}`
+).join('\n')}
+
+USER SETTINGS:
+- Currency: ${subscriptionContext.user.currency}
+- Reminder days: ${subscriptionContext.user.reminderDays}
+- Date format: ${subscriptionContext.user.dateFormat}
+
+You can answer questions about their subscriptions, spending patterns, upcoming renewals, suggest optimizations, and help them manage their subscription portfolio. Be helpful, friendly, and provide actionable insights based on their actual data.`;
+
       const response = await fetch('https://agents.toolhouse.ai/60e3c85c-95f3-40bb-b607-ed83d1d07d40', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          context: {
-            userSubscriptionData: subscriptionContext,
-            instructions: `You are SubSlayer AI, a helpful assistant for managing subscriptions. You have access to the user's complete subscription data including:
-            
-            - All their subscriptions (${subscriptionContext.subscriptions.total} total: ${subscriptionContext.subscriptions.active} active, ${subscriptionContext.subscriptions.paused} paused, ${subscriptionContext.subscriptions.cancelled} cancelled)
-            - Monthly spending: ${formatCurrency(subscriptionContext.spending.monthlyTotal)}
-            - Annual spending: ${formatCurrency(subscriptionContext.spending.annualTotal)}
-            - Upcoming renewals in the next 30 days: ${subscriptionContext.upcomingRenewals.length} subscriptions
-            - Categories: ${subscriptionContext.categories.join(', ')}
-            - User settings: ${subscriptionContext.user.reminderDays} day reminders, ${subscriptionContext.user.currency} currency
-            
-            You can answer questions about their subscriptions, spending patterns, upcoming renewals, suggest optimizations, and help them manage their subscription portfolio. Be helpful, friendly, and provide actionable insights based on their actual data.`
-          }
+          message: contextMessage
         }),
         signal: abortControllerRef.current.signal,
       });
@@ -242,16 +292,19 @@ const ChatbotWidget: React.FC = () => {
       // Include updated subscription context with each message
       const subscriptionContext = generateSubscriptionContext();
       
+      // Prepend context to user message
+      const messageWithContext = `CURRENT SUBSCRIPTION DATA:
+${JSON.stringify(subscriptionContext, null, 2)}
+
+USER QUESTION: ${message.trim()}`;
+      
       const response = await fetch(`https://agents.toolhouse.ai/60e3c85c-95f3-40bb-b607-ed83d1d07d40/${runId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ 
-          message: message.trim(),
-          context: {
-            userSubscriptionData: subscriptionContext
-          }
+          message: messageWithContext
         }),
         signal: abortControllerRef.current.signal,
       });
