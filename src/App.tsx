@@ -9,6 +9,7 @@ import Notifications from './components/Notifications/Notifications';
 import Settings from './components/Settings/Settings';
 import Profile from './components/Profile/Profile';
 import Pricing from './components/Pricing/Pricing';
+import SwordiePage from './components/Swordie/SwordiePage';
 import AuthForm from './components/Auth/AuthForm';
 import ChatbotWidget from './components/Chatbot/ChatbotWidget';
 import { useAuth } from './hooks/useAuth';
@@ -220,6 +221,8 @@ function App() {
         );
       case 'simulator':
         return <CostSimulator subscriptions={subscriptions} />;
+      case 'swordie':
+        return <SwordiePage />;
       case 'notifications':
         return <Notifications subscriptions={subscriptions} />;
       case 'settings':
@@ -254,8 +257,8 @@ function App() {
         </div>
       </main>
       
-      {/* Chatbot Widget */}
-      <ChatbotWidget />
+      {/* Chatbot Widget - Only show on non-Swordie pages */}
+      {activeTab !== 'swordie' && <ChatbotWidget />}
     </div>
   );
 }
