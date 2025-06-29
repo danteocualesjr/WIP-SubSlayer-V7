@@ -101,7 +101,7 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
     { code: 'NCL', name: 'CFP Franc', symbol: '₣' },
   ];
 
-  // Limited to 7 colors as requested
+  // Updated colors with black as the last color
   const colors = [
     '#8B5CF6', // Purple
     '#3B82F6', // Blue
@@ -109,7 +109,7 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
     '#F59E0B', // Orange
     '#EF4444', // Red
     '#F97316', // Orange-Red
-    '#84CC16'  // Lime Green
+    '#000000'  // Black (changed from lime green)
   ];
 
   // Initialize form data when modal opens or subscription changes
