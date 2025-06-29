@@ -196,19 +196,19 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
         </div>
       </nav>
 
-      {/* Hero Section */}
+      {/* Hero Section with 21st.dev Sparkles */}
       <section className="relative pt-20 pb-16 overflow-hidden">
-        {/* Enhanced Sparkles Background */}
+        {/* 21st.dev Sparkles Background */}
         <div className="absolute inset-0 w-full h-full">
           <SparklesCore
             id="hero-sparkles"
             background="transparent"
-            minSize={0.4}
-            maxSize={1.2}
-            particleDensity={120}
+            minSize={0.6}
+            maxSize={1.4}
+            particleDensity={100}
             className="w-full h-full"
             particleColor="#8B5CF6"
-            speed={0.8}
+            speed={1}
           />
         </div>
 
@@ -319,19 +319,19 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
               })}
             </div>
 
-            {/* Enhanced Feature Preview */}
+            {/* Enhanced Feature Preview with 21st.dev Sparkles */}
             <div className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-100 relative overflow-hidden">
-              {/* Subtle sparkles in preview */}
+              {/* 21st.dev Sparkles in preview */}
               <div className="absolute inset-0 w-full h-full opacity-30">
                 <SparklesCore
                   id="feature-sparkles"
                   background="transparent"
-                  minSize={0.2}
-                  maxSize={0.8}
+                  minSize={0.4}
+                  maxSize={1}
                   particleDensity={50}
                   className="w-full h-full"
                   particleColor="#8B5CF6"
-                  speed={0.3}
+                  speed={0.5}
                 />
               </div>
               <div className="aspect-video bg-gradient-to-br from-purple-100 to-violet-100 rounded-2xl flex items-center justify-center relative z-10">
@@ -350,17 +350,17 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
 
       {/* Enhanced Benefits Section */}
       <section className="py-20 bg-white relative overflow-hidden">
-        {/* Subtle background sparkles */}
+        {/* 21st.dev Sparkles background */}
         <div className="absolute inset-0 w-full h-full opacity-20">
           <SparklesCore
             id="benefits-sparkles"
             background="transparent"
-            minSize={0.1}
-            maxSize={0.6}
+            minSize={0.2}
+            maxSize={0.8}
             particleDensity={30}
             className="w-full h-full"
             particleColor="#8B5CF6"
-            speed={0.2}
+            speed={0.3}
           />
         </div>
         
@@ -508,19 +508,19 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
         </div>
       </section>
 
-      {/* Enhanced CTA Section */}
+      {/* Enhanced CTA Section with 21st.dev Sparkles */}
       <section className="py-20 bg-gradient-to-br from-purple-900 via-violet-800 to-purple-700 relative overflow-hidden">
-        {/* Enhanced Sparkles Background */}
+        {/* 21st.dev Sparkles Background */}
         <div className="absolute inset-0 w-full h-full">
           <SparklesCore
             id="cta-sparkles"
             background="transparent"
-            minSize={0.4}
+            minSize={0.6}
             maxSize={1.4}
             particleDensity={100}
             className="w-full h-full"
             particleColor="#ffffff"
-            speed={1.0}
+            speed={1}
           />
         </div>
 
@@ -529,6 +529,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-r from-purple-400/30 to-violet-400/30 rounded-full blur-3xl"></div>
           <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-gradient-to-r from-violet-400/30 to-purple-400/30 rounded-full blur-3xl"></div>
         </div>
+
+        {/* Radial Gradient to prevent sharp edges */}
+        <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-purple-900/50 via-violet-800/50 to-purple-700/50 [mask-image:radial-gradient(800px_400px_at_center,transparent_20%,white)]"></div>
 
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
