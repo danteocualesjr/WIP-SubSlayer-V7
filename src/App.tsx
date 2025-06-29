@@ -9,7 +9,6 @@ import Notifications from './components/Notifications/Notifications';
 import Settings from './components/Settings/Settings';
 import Profile from './components/Profile/Profile';
 import Pricing from './components/Pricing/Pricing';
-import Chatbot from './components/Chatbot/Chatbot';
 import AuthForm from './components/Auth/AuthForm';
 import { useAuth } from './hooks/useAuth';
 import { useSubscriptions } from './hooks/useSubscriptions';
@@ -228,8 +227,6 @@ function App() {
         return <Profile subscriptions={subscriptions} />;
       case 'pricing':
         return <Pricing />;
-      case 'chatbot':
-        return <Chatbot />;
       default:
         return (
           <Dashboard 
