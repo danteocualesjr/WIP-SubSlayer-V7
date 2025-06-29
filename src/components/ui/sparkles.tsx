@@ -1,5 +1,5 @@
 "use client";
-import React, { useId, useMemo, useRef, useEffect } from "react";
+import React, { useId, useMemo, useRef, useEffect, useCallback } from "react";
 import { useState } from "react";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import type { Container, SingleOrMultiple } from "@tsparticles/engine";
@@ -19,6 +19,10 @@ type ParticlesProps = {
   particleDensity?: number;
 };
 
+// Global initialization state to prevent multiple initializations
+let globalInitialized = false;
+let globalInitPromise: Promise<void> | null = null;
+
 export const SparklesCore = React.memo((props: ParticlesProps) => {
   const {
     id,
@@ -31,24 +35,32 @@ export const SparklesCore = React.memo((props: ParticlesProps) => {
     particleDensity,
   } = props;
   
-  const [init, setInit] = useState(false);
+  const [init, setInit] = useState(globalInitialized);
   const [particlesReady, setParticlesReady] = useState(false);
   const controls = useAnimation();
   const containerRef = useRef<Container | null>(null);
-  const initRef = useRef(false);
 
-  // Stable ID generation
-  const generatedId = useId();
-  const stableId = id || generatedId;
+  // Stable ID generation - use provided id or generate once
+  const stableId = useMemo(() => id || `sparkles-${Math.random().toString(36).substr(2, 9)}`, [id]);
 
   useEffect(() => {
-    // Prevent multiple initializations
-    if (initRef.current) return;
-    initRef.current = true;
+    // Use global initialization to prevent multiple engine initializations
+    if (globalInitialized) {
+      setInit(true);
+      return;
+    }
 
-    initParticlesEngine(async (engine) => {
+    if (globalInitPromise) {
+      globalInitPromise.then(() => {
+        setInit(true);
+      });
+      return;
+    }
+
+    globalInitPromise = initParticlesEngine(async (engine) => {
       await loadSlim(engine);
     }).then(() => {
+      globalInitialized = true;
       setInit(true);
     });
   }, []);
@@ -65,29 +77,29 @@ export const SparklesCore = React.memo((props: ParticlesProps) => {
     }
   }, [init, particlesReady, controls]);
 
-  const particlesLoaded = async (container?: Container) => {
+  const particlesLoaded = useCallback(async (container?: Container) => {
     if (container) {
       containerRef.current = container;
       setParticlesReady(true);
     }
-  };
+  }, []);
 
-  // Memoize particles options to prevent recreation
+  // Memoize particles options to prevent recreation on every render
   const particlesOptions = useMemo(() => ({
     background: {
       color: {
-        value: background || "#0d47a1",
+        value: background || "transparent",
       },
     },
     fullScreen: {
       enable: false,
       zIndex: 1,
     },
-    fpsLimit: 120,
+    fpsLimit: 60, // Reduced from 120 to improve performance
     interactivity: {
       events: {
         onClick: {
-          enable: true,
+          enable: false, // Disabled to reduce complexity
           mode: "push",
         },
         onHover: {
@@ -98,11 +110,11 @@ export const SparklesCore = React.memo((props: ParticlesProps) => {
       },
       modes: {
         push: {
-          quantity: 4,
+          quantity: 2, // Reduced from 4
         },
         repulse: {
-          distance: 200,
-          duration: 0.4,
+          distance: 100, // Reduced from 200
+          duration: 0.2, // Reduced from 0.4
         },
       },
     },
@@ -116,169 +128,46 @@ export const SparklesCore = React.memo((props: ParticlesProps) => {
         },
       },
       collisions: {
-        absorb: {
-          speed: 2,
-        },
-        bounce: {
-          horizontal: {
-            value: 1,
-          },
-          vertical: {
-            value: 1,
-          },
-        },
         enable: false,
-        maxSpeed: 50,
-        mode: "bounce",
-        overlap: {
-          enable: true,
-          retries: 0,
-        },
       },
       color: {
         value: particleColor || "#ffffff",
-        animation: {
-          h: {
-            count: 0,
-            enable: false,
-            speed: 1,
-            decay: 0,
-            delay: 0,
-            sync: true,
-            offset: 0,
-          },
-          s: {
-            count: 0,
-            enable: false,
-            speed: 1,
-            decay: 0,
-            delay: 0,
-            sync: true,
-            offset: 0,
-          },
-          l: {
-            count: 0,
-            enable: false,
-            speed: 1,
-            decay: 0,
-            delay: 0,
-            sync: true,
-            offset: 0,
-          },
-        },
       },
-      effect: {
-        close: true,
-        fill: true,
-        options: {},
-        type: {} as SingleOrMultiple<string> | undefined,
-      },
-      groups: {},
       move: {
-        angle: {
-          offset: 0,
-          value: 90,
-        },
-        attract: {
-          distance: 200,
-          enable: false,
-          rotate: {
-            x: 3000,
-            y: 3000,
-          },
-        },
-        center: {
-          x: 50,
-          y: 50,
-          mode: "percent",
-          radius: 0,
-        },
-        decay: 0,
-        distance: {},
         direction: "none",
-        drift: 0,
         enable: true,
-        gravity: {
-          acceleration: 9.81,
-          enable: false,
-          inverse: false,
-          maxSpeed: 50,
-        },
-        path: {
-          clamp: true,
-          delay: {
-            value: 0,
-          },
-          enable: false,
-          options: {},
-        },
         outModes: {
           default: "out",
         },
         random: false,
-        size: false,
         speed: {
           min: 0.1,
-          max: 1,
-        },
-        spin: {
-          acceleration: 0,
-          enable: false,
+          max: speed || 1,
         },
         straight: false,
-        trail: {
-          enable: false,
-          length: 10,
-          fill: {},
-        },
-        vibrate: false,
-        warp: false,
       },
       number: {
         density: {
           enable: true,
-          width: 400,
-          height: 400,
+          width: 800,
+          height: 800,
         },
-        limit: {
-          mode: "delete",
-          value: 0,
-        },
-        value: particleDensity || 120,
+        value: particleDensity || 80, // Reduced default from 120
       },
       opacity: {
         value: {
           min: 0.1,
-          max: 1,
+          max: 0.8, // Reduced from 1
         },
         animation: {
-          count: 0,
           enable: true,
-          speed: speed || 4,
-          decay: 0,
-          delay: 0,
+          speed: (speed || 4) * 0.5, // Slower animation
           sync: false,
           mode: "auto",
           startValue: "random",
-          destroy: "none",
-        },
-      },
-      reduceDuplicates: false,
-      shadow: {
-        blur: 0,
-        color: {
-          value: "#000",
-        },
-        enable: false,
-        offset: {
-          x: 0,
-          y: 0,
         },
       },
       shape: {
-        close: true,
-        fill: true,
-        options: {},
         type: "circle",
       },
       size: {
@@ -287,172 +176,37 @@ export const SparklesCore = React.memo((props: ParticlesProps) => {
           max: maxSize || 3,
         },
         animation: {
-          count: 0,
-          enable: false,
-          speed: 5,
-          decay: 0,
-          delay: 0,
-          sync: false,
-          mode: "auto",
-          startValue: "random",
-          destroy: "none",
+          enable: false, // Disabled size animation for better performance
         },
       },
       stroke: {
         width: 0,
       },
-      zIndex: {
-        value: 0,
-        opacityRate: 1,
-        sizeRate: 1,
-        velocityRate: 1,
-      },
-      destroy: {
-        bounds: {},
-        mode: "none",
-        split: {
-          count: 1,
-          factor: {
-            value: 3,
-          },
-          rate: {
-            value: {
-              min: 4,
-              max: 9,
-            },
-          },
-          sizeOffset: true,
-        },
-      },
-      roll: {
-        darken: {
-          enable: false,
-          value: 0,
-        },
-        enable: false,
-        enlighten: {
-          enable: false,
-          value: 0,
-        },
-        mode: "vertical",
-        speed: 25,
-      },
-      tilt: {
-        value: 0,
-        animation: {
-          enable: false,
-          speed: 0,
-          decay: 0,
-          sync: false,
-        },
-        direction: "clockwise",
-        enable: false,
-      },
-      twinkle: {
-        lines: {
-          enable: false,
-          frequency: 0.05,
-          opacity: 1,
-        },
-        particles: {
-          enable: false,
-          frequency: 0.05,
-          opacity: 1,
-        },
-      },
-      wobble: {
-        distance: 5,
-        enable: false,
-        speed: {
-          angle: 50,
-          move: 10,
-        },
-      },
-      life: {
-        count: 0,
-        delay: {
-          value: 0,
-          sync: false,
-        },
-        duration: {
-          value: 0,
-          sync: false,
-        },
-      },
-      rotate: {
-        value: 0,
-        animation: {
-          enable: false,
-          speed: 0,
-          decay: 0,
-          sync: false,
-        },
-        direction: "clockwise",
-        path: false,
-      },
-      orbit: {
-        animation: {
-          count: 0,
-          enable: false,
-          speed: 1,
-          decay: 0,
-          delay: 0,
-          sync: false,
-        },
-        enable: false,
-        opacity: 1,
-        rotation: {
-          value: 45,
-        },
-        width: 1,
-      },
       links: {
-        blink: false,
-        color: {
-          value: "#fff",
-        },
-        consent: false,
-        distance: 100,
-        enable: false,
-        frequency: 1,
-        opacity: 1,
-        shadow: {
-          blur: 5,
-          color: {
-            value: "#000",
-          },
-          enable: false,
-        },
-        triangles: {
-          enable: false,
-          frequency: 1,
-        },
-        width: 1,
-        warp: false,
-      },
-      repulse: {
-        value: 0,
-        enabled: false,
-        distance: 1,
-        duration: 1,
-        factor: 1,
-        speed: 1,
+        enable: false, // Disabled links for better performance
       },
     },
     detectRetina: true,
   }), [background, particleColor, particleDensity, speed, minSize, maxSize]);
 
+  // Don't render anything until initialized
+  if (!init) {
+    return null;
+  }
+
   return (
-    <motion.div animate={controls} className={cn("opacity-0", className)}>
-      {init && (
-        <Particles
-          key={stableId}
-          id={stableId}
-          className={cn("h-full w-full")}
-          particlesLoaded={particlesLoaded}
-          options={particlesOptions}
-        />
-      )}
+    <motion.div 
+      animate={controls} 
+      className={cn("opacity-0", className)}
+      style={{ pointerEvents: 'none' }} // Prevent interaction issues
+    >
+      <Particles
+        key={stableId}
+        id={stableId}
+        className={cn("h-full w-full")}
+        particlesLoaded={particlesLoaded}
+        options={particlesOptions}
+      />
     </motion.div>
   );
 });

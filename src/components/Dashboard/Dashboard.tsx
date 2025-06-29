@@ -136,18 +136,17 @@ const Dashboard: React.FC<DashboardProps> = ({
     <div className="space-y-6 sm:space-y-8">
       {/* Enhanced Hero Section with Sparkles */}
       <div className="relative bg-gradient-to-br from-purple-900 via-violet-800 to-purple-700 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white overflow-hidden">
-        {/* Sparkles Background - Use stable key to prevent re-initialization */}
+        {/* Sparkles Background - Use stable key and reduced settings */}
         <div className="absolute inset-0 w-full h-full">
           <SparklesCore
-            key="dashboard-sparkles-stable"
             id="dashboard-sparkles"
             background="transparent"
-            minSize={0.4}
-            maxSize={1.2}
-            particleDensity={80}
+            minSize={0.3}
+            maxSize={1.0}
+            particleDensity={60}
             className="w-full h-full"
             particleColor="#ffffff"
-            speed={0.8}
+            speed={0.6}
           />
         </div>
 
