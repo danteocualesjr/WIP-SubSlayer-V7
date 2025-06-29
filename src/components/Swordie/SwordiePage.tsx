@@ -36,12 +36,6 @@ const SwordiePage: React.FC = () => {
     scrollToBottom();
   }, [messages]);
 
-  useEffect(() => {
-    if (!hasInitialized) {
-      initializeChat();
-    }
-  }, [hasInitialized]);
-
   // Focus input on mount
   useEffect(() => {
     if (inputRef.current) {
@@ -265,7 +259,7 @@ Remember: Start with a simple greeting, then help based on what they ask for.`;
   };
 
   const sendMessage = async (message: string) => {
-    if (!message.trim() || isLoading || !runId) return;
+    if (!message.trim() || isLoading) return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -277,6 +271,24 @@ Remember: Start with a simple greeting, then help based on what they ask for.`;
     setMessages(prev => [...prev, userMessage]);
     setInputValue('');
     setIsLoading(true);
+
+    // Initialize chat if this is the first message
+    if (!hasInitialized) {
+      await initializeChat();
+    }
+
+    // If we still don't have a runId after initialization, handle gracefully
+    if (!runId) {
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        type: 'assistant',
+        content: 'Sorry, I\'m having trouble connecting right now. Please try again in a moment.',
+        timestamp: new Date(),
+      };
+      setMessages(prev => [...prev, errorMessage]);
+      setIsLoading(false);
+      return;
+    }
 
     try {
       abortControllerRef.current = new AbortController();
@@ -496,16 +508,19 @@ USER QUESTION: ${message.trim()}`;
       <div className="flex-1 bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col overflow-hidden">
         {/* Messages Area */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-gray-50 min-h-0">
-          {messages.length === 0 && isLoading && (
-            <div className="flex items-center justify-center h-full">
-              <div className="flex items-center space-x-3 text-gray-500">
-                <div className="w-6 h-6 border-2 border-purple-600/30 border-t-purple-600 rounded-full animate-spin" />
-                <span className="text-lg">Initializing Swordie...</span>
+          {/* Static greeting message - always show first */}
+          {messages.length === 0 && (
+            <div className="flex items-start space-x-4">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg bg-white border-2 border-purple-200 text-purple-600">
+                <Sword className="w-5 h-5" />
+              </div>
+              <div className="max-w-3xl p-6 rounded-2xl shadow-sm bg-white text-gray-900 border border-gray-100">
+                <p className="text-lg leading-relaxed">Hey, I'm Swordie, your AI Assistant. How can I help you today?</p>
               </div>
             </div>
           )}
 
-          {/* Quick Actions - Show when no messages */}
+          {/* Quick Actions - Show when no user messages */}
           {messages.length === 0 && !isLoading && (
             <div className="space-y-6">
               <div className="text-center">
@@ -604,11 +619,11 @@ USER QUESTION: ${message.trim()}`;
                 : "Ask me anything about subscription management..."
               }
               className="flex-1 px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-lg placeholder-gray-500"
-              disabled={isLoading || !runId}
+              disabled={isLoading}
             />
             <button
               type="submit"
-              disabled={!inputValue.trim() || isLoading || !runId}
+              disabled={!inputValue.trim() || isLoading}
               className="p-4 bg-gradient-to-r from-purple-600 to-violet-600 text-white rounded-2xl hover:from-purple-700 hover:to-violet-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
             >
               {isLoading ? (
