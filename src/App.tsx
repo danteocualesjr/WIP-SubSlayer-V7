@@ -10,7 +10,7 @@ import Settings from './components/Settings/Settings';
 import Profile from './components/Profile/Profile';
 import Pricing from './components/Pricing/Pricing';
 import SwordiePage from './components/Swordie/SwordiePage';
-import AuthForm from './components/Auth/AuthForm';
+import LandingPage from './components/Landing/LandingPage';
 import ChatbotWidget from './components/Chatbot/ChatbotWidget';
 import { useAuth } from './hooks/useAuth';
 import { useSubscriptions } from './hooks/useSubscriptions';
@@ -252,9 +252,9 @@ function App() {
     );
   }
 
-  // Show auth form if not authenticated
+  // Show landing page if not authenticated
   if (!user) {
-    return <AuthForm />;
+    return <LandingPage />;
   }
 
   return (
