@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageCircle, X, Send, Bot, User, Minimize2, Maximize2 } from 'lucide-react';
+import { MessageCircle, X, Send, Bot, User, Minimize2, Maximize2, Sparkles, Zap } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { useSubscriptions } from '../../hooks/useSubscriptions';
 import { useSettings } from '../../hooks/useSettings';
 import { useAuth } from '../../hooks/useAuth';
+import { SparklesCore } from '../ui/sparkles';
 
 interface Message {
   id: string;
@@ -424,50 +425,85 @@ USER QUESTION: ${message.trim()}`;
     <>
       {/* Chat Widget */}
       {isOpen && (
-        <div className={`fixed bottom-4 right-4 bg-white rounded-2xl shadow-2xl border border-gray-200 z-50 transition-all duration-300 ${
-          isMinimized ? 'w-80 h-16' : 'w-96 h-[600px]'
-        }`}>
-          {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-gray-100 bg-gradient-to-r from-purple-600 to-violet-600 text-white rounded-t-2xl">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                <Bot className="w-5 h-5" />
-              </div>
-              <div>
-                <h3 className="font-semibold">SubSlayer AI</h3>
-                <p className="text-xs text-white/80">
-                  {subscriptions.length > 0 
-                    ? `Managing ${subscriptions.filter(s => s.status === 'active').length} active subscriptions`
-                    : 'Your subscription assistant'
-                  }
-                </p>
-              </div>
+        <div className={`fixed bottom-4 right-4 bg-white rounded-3xl shadow-2xl border border-purple-100/50 z-50 transition-all duration-500 ease-out transform ${
+          isMinimized ? 'w-80 h-20 scale-95' : 'w-[420px] h-[650px] scale-100'
+        } backdrop-blur-xl`}>
+          {/* Enhanced Header with Sparkles */}
+          <div className="relative bg-gradient-to-br from-purple-600 via-violet-600 to-purple-700 text-white rounded-t-3xl overflow-hidden">
+            {/* Sparkles Background */}
+            <div className="absolute inset-0 w-full h-full">
+              <SparklesCore
+                id="chatbot-sparkles"
+                background="transparent"
+                minSize={0.3}
+                maxSize={1.0}
+                particleDensity={40}
+                className="w-full h-full"
+                particleColor="#ffffff"
+                speed={0.5}
+              />
             </div>
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={toggleMinimize}
-                className="p-1 hover:bg-white/20 rounded-lg transition-colors"
-              >
-                {isMinimized ? <Maximize2 className="w-4 h-4" /> : <Minimize2 className="w-4 h-4" />}
-              </button>
-              <button
-                onClick={closeWidget}
-                className="p-1 hover:bg-white/20 rounded-lg transition-colors"
-              >
-                <X className="w-4 h-4" />
-              </button>
+
+            {/* Gradient Overlays */}
+            <div className="absolute inset-0 opacity-20">
+              <div className="absolute top-0 left-1/3 w-32 h-32 bg-gradient-to-r from-purple-400/30 to-violet-400/30 rounded-full blur-2xl"></div>
+              <div className="absolute bottom-0 right-1/3 w-24 h-24 bg-gradient-to-r from-violet-400/30 to-purple-400/30 rounded-full blur-2xl"></div>
+            </div>
+
+            <div className="relative z-10 flex items-center justify-between p-5">
+              <div className="flex items-center space-x-4">
+                <div className="relative">
+                  <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/30 shadow-lg">
+                    <Bot className="w-6 h-6" />
+                  </div>
+                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full flex items-center justify-center shadow-lg">
+                    <Sparkles className="w-2.5 h-2.5 text-white" />
+                  </div>
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg">SubSlayer AI</h3>
+                  <p className="text-sm text-white/90 flex items-center space-x-1">
+                    <Zap className="w-3 h-3" />
+                    <span>
+                      {subscriptions.length > 0 
+                        ? `Managing ${subscriptions.filter(s => s.status === 'active').length} active subscriptions`
+                        : 'Your intelligent subscription assistant'
+                      }
+                    </span>
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={toggleMinimize}
+                  className="p-2.5 hover:bg-white/20 rounded-xl transition-all duration-200 backdrop-blur-sm border border-white/20 hover:border-white/40"
+                  title={isMinimized ? 'Expand' : 'Minimize'}
+                >
+                  {isMinimized ? <Maximize2 className="w-4 h-4" /> : <Minimize2 className="w-4 h-4" />}
+                </button>
+                <button
+                  onClick={closeWidget}
+                  className="p-2.5 hover:bg-white/20 rounded-xl transition-all duration-200 backdrop-blur-sm border border-white/20 hover:border-white/40"
+                  title="Close"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           </div>
 
           {!isMinimized && (
             <>
-              {/* Messages */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-4 h-[480px]">
+              {/* Enhanced Messages Area */}
+              <div className="flex-1 overflow-y-auto p-6 space-y-6 h-[520px] bg-gradient-to-b from-gray-50/50 to-white">
                 {messages.length === 0 && isLoading && (
                   <div className="flex items-center justify-center h-full">
-                    <div className="flex items-center space-x-2 text-gray-500">
-                      <div className="w-4 h-4 border-2 border-purple-600/30 border-t-purple-600 rounded-full animate-spin" />
-                      <span>Analyzing your subscriptions...</span>
+                    <div className="text-center">
+                      <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-violet-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      </div>
+                      <p className="text-gray-600 font-medium">Analyzing your subscriptions...</p>
+                      <p className="text-sm text-gray-500 mt-1">This may take a moment</p>
                     </div>
                   </div>
                 )}
@@ -475,44 +511,51 @@ USER QUESTION: ${message.trim()}`;
                 {messages.map((message) => (
                   <div
                     key={message.id}
-                    className={`flex items-start space-x-3 ${
+                    className={`flex items-start space-x-4 ${
                       message.type === 'user' ? 'flex-row-reverse space-x-reverse' : ''
                     }`}
                   >
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                    <div className={`w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg ${
                       message.type === 'user' 
-                        ? 'bg-purple-600 text-white' 
-                        : 'bg-gray-100 text-gray-600'
+                        ? 'bg-gradient-to-r from-purple-600 to-violet-600 text-white' 
+                        : 'bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 border border-gray-200'
                     }`}>
-                      {message.type === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
+                      {message.type === 'user' ? <User className="w-5 h-5" /> : <Bot className="w-5 h-5" />}
                     </div>
-                    <div className={`max-w-[280px] p-3 rounded-2xl ${
+                    <div className={`max-w-[300px] p-4 rounded-2xl shadow-sm border transition-all duration-200 hover:shadow-md ${
                       message.type === 'user'
-                        ? 'bg-purple-600 text-white'
-                        : 'bg-gray-100 text-gray-900'
+                        ? 'bg-gradient-to-r from-purple-600 to-violet-600 text-white border-purple-200'
+                        : 'bg-white text-gray-900 border-gray-200'
                     }`}>
                       {message.type === 'assistant' ? (
                         <div className="prose prose-sm max-w-none">
                           <ReactMarkdown
                             components={{
-                              p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
-                              ul: ({ children }) => <ul className="list-disc list-inside mb-2">{children}</ul>,
-                              ol: ({ children }) => <ol className="list-decimal list-inside mb-2">{children}</ol>,
-                              li: ({ children }) => <li className="mb-1">{children}</li>,
-                              code: ({ children }) => <code className="bg-gray-200 px-1 py-0.5 rounded text-sm">{children}</code>,
-                              pre: ({ children }) => <pre className="bg-gray-200 p-2 rounded text-sm overflow-x-auto">{children}</pre>,
-                              strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
-                              em: ({ children }) => <em className="italic">{children}</em>,
+                              p: ({ children }) => <p className="mb-3 last:mb-0 leading-relaxed">{children}</p>,
+                              ul: ({ children }) => <ul className="list-disc list-inside mb-3 space-y-1">{children}</ul>,
+                              ol: ({ children }) => <ol className="list-decimal list-inside mb-3 space-y-1">{children}</ol>,
+                              li: ({ children }) => <li className="text-sm">{children}</li>,
+                              code: ({ children }) => <code className="bg-purple-100 text-purple-800 px-2 py-1 rounded-lg text-sm font-mono">{children}</code>,
+                              pre: ({ children }) => <pre className="bg-gray-100 p-3 rounded-xl text-sm overflow-x-auto border">{children}</pre>,
+                              strong: ({ children }) => <strong className="font-semibold text-purple-700">{children}</strong>,
+                              em: ({ children }) => <em className="italic text-gray-700">{children}</em>,
+                              h1: ({ children }) => <h1 className="text-lg font-bold mb-2 text-gray-900">{children}</h1>,
+                              h2: ({ children }) => <h2 className="text-base font-semibold mb-2 text-gray-800">{children}</h2>,
+                              h3: ({ children }) => <h3 className="text-sm font-medium mb-1 text-gray-700">{children}</h3>,
                             }}
                           >
                             {message.content}
                           </ReactMarkdown>
                           {message.isStreaming && (
-                            <span className="inline-block w-2 h-4 bg-gray-400 animate-pulse ml-1" />
+                            <div className="flex items-center space-x-1 mt-2">
+                              <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce"></div>
+                              <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                              <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                            </div>
                           )}
                         </div>
                       ) : (
-                        <p className="text-sm">{message.content}</p>
+                        <p className="text-sm leading-relaxed">{message.content}</p>
                       )}
                     </div>
                   </div>
@@ -520,53 +563,91 @@ USER QUESTION: ${message.trim()}`;
                 <div ref={messagesEndRef} />
               </div>
 
-              {/* Input */}
-              <div className="p-4 border-t border-gray-100">
-                <form onSubmit={handleSubmit} className="flex items-center space-x-2">
-                  <input
-                    ref={inputRef}
-                    type="text"
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    onKeyPress={handleKeyPress}
-                    placeholder={subscriptions.length > 0 
-                      ? "Ask about your subscriptions, spending, or renewals..." 
-                      : "Ask me anything about subscription management..."
-                    }
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
-                    disabled={isLoading || !runId}
-                  />
+              {/* Enhanced Input Area */}
+              <div className="p-6 border-t border-gray-100 bg-white rounded-b-3xl">
+                <form onSubmit={handleSubmit} className="flex items-center space-x-3">
+                  <div className="flex-1 relative">
+                    <input
+                      ref={inputRef}
+                      type="text"
+                      value={inputValue}
+                      onChange={(e) => setInputValue(e.target.value)}
+                      onKeyPress={handleKeyPress}
+                      placeholder={subscriptions.length > 0 
+                        ? "Ask about your subscriptions, spending, or renewals..." 
+                        : "Ask me anything about subscription management..."
+                      }
+                      className="w-full px-4 py-3 pr-12 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm bg-gray-50 hover:bg-white transition-all duration-200 placeholder-gray-500"
+                      disabled={isLoading || !runId}
+                    />
+                    {inputValue && (
+                      <button
+                        type="button"
+                        onClick={() => setInputValue('')}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
                   <button
                     type="submit"
                     disabled={!inputValue.trim() || isLoading || !runId}
-                    className="p-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="p-3 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white rounded-2xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl disabled:shadow-none transform hover:scale-105 disabled:scale-100"
                   >
                     {isLoading ? (
-                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     ) : (
-                      <Send className="w-4 h-4" />
+                      <Send className="w-5 h-5" />
                     )}
                   </button>
                 </form>
+                
+                {/* Status Indicator */}
+                <div className="flex items-center justify-center mt-3">
+                  <div className={`flex items-center space-x-2 text-xs ${
+                    runId ? 'text-green-600' : 'text-gray-400'
+                  }`}>
+                    <div className={`w-2 h-2 rounded-full ${
+                      runId ? 'bg-green-500 animate-pulse' : 'bg-gray-300'
+                    }`}></div>
+                    <span>{runId ? 'Connected' : 'Connecting...'}</span>
+                  </div>
+                </div>
               </div>
             </>
           )}
         </div>
       )}
 
-      {/* Floating Action Button */}
+      {/* Enhanced Floating Action Button */}
       {!isOpen && (
-        <button
-          onClick={toggleWidget}
-          className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center z-50 group"
-        >
-          <MessageCircle className="w-6 h-6 group-hover:scale-110 transition-transform duration-200" />
-          
-          {/* Notification dot for new features */}
-          <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
-            <span className="text-xs font-bold text-white">AI</span>
-          </div>
-        </button>
+        <div className="fixed bottom-6 right-6 z-50">
+          <button
+            onClick={toggleWidget}
+            className="relative w-16 h-16 bg-gradient-to-br from-purple-600 via-violet-600 to-purple-700 hover:from-purple-700 hover:via-violet-700 hover:to-purple-800 text-white rounded-2xl shadow-2xl hover:shadow-purple-500/25 transition-all duration-300 flex items-center justify-center group transform hover:scale-110 active:scale-95"
+          >
+            {/* Animated Background */}
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-purple-400/20 to-violet-400/20 animate-pulse"></div>
+            
+            {/* Icon */}
+            <MessageCircle className="w-7 h-7 group-hover:scale-110 transition-transform duration-200 relative z-10" />
+            
+            {/* AI Badge */}
+            <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center shadow-lg border-2 border-white">
+              <Sparkles className="w-3 h-3 text-white" />
+            </div>
+            
+            {/* Pulse Ring */}
+            <div className="absolute inset-0 rounded-2xl border-2 border-purple-400/50 animate-ping"></div>
+            
+            {/* Hover Tooltip */}
+            <div className="absolute bottom-full right-0 mb-3 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none">
+              Chat with SubSlayer AI
+              <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+            </div>
+          </button>
+        </div>
       )}
     </>
   );
