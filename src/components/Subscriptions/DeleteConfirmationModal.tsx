@@ -46,7 +46,7 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
               <AlertTriangle className="w-5 h-5 text-red-600" />
             </div>
             <h2 className="text-xl font-semibold text-gray-900">
-              {isMultiple ? 'Delete Subscriptions' : 'Delete Subscription'}
+              {isMultiple ? 'Remove Subscriptions' : 'Remove Subscription'}
             </h2>
           </div>
           <button
@@ -61,19 +61,19 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
           {isMultiple ? (
             <div>
               <p className="text-gray-700 mb-4">
-                Are you sure you want to delete <span className="font-semibold">{count} subscriptions</span>? 
+                Are you sure you want to remove <span className="font-semibold">{count} subscriptions</span> from your list? 
                 This action cannot be undone.
               </p>
               <div className="bg-red-50 border border-red-200 rounded-lg p-3">
                 <p className="text-red-700 text-sm">
-                  ⚠️ All selected subscriptions and their data will be permanently removed.
+                  ⚠️ All selected subscriptions and their data will be permanently removed from your list.
                 </p>
               </div>
             </div>
           ) : subscription ? (
             <div>
               <p className="text-gray-700 mb-4">
-                Are you sure you want to delete <span className="font-semibold">"{subscription.name}"</span>? 
+                Are you sure you want to remove <span className="font-semibold">"{subscription.name}"</span> from your list? 
                 This action cannot be undone.
               </p>
               
@@ -97,13 +97,13 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
               
               <div className="bg-red-50 border border-red-200 rounded-lg p-3">
                 <p className="text-red-700 text-sm">
-                  ⚠️ This subscription and all its data will be permanently removed.
+                  ⚠️ This subscription and all its data will be permanently removed from your list.
                 </p>
               </div>
             </div>
           ) : (
             <p className="text-gray-700">
-              Are you sure you want to delete this subscription? This action cannot be undone.
+              Are you sure you want to remove this subscription from your list? This action cannot be undone.
             </p>
           )}
         </div>
@@ -123,7 +123,7 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
             className="flex-1 px-4 py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-medium transition-colors flex items-center justify-center space-x-2"
           >
             <Trash2 className="w-4 h-4" />
-            <span>Delete {isMultiple ? `${count} Items` : 'Subscription'}</span>
+            <span>Remove {isMultiple ? `${count} Items` : 'Subscription'}</span>
           </button>
         </div>
       </div>
