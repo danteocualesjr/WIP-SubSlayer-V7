@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageCircle, X, Send, Bot, User, Minimize2, Maximize2 } from 'lucide-react';
+import { MessageCircle, X, Send, Sword, User, Minimize2, Maximize2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { useSubscriptions } from '../../hooks/useSubscriptions';
 import { useSettings } from '../../hooks/useSettings';
@@ -161,7 +161,7 @@ const ChatbotWidget: React.FC = () => {
       const subscriptionContext = generateSubscriptionContext();
       
       // Create a comprehensive context message
-      const contextMessage = `You are SubSlayer, a helpful assistant for managing subscriptions. You have COMPLETE ACCESS to the user's subscription data:
+      const contextMessage = `You are Swordie, a helpful assistant for managing subscriptions in SubSlayer. You have COMPLETE ACCESS to the user's subscription data:
 
 SUBSCRIPTION OVERVIEW:
 - Total subscriptions: ${subscriptionContext.subscriptions.total}
@@ -424,18 +424,18 @@ USER QUESTION: ${message.trim()}`;
     <>
       {/* Chat Widget */}
       {isOpen && (
-        <div className={`fixed bottom-4 right-4 bg-white rounded-2xl shadow-2xl border border-gray-200 z-50 transition-all duration-300 ${
+        <div className={`fixed bottom-4 right-4 bg-white rounded-3xl shadow-2xl border border-gray-100 z-50 transition-all duration-300 ${
           isMinimized ? 'w-80 h-16' : 'w-96 h-[600px]'
         }`}>
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-gray-100 bg-gradient-to-r from-purple-600 to-violet-600 text-white rounded-t-2xl">
+          <div className="flex items-center justify-between p-4 border-b border-gray-100 bg-white rounded-t-3xl">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                <Bot className="w-5 h-5" />
+              <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-violet-600 rounded-full flex items-center justify-center shadow-lg">
+                <Sword className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h3 className="font-semibold">SubSlayer</h3>
-                <p className="text-xs text-white/80">
+                <h3 className="font-bold text-gray-900 text-lg">Chat with Swordie</h3>
+                <p className="text-xs text-gray-500">
                   {subscriptions.length > 0 
                     ? `Managing ${subscriptions.filter(s => s.status === 'active').length} active subscriptions`
                     : 'Your subscription assistant'
@@ -446,15 +446,15 @@ USER QUESTION: ${message.trim()}`;
             <div className="flex items-center space-x-2">
               <button
                 onClick={toggleMinimize}
-                className="p-1 hover:bg-white/20 rounded-lg transition-colors"
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
               >
-                {isMinimized ? <Maximize2 className="w-4 h-4" /> : <Minimize2 className="w-4 h-4" />}
+                {isMinimized ? <Maximize2 className="w-4 h-4 text-gray-500" /> : <Minimize2 className="w-4 h-4 text-gray-500" />}
               </button>
               <button
                 onClick={closeWidget}
-                className="p-1 hover:bg-white/20 rounded-lg transition-colors"
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
               >
-                <X className="w-4 h-4" />
+                <X className="w-4 h-4 text-gray-500" />
               </button>
             </div>
           </div>
@@ -462,7 +462,7 @@ USER QUESTION: ${message.trim()}`;
           {!isMinimized && (
             <>
               {/* Messages */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-4 h-[480px]">
+              <div className="flex-1 overflow-y-auto p-4 space-y-4 h-[480px] bg-gray-50">
                 {messages.length === 0 && isLoading && (
                   <div className="flex items-center justify-center h-full">
                     <div className="flex items-center space-x-2 text-gray-500">
@@ -481,34 +481,34 @@ USER QUESTION: ${message.trim()}`;
                   >
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                       message.type === 'user' 
-                        ? 'bg-purple-600 text-white' 
-                        : 'bg-gray-100 text-gray-600'
+                        ? 'bg-gradient-to-r from-purple-600 to-violet-600 text-white shadow-lg' 
+                        : 'bg-white border-2 border-gray-200 text-gray-600 shadow-sm'
                     }`}>
-                      {message.type === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
+                      {message.type === 'user' ? <User className="w-4 h-4" /> : <Sword className="w-4 h-4" />}
                     </div>
-                    <div className={`max-w-[280px] p-3 rounded-2xl ${
+                    <div className={`max-w-[280px] p-4 rounded-2xl shadow-sm ${
                       message.type === 'user'
-                        ? 'bg-purple-600 text-white'
-                        : 'bg-gray-100 text-gray-900'
+                        ? 'bg-gradient-to-r from-purple-600 to-violet-600 text-white'
+                        : 'bg-white text-gray-900 border border-gray-100'
                     }`}>
                       {message.type === 'assistant' ? (
                         <div className="prose prose-sm max-w-none">
                           <ReactMarkdown
                             components={{
-                              p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
-                              ul: ({ children }) => <ul className="list-disc list-inside mb-2">{children}</ul>,
-                              ol: ({ children }) => <ol className="list-decimal list-inside mb-2">{children}</ol>,
-                              li: ({ children }) => <li className="mb-1">{children}</li>,
-                              code: ({ children }) => <code className="bg-gray-200 px-1 py-0.5 rounded text-sm">{children}</code>,
-                              pre: ({ children }) => <pre className="bg-gray-200 p-2 rounded text-sm overflow-x-auto">{children}</pre>,
-                              strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
-                              em: ({ children }) => <em className="italic">{children}</em>,
+                              p: ({ children }) => <p className="mb-2 last:mb-0 text-gray-700">{children}</p>,
+                              ul: ({ children }) => <ul className="list-disc list-inside mb-2 text-gray-700">{children}</ul>,
+                              ol: ({ children }) => <ol className="list-decimal list-inside mb-2 text-gray-700">{children}</ol>,
+                              li: ({ children }) => <li className="mb-1 text-gray-700">{children}</li>,
+                              code: ({ children }) => <code className="bg-gray-100 px-2 py-1 rounded text-sm text-purple-600">{children}</code>,
+                              pre: ({ children }) => <pre className="bg-gray-100 p-3 rounded-lg text-sm overflow-x-auto">{children}</pre>,
+                              strong: ({ children }) => <strong className="font-semibold text-gray-900">{children}</strong>,
+                              em: ({ children }) => <em className="italic text-gray-700">{children}</em>,
                             }}
                           >
                             {message.content}
                           </ReactMarkdown>
                           {message.isStreaming && (
-                            <span className="inline-block w-2 h-4 bg-gray-400 animate-pulse ml-1" />
+                            <span className="inline-block w-2 h-4 bg-purple-400 animate-pulse ml-1 rounded" />
                           )}
                         </div>
                       ) : (
@@ -521,8 +521,8 @@ USER QUESTION: ${message.trim()}`;
               </div>
 
               {/* Input */}
-              <div className="p-4 border-t border-gray-100">
-                <form onSubmit={handleSubmit} className="flex items-center space-x-2">
+              <div className="p-4 bg-white border-t border-gray-100 rounded-b-3xl">
+                <form onSubmit={handleSubmit} className="flex items-center space-x-3">
                   <input
                     ref={inputRef}
                     type="text"
@@ -533,13 +533,13 @@ USER QUESTION: ${message.trim()}`;
                       ? "Ask about your subscriptions, spending, or renewals..." 
                       : "Ask me anything about subscription management..."
                     }
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
+                    className="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm placeholder-gray-500"
                     disabled={isLoading || !runId}
                   />
                   <button
                     type="submit"
                     disabled={!inputValue.trim() || isLoading || !runId}
-                    className="p-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="p-3 bg-gradient-to-r from-purple-600 to-violet-600 text-white rounded-2xl hover:from-purple-700 hover:to-violet-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
                   >
                     {isLoading ? (
                       <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -558,9 +558,9 @@ USER QUESTION: ${message.trim()}`;
       {!isOpen && (
         <button
           onClick={toggleWidget}
-          className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center z-50 group"
+          className="fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center justify-center z-50 group border-4 border-white"
         >
-          <MessageCircle className="w-6 h-6 group-hover:scale-110 transition-transform duration-200" />
+          <MessageCircle className="w-7 h-7 group-hover:scale-110 transition-transform duration-200" />
         </button>
       )}
     </>
