@@ -419,39 +419,6 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
         </div>
       </div>
 
-      {/* Header Actions - Removed the description text and Select button */}
-      <div className="flex justify-end">
-        <div className="flex space-x-3">
-          {!isSelectionMode ? (
-            <button
-              onClick={() => setIsSelectionMode(true)}
-              className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2"
-            >
-              <span>Select</span>
-            </button>
-          ) : (
-            <>
-              <button
-                onClick={handleCancelSelection}
-                className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2"
-              >
-                <X className="w-4 h-4" />
-                <span>Cancel</span>
-              </button>
-              {selectedSubscriptions.length > 0 && (
-                <button
-                  onClick={handleBulkDelete}
-                  className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2"
-                >
-                  <Trash2 className="w-4 h-4" />
-                  <span>Delete ({selectedSubscriptions.length})</span>
-                </button>
-              )}
-            </>
-          )}
-        </div>
-      </div>
-
       {/* Selection Mode Banner */}
       {isSelectionMode && (
         <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
@@ -468,12 +435,30 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
                 )}
               </div>
             </div>
-            <button
-              onClick={handleSelectAll}
-              className="text-blue-600 hover:text-blue-700 font-medium text-sm"
-            >
-              {selectedSubscriptions.length === sortedSubscriptions.length ? 'Deselect All' : 'Select All'}
-            </button>
+            <div className="flex items-center space-x-3">
+              <button
+                onClick={handleSelectAll}
+                className="text-blue-600 hover:text-blue-700 font-medium text-sm"
+              >
+                {selectedSubscriptions.length === sortedSubscriptions.length ? 'Deselect All' : 'Select All'}
+              </button>
+              <button
+                onClick={handleCancelSelection}
+                className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 rounded-lg font-medium transition-all duration-200 flex items-center space-x-1 text-sm"
+              >
+                <X className="w-4 h-4" />
+                <span>Cancel</span>
+              </button>
+              {selectedSubscriptions.length > 0 && (
+                <button
+                  onClick={handleBulkDelete}
+                  className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg font-medium transition-all duration-200 flex items-center space-x-1 text-sm"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  <span>Delete ({selectedSubscriptions.length})</span>
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -598,6 +583,16 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
               <CalendarIcon className="w-5 h-5" />
             </button>
           </div>
+          
+          {/* Select Mode Button */}
+          {!isSelectionMode && (
+            <button
+              onClick={() => setIsSelectionMode(true)}
+              className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-3 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2"
+            >
+              <span>Select</span>
+            </button>
+          )}
         </div>
       </div>
 
