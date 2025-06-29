@@ -196,46 +196,40 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
         </div>
       </nav>
 
-      {/* Hero Section with 21st.dev Sparkles */}
-      <section className="relative pt-20 pb-16 overflow-hidden">
-        {/* 21st.dev Sparkles Background */}
-        <div className="absolute inset-0 w-full h-full">
+      {/* Hero Section - Fixed with proper 21st.dev implementation */}
+      <section className="relative pt-20 pb-16 overflow-hidden bg-slate-950">
+        {/* 21st.dev Sparkles Background - Full page implementation */}
+        <div className="w-full absolute inset-0 h-screen">
           <SparklesCore
-            id="hero-sparkles"
+            id="hero-sparkles-fullpage"
             background="transparent"
             minSize={0.6}
             maxSize={1.4}
             particleDensity={100}
             className="w-full h-full"
-            particleColor="#8B5CF6"
+            particleColor="#FFFFFF"
             speed={1}
           />
         </div>
-
-        {/* Gradient Background with improved masking */}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-violet-50"></div>
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/5 via-transparent to-violet-900/5 [mask-image:radial-gradient(800px_600px_at_center,transparent_40%,white)]"></div>
         
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16">
           <div className="text-center">
             {/* Enhanced Badge */}
-            <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-purple-100 to-violet-100 text-purple-700 px-6 py-3 rounded-full text-sm font-medium mb-8 border border-purple-200/50 shadow-lg backdrop-blur-sm">
+            <div className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-sm text-white/90 px-6 py-3 rounded-full text-sm font-medium mb-8 border border-white/20 shadow-lg">
               <Sparkles className="w-4 h-4" />
               <span>Trusted by 50,000+ users worldwide</span>
             </div>
 
-            {/* Enhanced Main Headline */}
-            <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-8 leading-tight">
+            {/* Enhanced Main Headline - 21st.dev style */}
+            <h1 className="md:text-7xl text-3xl lg:text-9xl font-bold text-center text-white relative z-20 mb-8 leading-tight">
               Slay Your
-              <span className="bg-gradient-to-r from-purple-600 via-violet-600 to-purple-700 bg-clip-text text-transparent block relative">
+              <span className="block bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400">
                 Subscription Chaos
-                {/* Subtle glow effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 via-violet-600/20 to-purple-700/20 blur-3xl -z-10"></div>
               </span>
             </h1>
 
             {/* Enhanced Subheadline */}
-            <p className="text-xl md:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl md:text-2xl text-neutral-300 mb-12 max-w-3xl mx-auto leading-relaxed">
               Take control of your recurring expenses with intelligent tracking, AI-powered insights, 
               and never miss another renewal again.
             </p>
@@ -244,14 +238,14 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
             <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-16">
               <button
                 onClick={onGetStarted}
-                className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white px-8 py-4 rounded-2xl font-semibold text-lg transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105 transform flex items-center space-x-2 group"
+                className="bg-white text-slate-950 px-8 py-4 rounded-2xl font-semibold text-lg transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105 transform flex items-center space-x-2 group"
               >
                 <span>Start Free Today</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
-              <button className="flex items-center space-x-3 text-gray-600 hover:text-gray-900 transition-colors group">
-                <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
-                  <Play className="w-5 h-5 text-purple-600 ml-1" />
+              <button className="flex items-center space-x-3 text-white/80 hover:text-white transition-colors group">
+                <div className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow border border-white/20">
+                  <Play className="w-5 h-5 text-white ml-1" />
                 </div>
                 <span className="font-medium">Watch Demo</span>
               </button>
@@ -261,15 +255,18 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
               {stats.map((stat, index) => (
                 <div key={index} className="text-center group">
-                  <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform">
+                  <div className="text-3xl md:text-4xl font-bold text-white mb-2 group-hover:scale-110 transition-transform">
                     {stat.number}
                   </div>
-                  <div className="text-gray-600">{stat.label}</div>
+                  <div className="text-neutral-400">{stat.label}</div>
                 </div>
               ))}
             </div>
           </div>
         </div>
+
+        {/* Radial Gradient to prevent sharp edges - 21st.dev style */}
+        <div className="absolute inset-0 w-full h-full bg-slate-950 [mask-image:radial-gradient(800px_600px_at_center,transparent_40%,white)]"></div>
       </section>
 
       {/* Enhanced Features Section */}
@@ -509,11 +506,11 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
       </section>
 
       {/* Enhanced CTA Section with 21st.dev Sparkles */}
-      <section className="py-20 bg-gradient-to-br from-purple-900 via-violet-800 to-purple-700 relative overflow-hidden">
-        {/* 21st.dev Sparkles Background */}
-        <div className="absolute inset-0 w-full h-full">
+      <section className="py-20 bg-slate-950 relative overflow-hidden">
+        {/* 21st.dev Sparkles Background - Full implementation */}
+        <div className="w-full absolute inset-0 h-screen">
           <SparklesCore
-            id="cta-sparkles"
+            id="cta-sparkles-fullpage"
             background="transparent"
             minSize={0.6}
             maxSize={1.4}
@@ -524,34 +521,28 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
           />
         </div>
 
-        {/* Gradient overlays for depth */}
-        <div className="absolute inset-0 opacity-30">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-r from-purple-400/30 to-violet-400/30 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-gradient-to-r from-violet-400/30 to-purple-400/30 rounded-full blur-3xl"></div>
-        </div>
-
-        {/* Radial Gradient to prevent sharp edges */}
-        <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-purple-900/50 via-violet-800/50 to-purple-700/50 [mask-image:radial-gradient(800px_400px_at_center,transparent_20%,white)]"></div>
-
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Ready to slay your subscription chaos?
           </h2>
-          <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-neutral-300 mb-8 max-w-2xl mx-auto">
             Join thousands of users who have taken control of their subscriptions. 
             Start your free account today.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6">
             <button
               onClick={onGetStarted}
-              className="bg-white text-purple-600 px-8 py-4 rounded-2xl font-semibold text-lg hover:bg-gray-100 transition-all duration-200 shadow-xl hover:shadow-2xl hover:scale-105 transform flex items-center space-x-2 group"
+              className="bg-white text-slate-950 px-8 py-4 rounded-2xl font-semibold text-lg hover:bg-gray-100 transition-all duration-200 shadow-xl hover:shadow-2xl hover:scale-105 transform flex items-center space-x-2 group"
             >
               <span>Get Started Free</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
-            <p className="text-white/80 text-sm">No credit card required • Free forever plan available</p>
+            <p className="text-neutral-400 text-sm">No credit card required • Free forever plan available</p>
           </div>
         </div>
+
+        {/* Radial Gradient to prevent sharp edges - 21st.dev style */}
+        <div className="absolute inset-0 w-full h-full bg-slate-950 [mask-image:radial-gradient(800px_400px_at_center,transparent_20%,white)]"></div>
       </section>
 
       {/* Enhanced Footer */}
