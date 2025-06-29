@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MessageCircle, X, Send, Bot, User, Minimize2, Maximize2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import { useSubscriptions } from '../../hooks/useSubscriptions';
+import { useSettings } from '../../hooks/useSettings';
+import { useAuth } from '../../hooks/useAuth';
 
 interface Message {
   id: string;
@@ -11,6 +14,9 @@ interface Message {
 }
 
 const ChatbotWidget: React.FC = () => {
+  const { user } = useAuth();
+  const { subscriptions } = useSubscriptions();
+  const { settings, formatCurrency } = useSettings();
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -37,6 +43,82 @@ const ChatbotWidget: React.FC = () => {
     }
   }, [isOpen, hasInitialized]);
 
+  // Generate subscription context for the AI
+  const generateSubscriptionContext = () => {
+    const activeSubscriptions = subscriptions.filter(sub => sub.status === 'active');
+    const pausedSubscriptions = subscriptions.filter(sub => sub.status === 'paused');
+    const cancelledSubscriptions = subscriptions.filter(sub => sub.status === 'cancelled');
+    
+    const totalMonthlySpend = activeSubscriptions.reduce((sum, sub) => {
+      return sum + (sub.billingCycle === 'monthly' ? sub.cost : sub.cost / 12);
+    }, 0);
+    
+    const totalAnnualSpend = totalMonthlySpend * 12;
+    
+    // Get upcoming renewals in next 30 days
+    const now = new Date();
+    const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+    const upcomingRenewals = activeSubscriptions.filter(sub => {
+      const renewalDate = new Date(sub.nextBilling);
+      return renewalDate >= now && renewalDate <= thirtyDaysFromNow;
+    });
+
+    // Group by category
+    const subscriptionsByCategory = subscriptions.reduce((acc, sub) => {
+      const category = sub.category || 'Uncategorized';
+      if (!acc[category]) acc[category] = [];
+      acc[category].push(sub);
+      return acc;
+    }, {} as Record<string, typeof subscriptions>);
+
+    const context = {
+      user: {
+        email: user?.email,
+        currency: settings.currency,
+        reminderDays: settings.reminderDays,
+        dateFormat: settings.dateFormat
+      },
+      subscriptions: {
+        total: subscriptions.length,
+        active: activeSubscriptions.length,
+        paused: pausedSubscriptions.length,
+        cancelled: cancelledSubscriptions.length,
+        list: subscriptions.map(sub => ({
+          name: sub.name,
+          description: sub.description,
+          cost: sub.cost,
+          currency: sub.currency,
+          billingCycle: sub.billingCycle,
+          nextBilling: sub.nextBilling,
+          category: sub.category,
+          status: sub.status,
+          createdAt: sub.createdAt
+        }))
+      },
+      spending: {
+        monthlyTotal: totalMonthlySpend,
+        annualTotal: totalAnnualSpend,
+        averagePerSubscription: activeSubscriptions.length > 0 ? totalMonthlySpend / activeSubscriptions.length : 0
+      },
+      upcomingRenewals: upcomingRenewals.map(sub => ({
+        name: sub.name,
+        cost: sub.cost,
+        nextBilling: sub.nextBilling,
+        daysUntil: Math.ceil((new Date(sub.nextBilling).getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+      })),
+      categories: Object.keys(subscriptionsByCategory),
+      categoryBreakdown: Object.entries(subscriptionsByCategory).map(([category, subs]) => ({
+        category,
+        count: subs.length,
+        monthlyTotal: subs.filter(s => s.status === 'active').reduce((sum, s) => 
+          sum + (s.billingCycle === 'monthly' ? s.cost : s.cost / 12), 0
+        )
+      }))
+    };
+
+    return context;
+  };
+
   const initializeChat = async () => {
     if (hasInitialized) return;
     
@@ -46,11 +128,28 @@ const ChatbotWidget: React.FC = () => {
     try {
       abortControllerRef.current = new AbortController();
       
+      const subscriptionContext = generateSubscriptionContext();
+      
       const response = await fetch('https://agents.toolhouse.ai/60e3c85c-95f3-40bb-b607-ed83d1d07d40', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify({
+          context: {
+            userSubscriptionData: subscriptionContext,
+            instructions: `You are SubSlayer AI, a helpful assistant for managing subscriptions. You have access to the user's complete subscription data including:
+            
+            - All their subscriptions (${subscriptionContext.subscriptions.total} total: ${subscriptionContext.subscriptions.active} active, ${subscriptionContext.subscriptions.paused} paused, ${subscriptionContext.subscriptions.cancelled} cancelled)
+            - Monthly spending: ${formatCurrency(subscriptionContext.spending.monthlyTotal)}
+            - Annual spending: ${formatCurrency(subscriptionContext.spending.annualTotal)}
+            - Upcoming renewals in the next 30 days: ${subscriptionContext.upcomingRenewals.length} subscriptions
+            - Categories: ${subscriptionContext.categories.join(', ')}
+            - User settings: ${subscriptionContext.user.reminderDays} day reminders, ${subscriptionContext.user.currency} currency
+            
+            You can answer questions about their subscriptions, spending patterns, upcoming renewals, suggest optimizations, and help them manage their subscription portfolio. Be helpful, friendly, and provide actionable insights based on their actual data.`
+          }
+        }),
         signal: abortControllerRef.current.signal,
       });
 
@@ -140,12 +239,20 @@ const ChatbotWidget: React.FC = () => {
     try {
       abortControllerRef.current = new AbortController();
       
+      // Include updated subscription context with each message
+      const subscriptionContext = generateSubscriptionContext();
+      
       const response = await fetch(`https://agents.toolhouse.ai/60e3c85c-95f3-40bb-b607-ed83d1d07d40/${runId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message: message.trim() }),
+        body: JSON.stringify({ 
+          message: message.trim(),
+          context: {
+            userSubscriptionData: subscriptionContext
+          }
+        }),
         signal: abortControllerRef.current.signal,
       });
 
@@ -252,6 +359,14 @@ const ChatbotWidget: React.FC = () => {
     }
   }, [isOpen, isMinimized]);
 
+  // Reset initialization when subscriptions change significantly
+  useEffect(() => {
+    if (hasInitialized && isOpen) {
+      // Reset if the user's subscription count changes significantly
+      setHasInitialized(false);
+    }
+  }, [subscriptions.length]);
+
   return (
     <>
       {/* Chat Widget */}
@@ -267,7 +382,12 @@ const ChatbotWidget: React.FC = () => {
               </div>
               <div>
                 <h3 className="font-semibold">SubSlayer AI</h3>
-                <p className="text-xs text-white/80">Your subscription assistant</p>
+                <p className="text-xs text-white/80">
+                  {subscriptions.length > 0 
+                    ? `Managing ${subscriptions.filter(s => s.status === 'active').length} active subscriptions`
+                    : 'Your subscription assistant'
+                  }
+                </p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
@@ -294,7 +414,7 @@ const ChatbotWidget: React.FC = () => {
                   <div className="flex items-center justify-center h-full">
                     <div className="flex items-center space-x-2 text-gray-500">
                       <div className="w-4 h-4 border-2 border-purple-600/30 border-t-purple-600 rounded-full animate-spin" />
-                      <span>Initializing chat...</span>
+                      <span>Analyzing your subscriptions...</span>
                     </div>
                   </div>
                 )}
@@ -328,6 +448,8 @@ const ChatbotWidget: React.FC = () => {
                               li: ({ children }) => <li className="mb-1">{children}</li>,
                               code: ({ children }) => <code className="bg-gray-200 px-1 py-0.5 rounded text-sm">{children}</code>,
                               pre: ({ children }) => <pre className="bg-gray-200 p-2 rounded text-sm overflow-x-auto">{children}</pre>,
+                              strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+                              em: ({ children }) => <em className="italic">{children}</em>,
                             }}
                           >
                             {message.content}
@@ -354,7 +476,10 @@ const ChatbotWidget: React.FC = () => {
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    placeholder="Ask me about your subscriptions..."
+                    placeholder={subscriptions.length > 0 
+                      ? "Ask about your subscriptions, spending, or renewals..." 
+                      : "Ask me anything about subscription management..."
+                    }
                     className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
                     disabled={isLoading || !runId}
                   />
