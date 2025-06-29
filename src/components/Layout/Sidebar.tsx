@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BarChart3, CreditCard, Calculator, Home, Bell, User, Settings, Sword, Tag, Sparkles, Menu, X, PanelLeftClose, PanelLeftOpen, MessageCircle } from 'lucide-react';
+import { BarChart3, CreditCard, Calculator, Home, Bell, User, Settings, Sword, Tag, Sparkles, Menu, X, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 
 interface SidebarProps {
   activeTab: string;
@@ -56,7 +56,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
     { id: 'subscriptions', label: 'Subscriptions', icon: CreditCard },
     { id: 'analytics', label: 'Analytics', icon: BarChart3 },
     { id: 'simulator', label: 'Cost Simulator', icon: Calculator },
-    { id: 'swordie', label: 'Swordie AI', icon: MessageCircle },
+    { id: 'swordie', label: 'Swordie AI', icon: Sword },
     { id: 'pricing', label: 'Pricing', icon: Tag }
   ];
 
