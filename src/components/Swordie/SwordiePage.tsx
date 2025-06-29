@@ -455,7 +455,7 @@ USER QUESTION: ${message.trim()}`;
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-6 lg:space-y-0">
             <div>
               <div className="flex items-center space-x-3 mb-4 sm:mb-6">
-                <MessageCircle className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" />
+                <Sword className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" />
                 <h1 className="text-2xl sm:text-4xl font-bold">Swordie AI</h1>
               </div>
               <p className="text-lg sm:text-xl text-white/90 mb-6 sm:mb-8 max-w-2xl">
@@ -636,17 +636,6 @@ USER QUESTION: ${message.trim()}`;
               )}
             </button>
           </form>
-          
-          {/* Status indicator */}
-          <div className="flex items-center justify-center mt-4 text-sm text-gray-500">
-            {isLoading ? (
-              <span>Swordie is thinking...</span>
-            ) : runId ? (
-              <span>Ready to help • Press Enter to send</span>
-            ) : (
-              <span>Connecting to Swordie...</span>
-            )}
-          </div>
         </div>
       </div>
     </div>
