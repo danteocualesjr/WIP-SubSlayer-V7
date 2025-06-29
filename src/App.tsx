@@ -39,105 +39,7 @@ function App() {
   const [isMobile, setIsMobile] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Listen for sidebar toggle events
-  useEffect(() => {
-    const handleSidebarToggle = (event: CustomEvent) => {
-      setSidebarCollapsed(event.detail.isCollapsed);
-      setIsMobile(event.detail.isMobile);
-      setIsMobileMenuOpen(event.detail.isMobileMenuOpen);
-    };
-
-    // Get initial state
-    const saved = localStorage.getItem('sidebar-collapsed');
-    const mobile = window.innerWidth < 768;
-    setSidebarCollapsed(mobile ? true : (saved ? JSON.parse(saved) : false));
-    setIsMobile(mobile);
-
-    window.addEventListener('sidebarToggle', handleSidebarToggle as EventListener);
-    
-    return () => {
-      window.removeEventListener('sidebarToggle', handleSidebarToggle as EventListener);
-    };
-  }, []);
-
-  // Listen for navigation events from header
-  useEffect(() => {
-    const handleNavigateToProfile = () => {
-      setActiveTab('profile');
-    };
-
-    window.addEventListener('navigateToProfile', handleNavigateToProfile);
-    
-    return () => {
-      window.removeEventListener('navigateToProfile', handleNavigateToProfile);
-    };
-  }, []);
-
-  // Listen for tab navigation events from dashboard components
-  useEffect(() => {
-    const handleNavigateToTab = (event: CustomEvent) => {
-      const { tab } = event.detail;
-      setActiveTab(tab);
-    };
-
-    window.addEventListener('navigateToTab', handleNavigateToTab as EventListener);
-    
-    return () => {
-      window.removeEventListener('navigateToTab', handleNavigateToTab as EventListener);
-    };
-  }, []);
-
-  // Apply theme from settings
-  useEffect(() => {
-    const root = document.documentElement;
-    
-    if (settings.theme === 'auto') {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      root.classList.toggle('dark', prefersDark);
-    } else {
-      root.classList.toggle('dark', settings.theme === 'dark');
-    }
-  }, [settings.theme]);
-
-  // Generate notifications when subscriptions load or change
-  useEffect(() => {
-    const handleSubscriptionsLoaded = (event: CustomEvent) => {
-      const { subscriptions: loadedSubscriptions } = event.detail;
-      generateRenewalNotifications(loadedSubscriptions);
-    };
-
-    window.addEventListener('subscriptionsLoaded', handleSubscriptionsLoaded as EventListener);
-    
-    return () => {
-      window.removeEventListener('subscriptionsLoaded', handleSubscriptionsLoaded as EventListener);
-    };
-  }, [generateRenewalNotifications]);
-
-  // Check for notifications periodically (every 5 minutes)
-  useEffect(() => {
-    if (user && subscriptions.length > 0) {
-      const interval = setInterval(() => {
-        generateRenewalNotifications(subscriptions);
-      }, 5 * 60 * 1000); // 5 minutes
-
-      return () => clearInterval(interval);
-    }
-  }, [user, subscriptions, generateRenewalNotifications]);
-
-  // Show loading spinner while checking auth
-  if (authLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-purple-600/30 border-t-purple-600 rounded-full animate-spin" />
-      </div>
-    );
-  }
-
-  // Show auth form if not authenticated
-  if (!user) {
-    return <AuthForm />;
-  }
-
+  // Move all useCallback and useMemo hooks to the top level
   const handleEditSubscription = useCallback((id: string, subscriptionData: any) => {
     updateSubscription(id, subscriptionData);
   }, [updateSubscription]);
@@ -255,6 +157,105 @@ function App() {
     handleBulkDelete,
     handleSwitchToCalendar
   ]);
+
+  // Listen for sidebar toggle events
+  useEffect(() => {
+    const handleSidebarToggle = (event: CustomEvent) => {
+      setSidebarCollapsed(event.detail.isCollapsed);
+      setIsMobile(event.detail.isMobile);
+      setIsMobileMenuOpen(event.detail.isMobileMenuOpen);
+    };
+
+    // Get initial state
+    const saved = localStorage.getItem('sidebar-collapsed');
+    const mobile = window.innerWidth < 768;
+    setSidebarCollapsed(mobile ? true : (saved ? JSON.parse(saved) : false));
+    setIsMobile(mobile);
+
+    window.addEventListener('sidebarToggle', handleSidebarToggle as EventListener);
+    
+    return () => {
+      window.removeEventListener('sidebarToggle', handleSidebarToggle as EventListener);
+    };
+  }, []);
+
+  // Listen for navigation events from header
+  useEffect(() => {
+    const handleNavigateToProfile = () => {
+      setActiveTab('profile');
+    };
+
+    window.addEventListener('navigateToProfile', handleNavigateToProfile);
+    
+    return () => {
+      window.removeEventListener('navigateToProfile', handleNavigateToProfile);
+    };
+  }, []);
+
+  // Listen for tab navigation events from dashboard components
+  useEffect(() => {
+    const handleNavigateToTab = (event: CustomEvent) => {
+      const { tab } = event.detail;
+      setActiveTab(tab);
+    };
+
+    window.addEventListener('navigateToTab', handleNavigateToTab as EventListener);
+    
+    return () => {
+      window.removeEventListener('navigateToTab', handleNavigateToTab as EventListener);
+    };
+  }, []);
+
+  // Apply theme from settings
+  useEffect(() => {
+    const root = document.documentElement;
+    
+    if (settings.theme === 'auto') {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      root.classList.toggle('dark', prefersDark);
+    } else {
+      root.classList.toggle('dark', settings.theme === 'dark');
+    }
+  }, [settings.theme]);
+
+  // Generate notifications when subscriptions load or change
+  useEffect(() => {
+    const handleSubscriptionsLoaded = (event: CustomEvent) => {
+      const { subscriptions: loadedSubscriptions } = event.detail;
+      generateRenewalNotifications(loadedSubscriptions);
+    };
+
+    window.addEventListener('subscriptionsLoaded', handleSubscriptionsLoaded as EventListener);
+    
+    return () => {
+      window.removeEventListener('subscriptionsLoaded', handleSubscriptionsLoaded as EventListener);
+    };
+  }, [generateRenewalNotifications]);
+
+  // Check for notifications periodically (every 5 minutes)
+  useEffect(() => {
+    if (user && subscriptions.length > 0) {
+      const interval = setInterval(() => {
+        generateRenewalNotifications(subscriptions);
+      }, 5 * 60 * 1000); // 5 minutes
+
+      return () => clearInterval(interval);
+    }
+  }, [user, subscriptions, generateRenewalNotifications]);
+
+  // Show loading spinner while checking auth
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-purple-600/30 border-t-purple-600 rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  // Show auth form if not authenticated
+  if (!user) {
+    return <AuthForm />;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
