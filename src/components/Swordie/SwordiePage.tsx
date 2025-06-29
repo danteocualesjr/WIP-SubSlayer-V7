@@ -456,23 +456,15 @@ USER QUESTION: ${message.trim()}`;
             <div>
               <div className="flex items-center space-x-3 mb-4 sm:mb-6">
                 <MessageCircle className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" />
-                <h1 className="text-2xl sm:text-4xl font-bold">Swordie AI Assistant</h1>
+                <h1 className="text-2xl sm:text-4xl font-bold">Swordie AI</h1>
               </div>
               <p className="text-lg sm:text-xl text-white/90 mb-6 sm:mb-8 max-w-2xl">
                 Your intelligent subscription management companion. Ask me anything about your subscriptions, spending, or get personalized recommendations.
               </p>
             </div>
-            
-            {/* AI Status Indicator */}
-            <div className="flex-shrink-0">
-              <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl px-4 py-3 flex items-center space-x-3">
-                <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-                <span className="text-white font-medium">AI Online</span>
-              </div>
-            </div>
           </div>
           
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 mt-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-6 mt-6">
             <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
               <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
                 <Zap className="w-4 h-4 sm:w-6 sm:h-6 text-yellow-300" />
@@ -489,20 +481,12 @@ USER QUESTION: ${message.trim()}`;
               <p className="text-lg sm:text-3xl font-bold">${totalMonthlySpend.toFixed(2)}</p>
             </div>
             
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300 col-span-2 sm:col-span-1">
               <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
                 <Calendar className="w-4 h-4 sm:w-6 sm:h-6 text-blue-300" />
                 <p className="text-white/80 text-xs sm:text-sm font-medium">Upcoming</p>
               </div>
               <p className="text-lg sm:text-3xl font-bold">{upcomingRenewalsCount}</p>
-            </div>
-            
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300 col-span-2 sm:col-span-1">
-              <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
-                <Brain className="w-4 h-4 sm:w-6 sm:h-6 text-pink-300" />
-                <p className="text-white/80 text-xs sm:text-sm font-medium">AI Ready</p>
-              </div>
-              <p className="text-lg sm:text-3xl font-bold">✓</p>
             </div>
           </div>
         </div>
@@ -525,10 +509,6 @@ USER QUESTION: ${message.trim()}`;
                 }
               </p>
             </div>
-          </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-            <span className="text-sm text-gray-600 font-medium">Online</span>
           </div>
         </div>
 
