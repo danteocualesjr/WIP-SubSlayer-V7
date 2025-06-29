@@ -131,6 +131,12 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
     // AI & Productivity
     { name: 'ChatGPT Plus', category: 'AI', color: '#10A37F', description: 'AI assistant for writing, coding, and analysis', commonPrices: { monthly: 20 }, billingCycle: 'monthly' },
     { name: 'Claude Pro', category: 'AI', color: '#D97706', description: 'Advanced AI assistant by Anthropic', commonPrices: { monthly: 20 }, billingCycle: 'monthly' },
+    { name: 'Cursor Windsurf', category: 'AI', color: '#000000', description: 'AI-powered code editor with advanced features', commonPrices: { monthly: 20 }, billingCycle: 'monthly' },
+    { name: 'Claude Code', category: 'AI', color: '#D97706', description: 'AI coding assistant by Anthropic', commonPrices: { monthly: 20 }, billingCycle: 'monthly' },
+    { name: 'Replit', category: 'AI', color: '#F26207', description: 'AI-powered collaborative coding platform', commonPrices: { monthly: 20 }, billingCycle: 'monthly' },
+    { name: 'Bolt.new', category: 'AI', color: '#8B5CF6', description: 'AI web development platform', commonPrices: { monthly: 20 }, billingCycle: 'monthly' },
+    { name: 'Lovable', category: 'AI', color: '#EC4899', description: 'AI-powered app development platform', commonPrices: { monthly: 20 }, billingCycle: 'monthly' },
+    { name: 'v0', category: 'AI', color: '#000000', description: 'AI UI generator by Vercel', commonPrices: { monthly: 20 }, billingCycle: 'monthly' },
     { name: 'GitHub Copilot', category: 'Development', color: '#000000', description: 'AI-powered code completion', commonPrices: { monthly: 10 }, billingCycle: 'monthly' },
     { name: 'Notion', category: 'Productivity', color: '#000000', description: 'All-in-one workspace for notes and docs', commonPrices: { monthly: 8, annual: 96 }, billingCycle: 'monthly' },
     { name: 'Obsidian', category: 'Productivity', color: '#7C3AED', description: 'Knowledge management and note-taking', commonPrices: { monthly: 8 }, billingCycle: 'monthly' },
