@@ -18,8 +18,21 @@ if (isSupabaseConfigured) {
       auth: {
         persistSession: true,
         autoRefreshToken: true,
+        detectSessionInUrl: true,
       },
     });
+
+    // Add error handling for auth state changes
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'TOKEN_REFRESHED') {
+        console.log('Token refreshed successfully');
+      } else if (event === 'SIGNED_OUT') {
+        // Clear any corrupted session data
+        localStorage.removeItem('supabase.auth.token');
+        sessionStorage.removeItem('supabase.auth.token');
+      }
+    });
+
   } catch (error) {
     console.warn('Failed to create Supabase client:', error);
     supabase = null;
@@ -34,6 +47,35 @@ export { supabase };
 // Export a function to check if Supabase is properly configured
 export const isSupabaseReady = () => {
   return supabase !== null && isSupabaseConfigured;
+};
+
+// Helper function to clear corrupted auth data
+export const clearAuthData = () => {
+  try {
+    // Clear all possible auth-related storage keys
+    const keysToRemove = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.includes('supabase')) {
+        keysToRemove.push(key);
+      }
+    }
+    keysToRemove.forEach(key => localStorage.removeItem(key));
+    
+    // Also clear session storage
+    const sessionKeysToRemove = [];
+    for (let i = 0; i < sessionStorage.length; i++) {
+      const key = sessionStorage.key(i);
+      if (key && key.includes('supabase')) {
+        sessionKeysToRemove.push(key);
+      }
+    }
+    sessionKeysToRemove.forEach(key => sessionStorage.removeItem(key));
+    
+    console.log('Cleared corrupted auth data');
+  } catch (error) {
+    console.warn('Failed to clear auth data:', error);
+  }
 };
 
 export type Database = {
