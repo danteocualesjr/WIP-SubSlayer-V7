@@ -160,37 +160,23 @@ const ChatbotWidget: React.FC = () => {
       
       const subscriptionContext = generateSubscriptionContext();
       
-      // Create a comprehensive context message
-      const contextMessage = `You are Swordie, a helpful assistant for managing subscriptions in SubSlayer. You have COMPLETE ACCESS to the user's subscription data:
+      // Create a simple initialization message that just sets up the context without overwhelming the user
+      const contextMessage = `You are Swordie, a helpful AI assistant for managing subscriptions in SubSlayer. 
 
-SUBSCRIPTION OVERVIEW:
+IMPORTANT: When the user first opens the chat, simply greet them with: "Hey, I'm Swordie, your AI Assistant. How can I help you today?"
+
+Do NOT immediately provide subscription details or analysis unless specifically asked.
+
+You have access to the user's subscription data:
 - Total subscriptions: ${subscriptionContext.subscriptions.total}
 - Active: ${subscriptionContext.subscriptions.active}
-- Paused: ${subscriptionContext.subscriptions.paused}
-- Cancelled: ${subscriptionContext.subscriptions.cancelled}
+- Monthly spending: ${subscriptionContext.spending.formattedMonthlyTotal}
+- Upcoming renewals: ${subscriptionContext.upcomingRenewals.length}
 
-SPENDING SUMMARY:
-- Monthly total: ${subscriptionContext.spending.formattedMonthlyTotal}
-- Annual total: ${subscriptionContext.spending.formattedAnnualTotal}
-- Average per subscription: ${formatCurrency(subscriptionContext.spending.averagePerSubscription)}
+FULL SUBSCRIPTION DATA (use only when asked):
+${JSON.stringify(subscriptionContext, null, 2)}
 
-UPCOMING RENEWALS (Next 30 days): ${subscriptionContext.upcomingRenewals.length} subscriptions
-${subscriptionContext.upcomingRenewals.map(r => `- ${r.name}: ${r.formattedCost} in ${r.daysUntil} days (${r.nextBilling})`).join('\n')}
-
-CATEGORIES:
-${subscriptionContext.categoryBreakdown.map(cat => `- ${cat.category}: ${cat.activeCount} active subscriptions, ${formatCurrency(cat.monthlyTotal)}/month`).join('\n')}
-
-ALL SUBSCRIPTIONS:
-${subscriptionContext.subscriptions.allSubscriptions.map(sub => 
-  `- ${sub.name} (${sub.status}): ${formatCurrency(sub.cost)}/${sub.billingCycle}, Category: ${sub.category}, Next billing: ${sub.nextBilling}${sub.daysUntilRenewal ? ` (${sub.daysUntilRenewal} days)` : ''}`
-).join('\n')}
-
-USER SETTINGS:
-- Currency: ${subscriptionContext.user.currency}
-- Reminder days: ${subscriptionContext.user.reminderDays}
-- Date format: ${subscriptionContext.user.dateFormat}
-
-You can answer questions about their subscriptions, spending patterns, upcoming renewals, suggest optimizations, and help them manage their subscription portfolio. Be helpful, friendly, and provide actionable insights based on their actual data.`;
+Remember: Start with a simple greeting, then help based on what they ask for.`;
 
       const response = await fetch('https://agents.toolhouse.ai/60e3c85c-95f3-40bb-b607-ed83d1d07d40', {
         method: 'POST',
@@ -264,7 +250,7 @@ You can answer questions about their subscriptions, spending patterns, upcoming 
       setMessages([{
         id: Date.now().toString(),
         type: 'assistant',
-        content: 'Sorry, I encountered an error while starting our conversation. Please try again.',
+        content: 'Hey, I\'m Swordie, your AI Assistant. How can I help you today?',
         timestamp: new Date(),
       }]);
     } finally {
@@ -467,7 +453,7 @@ USER QUESTION: ${message.trim()}`;
                   <div className="flex items-center justify-center h-full">
                     <div className="flex items-center space-x-2 text-gray-500">
                       <div className="w-4 h-4 border-2 border-purple-600/30 border-t-purple-600 rounded-full animate-spin" />
-                      <span>Analyzing your subscriptions...</span>
+                      <span>Starting conversation...</span>
                     </div>
                   </div>
                 )}
