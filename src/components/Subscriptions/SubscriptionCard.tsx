@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, DollarSign, MoreVertical, Pause, Trash2, Edit, Check } from 'lucide-react';
+import { Calendar, DollarSign, Pause, Trash2, Edit, Check } from 'lucide-react';
 import { Subscription } from '../../types/subscription';
 import { useSettings } from '../../hooks/useSettings';
 
@@ -25,7 +25,6 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   onDeleteClick
 }) => {
   const { formatDate } = useSettings();
-  const [showActions, setShowActions] = React.useState(false);
 
   const getDaysUntilRenewal = () => {
     const now = new Date();
@@ -65,13 +64,23 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
     }
   };
 
-  const handleDeleteClick = () => {
+  const handleDeleteClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (onDeleteClick) {
       onDeleteClick(subscription);
     } else {
       onDelete(subscription.id);
     }
-    setShowActions(false);
+  };
+
+  const handleEditClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onEdit(subscription);
+  };
+
+  const handleToggleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onToggleStatus(subscription.id);
   };
 
   return (
@@ -94,55 +103,31 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
         </div>
       )}
 
-      {/* Actions Menu */}
+      {/* Action Icons */}
       {!isSelectionMode && (
         <div className="absolute top-4 right-4 actions-menu">
-          <div className="relative">
+          <div className="flex items-center space-x-1">
             <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowActions(!showActions);
-              }}
-              className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+              onClick={handleEditClick}
+              className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200"
+              title="Edit subscription"
             >
-              <MoreVertical className="w-4 h-4" />
+              <Edit className="w-4 h-4" />
             </button>
-            {showActions && (
-              <div className="absolute right-0 top-10 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-10 min-w-[140px]">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onEdit(subscription);
-                    setShowActions(false);
-                  }}
-                  className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                >
-                  <Edit className="w-4 h-4" />
-                  <span>Edit</span>
-                </button>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onToggleStatus(subscription.id);
-                    setShowActions(false);
-                  }}
-                  className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                >
-                  <Pause className="w-4 h-4" />
-                  <span>{subscription.status === 'active' ? 'Pause' : 'Resume'}</span>
-                </button>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDeleteClick();
-                  }}
-                  className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
-                >
-                  <Trash2 className="w-4 h-4" />
-                  <span>Delete</span>
-                </button>
-              </div>
-            )}
+            <button
+              onClick={handleToggleClick}
+              className="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-all duration-200"
+              title={subscription.status === 'active' ? 'Pause subscription' : 'Resume subscription'}
+            >
+              <Pause className="w-4 h-4" />
+            </button>
+            <button
+              onClick={handleDeleteClick}
+              className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200"
+              title="Delete subscription"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
           </div>
         </div>
       )}
@@ -162,9 +147,8 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
           )}
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-1">
-              <DollarSign className="w-4 h-4 text-gray-500" />
               <span className="text-lg font-bold text-gray-900">
-                {subscription.cost.toFixed(2)}
+                ${subscription.cost.toFixed(2)}
               </span>
               <span className="text-sm text-gray-500">/{subscription.billingCycle}</span>
             </div>
