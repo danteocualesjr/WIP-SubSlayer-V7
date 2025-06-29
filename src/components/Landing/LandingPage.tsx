@@ -196,81 +196,79 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
         </div>
       </nav>
 
-      {/* Hero Section - Fixed with proper 21st.dev implementation */}
-      <section className="relative pt-20 pb-16 overflow-hidden bg-slate-950">
-        {/* 21st.dev Sparkles Background - Full page implementation */}
-        <div className="w-full absolute inset-0 h-screen">
+      {/* Hero Section */}
+      <section className="relative pt-20 pb-16 overflow-hidden">
+        {/* Sparkles Background */}
+        <div className="absolute inset-0 w-full h-full">
           <SparklesCore
-            id="hero-sparkles-fullpage"
+            id="hero-sparkles"
             background="transparent"
-            minSize={0.6}
-            maxSize={1.4}
-            particleDensity={100}
+            minSize={0.3}
+            maxSize={1.0}
+            particleDensity={50}
             className="w-full h-full"
-            particleColor="#FFFFFF"
-            speed={1}
+            particleColor="#8B5CF6"
+            speed={0.5}
           />
         </div>
+
+        {/* Gradient Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-violet-50"></div>
         
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16">
           <div className="text-center">
-            {/* Enhanced Badge */}
-            <div className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-sm text-white/90 px-6 py-3 rounded-full text-sm font-medium mb-8 border border-white/20 shadow-lg">
+            {/* Badge */}
+            <div className="inline-flex items-center space-x-2 bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm font-medium mb-8">
               <Sparkles className="w-4 h-4" />
               <span>Trusted by 50,000+ users worldwide</span>
             </div>
 
-            {/* Enhanced Main Headline - 21st.dev style */}
-            <h1 className="md:text-7xl text-3xl lg:text-9xl font-bold text-center text-white relative z-20 mb-8 leading-tight">
+            {/* Main Headline */}
+            <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-8 leading-tight">
               Slay Your
-              <span className="block bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400">
+              <span className="bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent block">
                 Subscription Chaos
               </span>
             </h1>
 
-            {/* Enhanced Subheadline */}
-            <p className="text-xl md:text-2xl text-neutral-300 mb-12 max-w-3xl mx-auto leading-relaxed">
+            {/* Subheadline */}
+            <p className="text-xl md:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed">
               Take control of your recurring expenses with intelligent tracking, AI-powered insights, 
               and never miss another renewal again.
             </p>
 
-            {/* Enhanced CTA Buttons */}
+            {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-16">
               <button
                 onClick={onGetStarted}
-                className="bg-white text-slate-950 px-8 py-4 rounded-2xl font-semibold text-lg transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105 transform flex items-center space-x-2 group"
+                className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white px-8 py-4 rounded-2xl font-semibold text-lg transition-all duration-200 shadow-xl hover:shadow-2xl hover:scale-105 transform flex items-center space-x-2"
               >
                 <span>Start Free Today</span>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-5 h-5" />
               </button>
-              <button className="flex items-center space-x-3 text-white/80 hover:text-white transition-colors group">
-                <div className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow border border-white/20">
-                  <Play className="w-5 h-5 text-white ml-1" />
+              <button className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors">
+                <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg">
+                  <Play className="w-5 h-5 text-purple-600 ml-1" />
                 </div>
                 <span className="font-medium">Watch Demo</span>
               </button>
             </div>
 
-            {/* Enhanced Stats */}
+            {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
               {stats.map((stat, index) => (
-                <div key={index} className="text-center group">
-                  <div className="text-3xl md:text-4xl font-bold text-white mb-2 group-hover:scale-110 transition-transform">
-                    {stat.number}
-                  </div>
-                  <div className="text-neutral-400">{stat.label}</div>
+                <div key={index} className="text-center">
+                  <div className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">{stat.number}</div>
+                  <div className="text-gray-600">{stat.label}</div>
                 </div>
               ))}
             </div>
           </div>
         </div>
-
-        {/* Radial Gradient to prevent sharp edges - 21st.dev style */}
-        <div className="absolute inset-0 w-full h-full bg-slate-950 [mask-image:radial-gradient(800px_600px_at_center,transparent_40%,white)]"></div>
       </section>
 
-      {/* Enhanced Features Section */}
-      <section id="features" className="py-20 bg-gradient-to-br from-gray-50 to-white">
+      {/* Features Section */}
+      <section id="features" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
@@ -283,7 +281,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
             </p>
           </div>
 
-          {/* Enhanced Feature Tabs */}
+          {/* Feature Tabs */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
               {features.map((feature, index) => {
@@ -293,15 +291,15 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                     key={index}
                     className={`p-6 rounded-2xl cursor-pointer transition-all duration-300 ${
                       activeFeature === index
-                        ? 'bg-white shadow-xl border-2 border-purple-200 scale-105'
-                        : 'bg-white/50 hover:bg-white hover:shadow-lg'
+                        ? 'bg-white shadow-lg border-2 border-purple-200'
+                        : 'bg-white/50 hover:bg-white hover:shadow-md'
                     }`}
                     onClick={() => setActiveFeature(index)}
                   >
                     <div className="flex items-start space-x-4">
-                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
+                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
                         activeFeature === index
-                          ? 'bg-gradient-to-r from-purple-600 to-violet-600 text-white shadow-lg'
+                          ? 'bg-gradient-to-r from-purple-600 to-violet-600 text-white'
                           : 'bg-purple-100 text-purple-600'
                       }`}>
                         <Icon className="w-6 h-6" />
@@ -316,24 +314,11 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
               })}
             </div>
 
-            {/* Enhanced Feature Preview with 21st.dev Sparkles */}
-            <div className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-100 relative overflow-hidden">
-              {/* 21st.dev Sparkles in preview */}
-              <div className="absolute inset-0 w-full h-full opacity-30">
-                <SparklesCore
-                  id="feature-sparkles"
-                  background="transparent"
-                  minSize={0.4}
-                  maxSize={1}
-                  particleDensity={50}
-                  className="w-full h-full"
-                  particleColor="#8B5CF6"
-                  speed={0.5}
-                />
-              </div>
-              <div className="aspect-video bg-gradient-to-br from-purple-100 to-violet-100 rounded-2xl flex items-center justify-center relative z-10">
+            {/* Feature Preview */}
+            <div className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-100">
+              <div className="aspect-video bg-gradient-to-br from-purple-100 to-violet-100 rounded-2xl flex items-center justify-center">
                 <div className="text-center">
-                  <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-violet-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl">
+                  <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-violet-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
                     {React.createElement(features[activeFeature].icon, { className: "w-8 h-8 text-white" })}
                   </div>
                   <h4 className="text-lg font-semibold text-gray-900 mb-2">{features[activeFeature].title}</h4>
@@ -345,23 +330,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
         </div>
       </section>
 
-      {/* Enhanced Benefits Section */}
-      <section className="py-20 bg-white relative overflow-hidden">
-        {/* 21st.dev Sparkles background */}
-        <div className="absolute inset-0 w-full h-full opacity-20">
-          <SparklesCore
-            id="benefits-sparkles"
-            background="transparent"
-            minSize={0.2}
-            maxSize={0.8}
-            particleDensity={30}
-            className="w-full h-full"
-            particleColor="#8B5CF6"
-            speed={0.3}
-          />
-        </div>
-        
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      {/* Benefits Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
               Why choose SubSlayer?
@@ -372,8 +343,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center p-8 rounded-2xl bg-gradient-to-br from-purple-50 to-violet-50 border border-purple-100 hover:shadow-xl transition-all duration-300 group">
-              <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-violet-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
+            <div className="text-center p-8 rounded-2xl bg-gradient-to-br from-purple-50 to-violet-50 border border-purple-100">
+              <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-violet-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <DollarSign className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-4">Save Money</h3>
@@ -382,8 +353,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
               </p>
             </div>
 
-            <div className="text-center p-8 rounded-2xl bg-gradient-to-br from-emerald-50 to-green-50 border border-emerald-100 hover:shadow-xl transition-all duration-300 group">
-              <div className="w-16 h-16 bg-gradient-to-r from-emerald-600 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
+            <div className="text-center p-8 rounded-2xl bg-gradient-to-br from-emerald-50 to-green-50 border border-emerald-100">
+              <div className="w-16 h-16 bg-gradient-to-r from-emerald-600 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <Shield className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-4">Stay Protected</h3>
@@ -392,8 +363,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
               </p>
             </div>
 
-            <div className="text-center p-8 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 hover:shadow-xl transition-all duration-300 group">
-              <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
+            <div className="text-center p-8 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100">
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <TrendingUp className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-4">Optimize Spending</h3>
@@ -405,8 +376,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
         </div>
       </section>
 
-      {/* Enhanced Testimonials Section */}
-      <section id="testimonials" className="py-20 bg-gradient-to-br from-gray-50 to-white">
+      {/* Testimonials Section */}
+      <section id="testimonials" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
@@ -419,7 +390,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
-              <div key={index} className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 group">
+              <div key={index} className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
                 <div className="flex items-center space-x-1 mb-4">
                   {[...Array(testimonial.rating)].map((_, i) => (
                     <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
@@ -427,7 +398,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                 </div>
                 <p className="text-gray-700 mb-6 leading-relaxed">"{testimonial.content}"</p>
                 <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-violet-600 rounded-full flex items-center justify-center text-white font-semibold shadow-lg">
+                  <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-violet-600 rounded-full flex items-center justify-center text-white font-semibold">
                     {testimonial.name.split(' ').map(n => n[0]).join('')}
                   </div>
                   <div>
@@ -441,7 +412,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
         </div>
       </section>
 
-      {/* Enhanced Pricing Section */}
+      {/* Pricing Section */}
       <section id="pricing" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -465,7 +436,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
               >
                 {plan.popular && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <div className="bg-gradient-to-r from-purple-600 to-violet-600 text-white px-6 py-2 rounded-full text-sm font-semibold shadow-lg">
+                    <div className="bg-gradient-to-r from-purple-600 to-violet-600 text-white px-6 py-2 rounded-full text-sm font-semibold">
                       Most Popular
                     </div>
                   </div>
@@ -505,19 +476,19 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
         </div>
       </section>
 
-      {/* Enhanced CTA Section with 21st.dev Sparkles */}
-      <section className="py-20 bg-slate-950 relative overflow-hidden">
-        {/* 21st.dev Sparkles Background - Full implementation */}
-        <div className="w-full absolute inset-0 h-screen">
+      {/* CTA Section */}
+      <section className="py-20 bg-gradient-to-br from-purple-900 via-violet-800 to-purple-700 relative overflow-hidden">
+        {/* Sparkles Background */}
+        <div className="absolute inset-0 w-full h-full">
           <SparklesCore
-            id="cta-sparkles-fullpage"
+            id="cta-sparkles"
             background="transparent"
-            minSize={0.6}
-            maxSize={1.4}
-            particleDensity={100}
+            minSize={0.3}
+            maxSize={1.2}
+            particleDensity={80}
             className="w-full h-full"
             particleColor="#ffffff"
-            speed={1}
+            speed={0.8}
           />
         </div>
 
@@ -525,27 +496,24 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Ready to slay your subscription chaos?
           </h2>
-          <p className="text-xl text-neutral-300 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
             Join thousands of users who have taken control of their subscriptions. 
             Start your free account today.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6">
             <button
               onClick={onGetStarted}
-              className="bg-white text-slate-950 px-8 py-4 rounded-2xl font-semibold text-lg hover:bg-gray-100 transition-all duration-200 shadow-xl hover:shadow-2xl hover:scale-105 transform flex items-center space-x-2 group"
+              className="bg-white text-purple-600 px-8 py-4 rounded-2xl font-semibold text-lg hover:bg-gray-100 transition-all duration-200 shadow-xl hover:shadow-2xl hover:scale-105 transform flex items-center space-x-2"
             >
               <span>Get Started Free</span>
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-5 h-5" />
             </button>
-            <p className="text-neutral-400 text-sm">No credit card required • Free forever plan available</p>
+            <p className="text-white/80 text-sm">No credit card required • Free forever plan available</p>
           </div>
         </div>
-
-        {/* Radial Gradient to prevent sharp edges - 21st.dev style */}
-        <div className="absolute inset-0 w-full h-full bg-slate-950 [mask-image:radial-gradient(800px_400px_at_center,transparent_20%,white)]"></div>
       </section>
 
-      {/* Enhanced Footer */}
+      {/* Footer */}
       <footer className="bg-gray-900 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
