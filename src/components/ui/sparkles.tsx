@@ -96,7 +96,7 @@ export const SparklesCore = React.memo((props: ParticlesProps) => {
       controls.start({
         opacity: 1,
         transition: {
-          duration: 0.5, // Faster animation
+          duration: 0.3, // Even faster animation
         },
       });
     }
@@ -119,7 +119,7 @@ export const SparklesCore = React.memo((props: ParticlesProps) => {
     };
   }, [stableId]);
 
-  // Simplified and highly optimized particles options
+  // Highly optimized particles options with minimal features
   const particlesOptions = useMemo(() => ({
     background: {
       color: {
@@ -130,96 +130,56 @@ export const SparklesCore = React.memo((props: ParticlesProps) => {
       enable: false,
       zIndex: 1,
     },
-    fpsLimit: 30, // Further reduced for better performance
+    fpsLimit: 20, // Very low FPS for minimal performance impact
     interactivity: {
       events: {
-        onClick: {
-          enable: false,
-        },
-        onHover: {
-          enable: false,
-        },
-        resize: false, // Disable resize events to prevent re-renders
+        onClick: { enable: false },
+        onHover: { enable: false },
+        resize: false,
       },
     },
     particles: {
-      bounce: {
-        horizontal: { value: 1 },
-        vertical: { value: 1 },
-      },
-      collisions: {
-        enable: false,
-      },
-      color: {
-        value: particleColor || "#ffffff",
-      },
+      bounce: { horizontal: { value: 1 }, vertical: { value: 1 } },
+      collisions: { enable: false },
+      color: { value: particleColor || "#ffffff" },
       move: {
         direction: "none",
         enable: true,
-        outModes: {
-          default: "out",
-        },
+        outModes: { default: "out" },
         random: false,
-        speed: {
-          min: 0.1,
-          max: Math.min(speed || 1, 0.8), // Cap speed for better performance
-        },
+        speed: { min: 0.05, max: Math.min(speed || 0.5, 0.5) }, // Very slow movement
         straight: false,
       },
       number: {
-        density: {
-          enable: true,
-          width: 1200,
-          height: 1200,
-        },
-        value: Math.min(particleDensity || 60, 60), // Cap particle count
+        density: { enable: true, width: 1600, height: 1600 },
+        value: Math.min(particleDensity || 30, 30), // Very low particle count
       },
       opacity: {
-        value: {
-          min: 0.1,
-          max: 0.6, // Reduced opacity for subtlety
-        },
+        value: { min: 0.1, max: 0.4 }, // Lower opacity
         animation: {
           enable: true,
-          speed: Math.min((speed || 4) * 0.3, 1), // Much slower animation
+          speed: Math.min((speed || 2) * 0.2, 0.5), // Very slow opacity animation
           sync: false,
           mode: "auto",
           startValue: "random",
         },
       },
-      shape: {
-        type: "circle",
-      },
+      shape: { type: "circle" },
       size: {
-        value: {
-          min: minSize || 1,
-          max: Math.min(maxSize || 2, 2), // Cap size
-        },
-        animation: {
-          enable: false, // Completely disable size animation
-        },
+        value: { min: minSize || 0.5, max: Math.min(maxSize || 1.5, 1.5) }, // Smaller particles
+        animation: { enable: false },
       },
-      stroke: {
-        width: 0,
-      },
-      links: {
-        enable: false,
-      },
+      stroke: { width: 0 },
+      links: { enable: false },
     },
-    detectRetina: false, // Disable retina detection for consistency
-    smooth: true,
-    style: {
-      position: "absolute",
-    },
+    detectRetina: false,
+    smooth: false, // Disable smooth rendering for better performance
+    style: { position: "absolute" },
   }), [background, particleColor, particleDensity, speed, minSize, maxSize]);
 
   // Don't render anything until initialized
   if (!init) {
-    return (
-      <div className={cn("opacity-0", className)} style={{ pointerEvents: 'none' }}>
-        <div className="w-full h-full" />
-      </div>
-    );
+    return null;
   }
 
   return (

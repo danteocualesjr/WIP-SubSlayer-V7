@@ -18,6 +18,17 @@ import { useSpendingData } from './hooks/useSpendingData';
 import { useSettings } from './hooks/useSettings';
 import { useNotifications } from './hooks/useNotifications';
 
+// Create stable component instances to prevent re-mounting
+const StableDashboard = React.memo(Dashboard);
+const StableSubscriptions = React.memo(Subscriptions);
+const StableAnalytics = React.memo(Analytics);
+const StableCostSimulator = React.memo(CostSimulator);
+const StableNotifications = React.memo(Notifications);
+const StableSettings = React.memo(Settings);
+const StableProfile = React.memo(Profile);
+const StablePricing = React.memo(Pricing);
+const StableSwordiePage = React.memo(SwordiePage);
+
 function App() {
   const { user, loading: authLoading } = useAuth();
   const { settings } = useSettings();
@@ -78,6 +89,44 @@ function App() {
     }));
   }, [subscriptions]);
 
+  // Create stable component props to prevent re-renders
+  const dashboardProps = useMemo(() => ({
+    subscriptions,
+    spendingData,
+    spendingLoading,
+    onAddSubscription: addSubscription,
+    onEditSubscription: handleEditSubscription,
+    onSwitchToCalendar: handleSwitchToCalendar,
+  }), [subscriptions, spendingData, spendingLoading, addSubscription, handleEditSubscription, handleSwitchToCalendar]);
+
+  const subscriptionsProps = useMemo(() => ({
+    subscriptions,
+    onAddSubscription: addSubscription,
+    onEditSubscription: handleEditSubscription,
+    onDeleteSubscription: deleteSubscription,
+    onToggleSubscriptionStatus: toggleSubscriptionStatus,
+    onBulkDelete: handleBulkDelete,
+  }), [subscriptions, addSubscription, handleEditSubscription, deleteSubscription, toggleSubscriptionStatus, handleBulkDelete]);
+
+  const analyticsProps = useMemo(() => ({
+    subscriptions,
+    spendingData,
+    categoryData: currentCategoryData,
+    spendingLoading,
+  }), [subscriptions, spendingData, currentCategoryData, spendingLoading]);
+
+  const costSimulatorProps = useMemo(() => ({
+    subscriptions,
+  }), [subscriptions]);
+
+  const notificationsProps = useMemo(() => ({
+    subscriptions,
+  }), [subscriptions]);
+
+  const profileProps = useMemo(() => ({
+    subscriptions,
+  }), [subscriptions]);
+
   // Memoize the render function to prevent unnecessary re-renders
   const renderActiveTab = useMemo(() => {
     if (subscriptionsLoading && (activeTab === 'dashboard' || activeTab === 'subscriptions' || activeTab === 'analytics' || activeTab === 'simulator')) {
@@ -90,73 +139,35 @@ function App() {
 
     switch (activeTab) {
       case 'dashboard':
-        return (
-          <Dashboard 
-            subscriptions={subscriptions} 
-            spendingData={spendingData}
-            spendingLoading={spendingLoading}
-            onAddSubscription={addSubscription}
-            onEditSubscription={handleEditSubscription}
-            onSwitchToCalendar={handleSwitchToCalendar}
-          />
-        );
+        return <StableDashboard {...dashboardProps} />;
       case 'subscriptions':
-        return (
-          <Subscriptions
-            subscriptions={subscriptions}
-            onAddSubscription={addSubscription}
-            onEditSubscription={handleEditSubscription}
-            onDeleteSubscription={deleteSubscription}
-            onToggleSubscriptionStatus={toggleSubscriptionStatus}
-            onBulkDelete={handleBulkDelete}
-          />
-        );
+        return <StableSubscriptions {...subscriptionsProps} />;
       case 'analytics':
-        return (
-          <Analytics
-            subscriptions={subscriptions}
-            spendingData={spendingData}
-            categoryData={currentCategoryData}
-            spendingLoading={spendingLoading}
-          />
-        );
+        return <StableAnalytics {...analyticsProps} />;
       case 'simulator':
-        return <CostSimulator subscriptions={subscriptions} />;
+        return <StableCostSimulator {...costSimulatorProps} />;
       case 'swordie':
-        return <SwordiePage />;
+        return <StableSwordiePage />;
       case 'notifications':
-        return <Notifications subscriptions={subscriptions} />;
+        return <StableNotifications {...notificationsProps} />;
       case 'settings':
-        return <Settings />;
+        return <StableSettings />;
       case 'profile':
-        return <Profile subscriptions={subscriptions} />;
+        return <StableProfile {...profileProps} />;
       case 'pricing':
-        return <Pricing />;
+        return <StablePricing />;
       default:
-        return (
-          <Dashboard 
-            subscriptions={subscriptions} 
-            spendingData={spendingData}
-            spendingLoading={spendingLoading}
-            onAddSubscription={addSubscription}
-            onEditSubscription={handleEditSubscription}
-            onSwitchToCalendar={handleSwitchToCalendar}
-          />
-        );
+        return <StableDashboard {...dashboardProps} />;
     }
   }, [
     activeTab,
-    subscriptions,
-    spendingData,
-    spendingLoading,
     subscriptionsLoading,
-    currentCategoryData,
-    addSubscription,
-    handleEditSubscription,
-    deleteSubscription,
-    toggleSubscriptionStatus,
-    handleBulkDelete,
-    handleSwitchToCalendar
+    dashboardProps,
+    subscriptionsProps,
+    analyticsProps,
+    costSimulatorProps,
+    notificationsProps,
+    profileProps,
   ]);
 
   // Listen for sidebar toggle events
