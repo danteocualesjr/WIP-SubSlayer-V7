@@ -540,14 +540,28 @@ USER QUESTION: ${message.trim()}`;
         </div>
       )}
 
-      {/* Floating Action Button */}
+      {/* Floating Action Button - Updated to match screenshot style */}
       {!isOpen && (
-        <button
-          onClick={toggleWidget}
-          className="fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center justify-center z-50 group border-4 border-white"
-        >
-          <MessageCircle className="w-7 h-7 group-hover:scale-110 transition-transform duration-200" />
-        </button>
+        <div className="fixed bottom-6 right-6 z-50">
+          {/* Main chat button with rounded design like screenshot */}
+          <button
+            onClick={toggleWidget}
+            className="relative bg-white rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 p-4 border border-gray-100 group"
+          >
+            {/* Purple circle with sword icon */}
+            <div className="w-14 h-14 bg-gradient-to-r from-purple-600 to-violet-600 rounded-full flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-200">
+              <Sword className="w-7 h-7 text-white" />
+            </div>
+            
+            {/* Chat with Swordie text */}
+            <div className="absolute right-20 top-1/2 transform -translate-y-1/2 bg-white rounded-full px-6 py-3 shadow-lg border border-gray-100 whitespace-nowrap">
+              <div className="flex items-center space-x-3">
+                <MessageCircle className="w-5 h-5 text-gray-600" />
+                <span className="font-semibold text-gray-900">Chat with Swordie</span>
+              </div>
+            </div>
+          </button>
+        </div>
       )}
     </>
   );
