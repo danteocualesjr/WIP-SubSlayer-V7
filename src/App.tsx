@@ -10,6 +10,7 @@ import Settings from './components/Settings/Settings';
 import Profile from './components/Profile/Profile';
 import Pricing from './components/Pricing/Pricing';
 import AuthForm from './components/Auth/AuthForm';
+import ChatbotWidget from './components/Chatbot/ChatbotWidget';
 import { useAuth } from './hooks/useAuth';
 import { useSubscriptions } from './hooks/useSubscriptions';
 import { useSpendingData } from './hooks/useSpendingData';
@@ -252,6 +253,9 @@ function App() {
           {renderActiveTab()}
         </div>
       </main>
+      
+      {/* Chatbot Widget */}
+      <ChatbotWidget />
     </div>
   );
 }
