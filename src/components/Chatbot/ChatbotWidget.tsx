@@ -161,7 +161,7 @@ const ChatbotWidget: React.FC = () => {
       const subscriptionContext = generateSubscriptionContext();
       
       // Create a comprehensive context message
-      const contextMessage = `You are SubSlayer AI, a helpful assistant for managing subscriptions. You have COMPLETE ACCESS to the user's subscription data:
+      const contextMessage = `You are SubSlayer, a helpful assistant for managing subscriptions. You have COMPLETE ACCESS to the user's subscription data:
 
 SUBSCRIPTION OVERVIEW:
 - Total subscriptions: ${subscriptionContext.subscriptions.total}
@@ -434,7 +434,7 @@ USER QUESTION: ${message.trim()}`;
                 <Bot className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-semibold">SubSlayer AI</h3>
+                <h3 className="font-semibold">SubSlayer</h3>
                 <p className="text-xs text-white/80">
                   {subscriptions.length > 0 
                     ? `Managing ${subscriptions.filter(s => s.status === 'active').length} active subscriptions`
@@ -561,11 +561,6 @@ USER QUESTION: ${message.trim()}`;
           className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center z-50 group"
         >
           <MessageCircle className="w-6 h-6 group-hover:scale-110 transition-transform duration-200" />
-          
-          {/* Notification dot for new features */}
-          <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
-            <span className="text-xs font-bold text-white">AI</span>
-          </div>
         </button>
       )}
     </>
