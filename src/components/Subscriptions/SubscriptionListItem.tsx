@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, DollarSign, Sword, Trash2, Edit, Check } from 'lucide-react';
+import { Calendar, DollarSign, Sword, Trash2, Edit, Check, Bell } from 'lucide-react';
 import { Subscription } from '../../types/subscription';
 import { useSettings } from '../../hooks/useSettings';
 import CancellationConfirmModal from './CancellationConfirmModal';
@@ -25,7 +25,7 @@ const SubscriptionListItem: React.FC<SubscriptionListItemProps> = ({
   onSelect,
   onDeleteClick
 }) => {
-  const { formatDate } = useSettings();
+  const { formatDate, settings } = useSettings();
   const [showCancelModal, setShowCancelModal] = useState(false);
 
   const getDaysUntilRenewal = () => {
@@ -111,7 +111,7 @@ const SubscriptionListItem: React.FC<SubscriptionListItemProps> = ({
           )}
 
           {/* Service */}
-          <div className={isSelectionMode ? "col-span-3" : "col-span-4"}>
+          <div className={isSelectionMode ? "col-span-3" : "col-span-3"}>
             <div className="flex items-center space-x-3">
               <div
                 className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-semibold text-sm"
@@ -158,6 +158,14 @@ const SubscriptionListItem: React.FC<SubscriptionListItemProps> = ({
               }`}>
                 {daysUntil} days
               </div>
+            </div>
+          </div>
+
+          {/* Reminder Days */}
+          <div className="col-span-1">
+            <div className="flex items-center space-x-1">
+              <Bell className="w-3 h-3 text-gray-400" />
+              <span className="text-sm text-gray-600">{settings.reminderDays}d</span>
             </div>
           </div>
 

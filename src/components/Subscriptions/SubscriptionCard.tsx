@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, DollarSign, Sword, Trash2, Edit, Check } from 'lucide-react';
+import { Calendar, DollarSign, Sword, Trash2, Edit, Check, Bell } from 'lucide-react';
 import { Subscription } from '../../types/subscription';
 import { useSettings } from '../../hooks/useSettings';
 import CancellationConfirmModal from './CancellationConfirmModal';
@@ -25,7 +25,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   onSelect,
   onDeleteClick
 }) => {
-  const { formatDate } = useSettings();
+  const { formatDate, settings } = useSettings();
   const [showCancelModal, setShowCancelModal] = useState(false);
 
   const getDaysUntilRenewal = () => {
@@ -172,7 +172,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
           </div>
         </div>
 
-        {/* Next Billing */}
+        {/* Next Billing and Reminder */}
         <div className="flex items-center justify-between pt-4 border-t border-gray-100">
           <div className="flex items-center space-x-2">
             <Calendar className="w-4 h-4 text-gray-500" />
@@ -181,14 +181,20 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
               {formatDate(subscription.nextBilling)}
             </span>
           </div>
-          <div className={`flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium ${
-            isUrgent 
-              ? 'bg-red-100 text-red-700' 
-              : isWarning 
-                ? 'bg-yellow-100 text-yellow-700'
-                : 'bg-green-100 text-green-700'
-          }`}>
-            <span>{daysUntil} days</span>
+          <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-1">
+              <Bell className="w-3 h-3 text-gray-400" />
+              <span className="text-xs text-gray-500">{settings.reminderDays}d reminder</span>
+            </div>
+            <div className={`flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium ${
+              isUrgent 
+                ? 'bg-red-100 text-red-700' 
+                : isWarning 
+                  ? 'bg-yellow-100 text-yellow-700'
+                  : 'bg-green-100 text-green-700'
+            }`}>
+              <span>{daysUntil} days</span>
+            </div>
           </div>
         </div>
 

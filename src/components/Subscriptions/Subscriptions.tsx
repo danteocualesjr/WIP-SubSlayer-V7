@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, Filter, Grid3X3, List, Trash2, X, Calendar as CalendarIcon, ArrowUpDown, ArrowUp, ArrowDown, CreditCard, Sparkles, CheckSquare, Square } from 'lucide-react';
+import { Plus, Search, Filter, Grid3X3, List, Trash2, X, Calendar as CalendarIcon, ArrowUpDown, ArrowUp, ArrowDown, CreditCard, Sparkles, CheckSquare, Square, Bell } from 'lucide-react';
 import SubscriptionCard from './SubscriptionCard';
 import SubscriptionListItem from './SubscriptionListItem';
 import CalendarView from './CalendarView';
@@ -654,7 +654,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
                   </button>
                 </div>
               )}
-              <div className={isSelectionMode ? "col-span-3" : "col-span-4"}>
+              <div className={isSelectionMode ? "col-span-3" : "col-span-3"}>
                 <button
                   onClick={() => handleSort('name')}
                   className="flex items-center space-x-1 hover:text-gray-900 transition-colors"
@@ -689,6 +689,12 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
                   <span>Next Billing</span>
                   {getSortIcon('nextBilling')}
                 </button>
+              </div>
+              <div className="col-span-1">
+                <div className="flex items-center space-x-1">
+                  <Bell className="w-3 h-3" />
+                  <span>Reminder</span>
+                </div>
               </div>
               <div className="col-span-1">
                 <button
