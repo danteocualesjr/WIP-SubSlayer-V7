@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import Sidebar from './components/Layout/Sidebar';
 import Header from './components/Layout/Header';
 import Dashboard from './components/Dashboard/Dashboard';
@@ -138,15 +138,15 @@ function App() {
     return <AuthForm />;
   }
 
-  const handleEditSubscription = (id: string, subscriptionData: any) => {
+  const handleEditSubscription = useCallback((id: string, subscriptionData: any) => {
     updateSubscription(id, subscriptionData);
-  };
+  }, [updateSubscription]);
 
-  const handleBulkDelete = (ids: string[]) => {
+  const handleBulkDelete = useCallback((ids: string[]) => {
     bulkDeleteSubscriptions(ids);
-  };
+  }, [bulkDeleteSubscriptions]);
 
-  const handleSwitchToCalendar = () => {
+  const handleSwitchToCalendar = useCallback(() => {
     setActiveTab('subscriptions');
     // Small delay to ensure the subscriptions component is rendered
     setTimeout(() => {
@@ -154,10 +154,10 @@ function App() {
       const event = new CustomEvent('switchToCalendarView');
       window.dispatchEvent(event);
     }, 100);
-  };
+  }, []);
 
   // Update category data based on current subscriptions
-  const updateCategoryData = () => {
+  const currentCategoryData = useMemo(() => {
     const categoryTotals = subscriptions
       .filter(sub => sub.status === 'active')
       .reduce((acc, sub) => {
@@ -174,11 +174,9 @@ function App() {
       value,
       color: colors[index % colors.length]
     }));
-  };
+  }, [subscriptions]);
 
-  const currentCategoryData = updateCategoryData();
-
-  const renderActiveTab = () => {
+  const renderActiveTab = useCallback(() => {
     if (subscriptionsLoading && (activeTab === 'dashboard' || activeTab === 'subscriptions' || activeTab === 'analytics' || activeTab === 'simulator')) {
       return (
         <div className="flex items-center justify-center py-12">
@@ -243,7 +241,20 @@ function App() {
           />
         );
     }
-  };
+  }, [
+    activeTab,
+    subscriptions,
+    spendingData,
+    spendingLoading,
+    subscriptionsLoading,
+    currentCategoryData,
+    addSubscription,
+    handleEditSubscription,
+    deleteSubscription,
+    toggleSubscriptionStatus,
+    handleBulkDelete,
+    handleSwitchToCalendar
+  ]);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">

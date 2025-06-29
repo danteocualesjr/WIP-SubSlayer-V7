@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { DollarSign, TrendingUp, CreditCard, Calendar, Plus, Sparkles, Star } from 'lucide-react';
 import StatsCard from './StatsCard';
 import SpendingChart from './SpendingChart';
@@ -33,39 +33,46 @@ const Dashboard: React.FC<DashboardProps> = ({
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingSubscription, setEditingSubscription] = useState<Subscription | null>(null);
   
-  const activeSubscriptions = subscriptions.filter(sub => sub.status === 'active');
-  
-  const monthlyTotal = activeSubscriptions.reduce((sum, sub) => {
-    if (sub.billingCycle === 'monthly') {
-      return sum + sub.cost;
-    } else {
-      return sum + (sub.cost / 12);
-    }
-  }, 0);
+  // Memoize calculations to prevent unnecessary re-renders
+  const dashboardStats = useMemo(() => {
+    const activeSubscriptions = subscriptions.filter(sub => sub.status === 'active');
+    
+    const monthlyTotal = activeSubscriptions.reduce((sum, sub) => {
+      if (sub.billingCycle === 'monthly') {
+        return sum + sub.cost;
+      } else {
+        return sum + (sub.cost / 12);
+      }
+    }, 0);
 
-  const annualTotal = monthlyTotal * 12;
-  
-  const lastMonthSpending = spendingData[spendingData.length - 2]?.amount || 0;
-  const currentMonthSpending = spendingData[spendingData.length - 1]?.amount || 0;
-  const spendingChange = lastMonthSpending > 0 
-    ? ((currentMonthSpending - lastMonthSpending) / lastMonthSpending * 100).toFixed(1)
-    : '0';
+    const annualTotal = monthlyTotal * 12;
+    
+    const lastMonthSpending = spendingData[spendingData.length - 2]?.amount || 0;
+    const currentMonthSpending = spendingData[spendingData.length - 1]?.amount || 0;
+    const spendingChange = lastMonthSpending > 0 
+      ? ((currentMonthSpending - lastMonthSpending) / lastMonthSpending * 100).toFixed(1)
+      : '0';
 
-  // Calculate upcoming renewals in next 30 days
-  const getUpcomingRenewalsCount = () => {
+    // Calculate upcoming renewals in next 30 days
     const now = new Date();
     const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
     
-    return activeSubscriptions.filter(sub => {
+    const upcomingRenewalsCount = activeSubscriptions.filter(sub => {
       const renewalDate = new Date(sub.nextBilling);
       return renewalDate >= now && renewalDate <= thirtyDaysFromNow;
     }).length;
-  };
 
-  const upcomingRenewalsCount = getUpcomingRenewalsCount();
+    return {
+      activeSubscriptions,
+      monthlyTotal,
+      annualTotal,
+      spendingChange,
+      upcomingRenewalsCount
+    };
+  }, [subscriptions, spendingData]);
 
   // Get user's display name
-  const getUserName = () => {
+  const userName = useMemo(() => {
     if (profile.displayName) {
       return profile.displayName;
     }
@@ -73,11 +80,11 @@ const Dashboard: React.FC<DashboardProps> = ({
       return user.email.split('@')[0];
     }
     return 'User';
-  };
+  }, [profile.displayName, user?.email]);
 
   // Generate category data for pie chart
-  const generateCategoryData = () => {
-    const categoryTotals = activeSubscriptions.reduce((acc, sub) => {
+  const categoryData = useMemo(() => {
+    const categoryTotals = dashboardStats.activeSubscriptions.reduce((acc, sub) => {
       const monthlyCost = sub.billingCycle === 'monthly' ? sub.cost : sub.cost / 12;
       const category = sub.category || 'Uncategorized';
       acc[category] = (acc[category] || 0) + monthlyCost;
@@ -91,49 +98,48 @@ const Dashboard: React.FC<DashboardProps> = ({
       value,
       color: colors[index % colors.length]
     }));
-  };
+  }, [dashboardStats.activeSubscriptions]);
 
-  const categoryData = generateCategoryData();
-
-  const handleAddSubscription = (subscriptionData: Omit<Subscription, 'id' | 'createdAt'>) => {
+  const handleAddSubscription = useCallback((subscriptionData: Omit<Subscription, 'id' | 'createdAt'>) => {
     if (onAddSubscription) {
       onAddSubscription(subscriptionData);
     }
     setShowAddModal(false);
     setEditingSubscription(null);
-  };
+  }, [onAddSubscription]);
 
-  const handleEditSubscription = (subscription: Subscription) => {
+  const handleEditSubscription = useCallback((subscription: Subscription) => {
     setEditingSubscription(subscription);
     setShowAddModal(true);
-  };
+  }, []);
 
-  const handleSaveEdit = (subscriptionData: Omit<Subscription, 'id' | 'createdAt'>) => {
+  const handleSaveEdit = useCallback((subscriptionData: Omit<Subscription, 'id' | 'createdAt'>) => {
     if (editingSubscription && onEditSubscription) {
       onEditSubscription(editingSubscription.id, subscriptionData);
     }
     setShowAddModal(false);
     setEditingSubscription(null);
-  };
+  }, [editingSubscription, onEditSubscription]);
 
-  const handleModalClose = () => {
+  const handleModalClose = useCallback(() => {
     setShowAddModal(false);
     setEditingSubscription(null);
-  };
+  }, []);
 
-  const handleSwitchToCalendar = () => {
+  const handleSwitchToCalendar = useCallback(() => {
     if (onSwitchToCalendar) {
       onSwitchToCalendar();
     }
-  };
+  }, [onSwitchToCalendar]);
 
   return (
     <div className="space-y-6 sm:space-y-8">
       {/* Enhanced Hero Section with Sparkles */}
       <div className="relative bg-gradient-to-br from-purple-900 via-violet-800 to-purple-700 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white overflow-hidden">
-        {/* Sparkles Background */}
+        {/* Sparkles Background - Use stable key to prevent re-initialization */}
         <div className="absolute inset-0 w-full h-full">
           <SparklesCore
+            key="dashboard-sparkles-stable"
             id="dashboard-sparkles"
             background="transparent"
             minSize={0.4}
@@ -159,7 +165,7 @@ const Dashboard: React.FC<DashboardProps> = ({
             <div>
               <div className="flex items-center space-x-3 mb-4 sm:mb-6">
                 <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" />
-                <h1 className="text-2xl sm:text-4xl font-bold">Welcome back, {getUserName()}</h1>
+                <h1 className="text-2xl sm:text-4xl font-bold">Welcome back, {userName}</h1>
               </div>
               <p className="text-lg sm:text-xl text-white/90 mb-6 sm:mb-8 max-w-2xl">
                 Slay your subscription chaos
@@ -184,7 +190,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                 <DollarSign className="w-4 h-4 sm:w-6 sm:h-6 text-yellow-300" />
                 <p className="text-white/80 text-xs sm:text-sm font-medium">Monthly Total</p>
               </div>
-              <p className="text-lg sm:text-3xl font-bold">${monthlyTotal.toFixed(2)}</p>
+              <p className="text-lg sm:text-3xl font-bold">${dashboardStats.monthlyTotal.toFixed(2)}</p>
             </div>
             
             <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
@@ -192,7 +198,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                 <TrendingUp className="w-4 h-4 sm:w-6 sm:h-6 text-green-300" />
                 <p className="text-white/80 text-xs sm:text-sm font-medium">Annual Projection</p>
               </div>
-              <p className="text-lg sm:text-3xl font-bold">${annualTotal.toFixed(2)}</p>
+              <p className="text-lg sm:text-3xl font-bold">${dashboardStats.annualTotal.toFixed(2)}</p>
             </div>
             
             <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
@@ -200,7 +206,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                 <CreditCard className="w-4 h-4 sm:w-6 sm:h-6 text-blue-300" />
                 <p className="text-white/80 text-xs sm:text-sm font-medium">Active Subscriptions</p>
               </div>
-              <p className="text-lg sm:text-3xl font-bold">{activeSubscriptions.length}</p>
+              <p className="text-lg sm:text-3xl font-bold">{dashboardStats.activeSubscriptions.length}</p>
             </div>
             
             <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
@@ -208,7 +214,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                 <Calendar className="w-4 h-4 sm:w-6 sm:h-6 text-pink-300" />
                 <p className="text-white/80 text-xs sm:text-sm font-medium">Upcoming Renewals</p>
               </div>
-              <p className="text-lg sm:text-3xl font-bold">{upcomingRenewalsCount}</p>
+              <p className="text-lg sm:text-3xl font-bold">{dashboardStats.upcomingRenewalsCount}</p>
             </div>
           </div>
         </div>
@@ -271,4 +277,4 @@ const Dashboard: React.FC<DashboardProps> = ({
   );
 };
 
-export default Dashboard;
+export default React.memo(Dashboard);
