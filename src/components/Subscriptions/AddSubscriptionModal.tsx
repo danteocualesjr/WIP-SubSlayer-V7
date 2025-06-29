@@ -9,6 +9,7 @@ interface AddSubscriptionModalProps {
   onClose: () => void;
   onAdd: (subscription: Omit<Subscription, 'id' | 'createdAt'>) => void;
   subscription?: Subscription;
+  
 }
 
 interface PopularService {
