@@ -46,6 +46,12 @@ const AuthForm: React.FC = () => {
     console.log('Google sign-in clicked');
   };
 
+  const handleLogoClick = () => {
+    // Navigate back to landing page by reloading the page
+    // This will trigger the landing page to show since user is not authenticated
+    window.location.reload();
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-violet-800 to-purple-700 flex items-center justify-center p-4 relative overflow-hidden">
       {/* Sparkles Background */}
@@ -72,14 +78,17 @@ const AuthForm: React.FC = () => {
       <div className="max-w-md w-full relative z-10">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center space-x-3 mb-8">
-            <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center transform rotate-12">
-              <Sword className="w-5 h-5 text-purple-600 transform -rotate-12" />
+          <button
+            onClick={handleLogoClick}
+            className="inline-flex items-center space-x-3 mb-8 hover:opacity-80 transition-opacity group"
+          >
+            <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center transform rotate-12 group-hover:rotate-6 transition-transform duration-300">
+              <Sword className="w-5 h-5 text-purple-600 transform -rotate-12 group-hover:-rotate-6 transition-transform duration-300" />
             </div>
             <span className="text-2xl font-bold text-white">
               SubSlayer
             </span>
-          </div>
+          </button>
           
           <h1 className="text-4xl font-bold text-white mb-3">
             Welcome back
