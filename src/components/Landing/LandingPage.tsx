@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sword, ArrowRight, Check, Star, Zap, Shield, TrendingUp, Calendar, DollarSign, Users, ChevronDown, Menu, X, Sparkles, Target, Brain, BarChart3, Play } from 'lucide-react';
+import { Sword, ArrowRight, Check, Star, Zap, Shield, TrendingUp, Calendar, DollarSign, Users, ChevronDown, Menu, X, Sparkles, Target, Brain, BarChart3, Play, Mail } from 'lucide-react';
 import { SparklesCore } from '../ui/sparkles';
 
 interface LandingPageProps {
@@ -8,6 +8,8 @@ interface LandingPageProps {
 
 const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showContact, setShowContact] = useState(false);
+  const [isAnnual, setIsAnnual] = useState(false);
 
   const features = [
     {
@@ -69,8 +71,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
   const pricingPlans = [
     {
       name: "Free",
-      price: "$0",
-      period: "forever",
+      monthlyPrice: 0,
+      annualPrice: 0,
       description: "Perfect for getting started",
       features: [
         "Track up to 5 subscriptions",
@@ -84,8 +86,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
     },
     {
       name: "Pro",
-      price: "$9.99",
-      period: "month",
+      monthlyPrice: 9.99,
+      annualPrice: 99,
       description: "For power users",
       features: [
         "Unlimited subscriptions",
@@ -101,8 +103,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
     },
     {
       name: "Enterprise",
-      price: "$99",
-      period: "month",
+      monthlyPrice: 99,
+      annualPrice: 990,
       description: "For teams and businesses",
       features: [
         "Everything in Pro",
@@ -123,6 +125,54 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
     { number: "15+", label: "Subscriptions tracked per user" },
     { number: "24/7", label: "Monitoring & alerts" }
   ];
+
+  const handleContactSales = () => {
+    setShowContact(true);
+  };
+
+  const ContactPage = () => (
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl p-8 w-full max-w-md shadow-2xl">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xl font-bold text-gray-900">Contact Sales</h3>
+          <button
+            onClick={() => setShowContact(false)}
+            className="text-gray-400 hover:text-gray-600"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        
+        <div className="text-center">
+          <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-violet-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Mail className="w-8 h-8 text-white" />
+          </div>
+          
+          <h4 className="text-lg font-semibold text-gray-900 mb-2">Get in Touch</h4>
+          <p className="text-gray-600 mb-6">
+            Ready to transform your subscription management? Let's discuss how SubSlayer Enterprise can help your team.
+          </p>
+          
+          <div className="bg-gray-50 rounded-lg p-4 mb-6">
+            <p className="text-sm text-gray-600 mb-2">Email us directly at:</p>
+            <a 
+              href="mailto:dante@nativestack.ai"
+              className="text-lg font-semibold text-purple-600 hover:text-purple-700 transition-colors"
+            >
+              dante@nativestack.ai
+            </a>
+          </div>
+          
+          <button
+            onClick={() => setShowContact(false)}
+            className="w-full bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white py-3 rounded-lg font-medium transition-all duration-200"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-white relative">
@@ -417,62 +467,110 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
               <span className="bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent"> Transparent </span>
               Pricing
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
               Choose the plan that's right for you. Start free and upgrade as you grow.
             </p>
+
+            {/* Billing Toggle */}
+            <div className="flex items-center justify-center space-x-4 mb-12">
+              <span className={`text-sm font-medium ${!isAnnual ? 'text-gray-900' : 'text-gray-500'}`}>
+                Monthly
+              </span>
+              <button
+                onClick={() => setIsAnnual(!isAnnual)}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                  isAnnual ? 'bg-purple-600' : 'bg-gray-200'
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    isAnnual ? 'translate-x-6' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+              <span className={`text-sm font-medium ${isAnnual ? 'text-gray-900' : 'text-gray-500'}`}>
+                Annual
+              </span>
+              {isAnnual && (
+                <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">
+                  Save up to 17%
+                </span>
+              )}
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {pricingPlans.map((plan, index) => (
-              <div
-                key={index}
-                className={`relative rounded-2xl p-8 transition-all duration-300 hover:shadow-xl ${
-                  plan.popular
-                    ? 'ring-2 ring-purple-500 shadow-lg scale-105 z-10 bg-white'
-                    : 'border border-gray-200 hover:border-gray-300 bg-white'
-                }`}
-              >
-                {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <div className="bg-gradient-to-r from-purple-600 to-violet-600 text-white px-6 py-2 rounded-full text-sm font-semibold flex items-center space-x-1 shadow-lg">
-                      <Star className="w-4 h-4 fill-current" />
-                      <span>Most Popular</span>
-                    </div>
-                  </div>
-                )}
-
-                <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
-                  <p className="text-gray-600 mb-4">{plan.description}</p>
-                  <div className="flex items-baseline justify-center space-x-1">
-                    <span className="text-5xl font-bold text-gray-900">{plan.price}</span>
-                    <span className="text-gray-500 text-lg">/{plan.period}</span>
-                  </div>
-                </div>
-
-                <div className="space-y-4 mb-8">
-                  {plan.features.map((feature, featureIndex) => (
-                    <div key={featureIndex} className="flex items-start space-x-3">
-                      <div className={`w-5 h-5 rounded-full bg-gradient-to-br ${plan.gradient} flex items-center justify-center flex-shrink-0 mt-0.5`}>
-                        <Check className="w-3 h-3 text-white" />
-                      </div>
-                      <span className="text-gray-700">{feature}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <button
-                  onClick={onGetStarted}
-                  className={`w-full py-4 px-6 rounded-xl font-semibold transition-all duration-200 ${
+            {pricingPlans.map((plan, index) => {
+              const price = isAnnual ? plan.annualPrice : plan.monthlyPrice;
+              const savings = plan.monthlyPrice > 0 ? Math.round(((plan.monthlyPrice * 12 - plan.annualPrice) / (plan.monthlyPrice * 12)) * 100) : 0;
+              
+              return (
+                <div
+                  key={index}
+                  className={`relative rounded-2xl p-8 transition-all duration-300 hover:shadow-xl ${
                     plan.popular
-                      ? `bg-gradient-to-r ${plan.gradient} text-white hover:shadow-lg hover:scale-105`
-                      : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                      ? 'ring-2 ring-purple-500 shadow-lg scale-105 z-10 bg-white'
+                      : 'border border-gray-200 hover:border-gray-300 bg-white'
                   }`}
                 >
-                  {plan.cta}
-                </button>
-              </div>
-            ))}
+                  {plan.popular && (
+                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                      <div className="bg-gradient-to-r from-purple-600 to-violet-600 text-white px-6 py-2 rounded-full text-sm font-semibold flex items-center space-x-1 shadow-lg">
+                        <Star className="w-4 h-4 fill-current" />
+                        <span>Most Popular</span>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="text-center mb-8">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+                    <p className="text-gray-600 mb-4">{plan.description}</p>
+                    <div className="flex items-baseline justify-center space-x-1">
+                      <span className="text-5xl font-bold text-gray-900">
+                        ${plan.name === 'Enterprise' ? (isAnnual ? price : `${price}+`) : price}
+                      </span>
+                      {plan.monthlyPrice > 0 && (
+                        <span className="text-gray-500 text-lg">
+                          /{isAnnual ? 'year' : 'month'}
+                        </span>
+                      )}
+                    </div>
+                    
+                    {isAnnual && plan.monthlyPrice > 0 && savings > 0 && (
+                      <div className="mt-2">
+                        <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
+                          Save {savings}% annually
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="space-y-4 mb-8">
+                    {plan.features.map((feature, featureIndex) => (
+                      <div key={featureIndex} className="flex items-start space-x-3">
+                        <div className={`w-5 h-5 rounded-full bg-gradient-to-br ${plan.gradient} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                          <Check className="w-3 h-3 text-white" />
+                        </div>
+                        <span className="text-gray-700">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <button
+                    onClick={plan.cta === 'Contact Sales' ? handleContactSales : onGetStarted}
+                    className={`w-full py-4 px-6 rounded-xl font-semibold transition-all duration-200 ${
+                      plan.popular
+                        ? `bg-gradient-to-r ${plan.gradient} text-white hover:shadow-lg hover:scale-105`
+                        : plan.cta === 'Contact Sales'
+                          ? `bg-gradient-to-r ${plan.gradient} text-white hover:shadow-lg hover:scale-105`
+                          : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                    }`}
+                  >
+                    {plan.cta}
+                  </button>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -517,7 +615,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
               <span>Start Free Trial</span>
               <ArrowRight className="w-5 h-5" />
             </button>
-            <button className="bg-white/20 backdrop-blur-sm text-white px-8 py-4 rounded-xl font-semibold hover:bg-white/30 transition-colors border border-white/30">
+            <button 
+              onClick={handleContactSales}
+              className="bg-white/20 backdrop-blur-sm text-white px-8 py-4 rounded-xl font-semibold hover:bg-white/30 transition-colors border border-white/30"
+            >
               Schedule Demo
             </button>
           </div>
@@ -584,6 +685,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
           </div>
         </div>
       </footer>
+
+      {/* Contact Modal */}
+      {showContact && <ContactPage />}
     </div>
   );
 };
