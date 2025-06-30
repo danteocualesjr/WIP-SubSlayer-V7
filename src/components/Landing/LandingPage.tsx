@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sword, ArrowRight, Check, Star, Zap, Shield, TrendingUp, Calendar, DollarSign, Users, ChevronDown, Menu, X, Sparkles, Target, Brain, BarChart3 } from 'lucide-react';
+import { Sword, ArrowRight, Check, Star, Zap, Shield, TrendingUp, Calendar, DollarSign, Users, ChevronDown, Menu, X, Sparkles, Target, Brain, BarChart3, Play } from 'lucide-react';
 import { SparklesCore } from '../ui/sparkles';
 
 interface LandingPageProps {
@@ -176,6 +176,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
               {/* Desktop Navigation */}
               <div className="hidden md:flex items-center space-x-8">
                 <a href="#features" className="text-white/80 hover:text-white font-medium transition-colors">Features</a>
+                <a href="#demo" className="text-white/80 hover:text-white font-medium transition-colors">Demo</a>
                 <a href="#pricing" className="text-white/80 hover:text-white font-medium transition-colors">Pricing</a>
                 <a href="#testimonials" className="text-white/80 hover:text-white font-medium transition-colors">Reviews</a>
                 <button
@@ -201,6 +202,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
             <div className="md:hidden backdrop-blur-xl border-t border-white/10">
               <div className="px-4 py-4 space-y-4">
                 <a href="#features" className="block text-white/80 hover:text-white font-medium transition-colors">Features</a>
+                <a href="#demo" className="block text-white/80 hover:text-white font-medium transition-colors">Demo</a>
                 <a href="#pricing" className="block text-white/80 hover:text-white font-medium transition-colors">Pricing</a>
                 <a href="#testimonials" className="block text-white/80 hover:text-white font-medium transition-colors">Reviews</a>
                 <button
@@ -295,6 +297,78 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                 </div>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* Meet Your Subscription Slayer Section */}
+      <section id="demo" className="py-20 bg-gradient-to-br from-purple-900 via-violet-800 to-purple-700 relative overflow-hidden">
+        {/* Background Effects */}
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-r from-purple-400/30 to-violet-400/30 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-gradient-to-r from-violet-400/30 to-purple-400/30 rounded-full blur-3xl"></div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              Meet Your Subscription Slayer
+            </h2>
+            <p className="text-xl text-white/90 max-w-3xl mx-auto">
+              SubSlayer is the ultimate weapon against subscription chaos. Track, analyze, 
+              and optimize all your recurring expenses in one powerful dashboard.
+            </p>
+          </div>
+
+          {/* Video Demo Container */}
+          <div className="max-w-5xl mx-auto">
+            <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20">
+              <div className="text-center mb-8">
+                <h3 className="text-2xl font-bold text-white mb-4">See SubSlayer in Action</h3>
+                <p className="text-white/80">Watch how easy it is to take control of your subscriptions</p>
+              </div>
+
+              {/* Video Player Placeholder */}
+              <div className="relative bg-gray-900 rounded-2xl overflow-hidden shadow-2xl">
+                <div className="aspect-video relative">
+                  {/* Placeholder for video - will be replaced with actual video URL */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="w-20 h-20 bg-red-600 rounded-full flex items-center justify-center mb-4 mx-auto hover:bg-red-700 transition-colors cursor-pointer">
+                        <Play className="w-8 h-8 text-white ml-1" />
+                      </div>
+                      <p className="text-white font-medium">Click to play demo video</p>
+                      <p className="text-gray-400 text-sm mt-2">See all features in action</p>
+                    </div>
+                  </div>
+                  
+                  {/* YouTube-style controls overlay */}
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                    <div className="flex items-center justify-between text-white text-sm">
+                      <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-2">
+                          <div className="w-2 h-2 bg-red-600 rounded-full"></div>
+                          <span>Watch on</span>
+                          <span className="font-semibold">YouTube</span>
+                        </div>
+                      </div>
+                      <span className="text-white/80">Watch the full demo to see all features in action</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Call to Action */}
+              <div className="text-center mt-8">
+                <button
+                  onClick={onGetStarted}
+                  className="bg-white text-purple-600 hover:bg-gray-100 px-8 py-4 rounded-2xl font-semibold text-lg transition-all duration-200 shadow-xl hover:shadow-2xl hover:scale-105 transform flex items-center space-x-2 mx-auto"
+                >
+                  <span>Try SubSlayer Free</span>
+                  <ArrowRight className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
