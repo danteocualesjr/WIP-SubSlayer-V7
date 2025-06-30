@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Check, Star, Zap, Building2, Mail, ArrowRight, Sparkles } from 'lucide-react';
+import { Check, Star, Zap, Building2, Mail, ArrowRight, Sparkles, X } from 'lucide-react';
 import { SparklesCore } from '../ui/sparkles';
 
 const Pricing: React.FC = () => {
@@ -83,7 +83,7 @@ const Pricing: React.FC = () => {
     setShowContactForm(true);
   };
 
-  const ContactForm = () => (
+  const ContactModal = () => (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl p-8 w-full max-w-md shadow-2xl">
         <div className="flex items-center justify-between mb-6">
@@ -92,86 +92,37 @@ const Pricing: React.FC = () => {
             onClick={() => setShowContactForm(false)}
             className="text-gray-400 hover:text-gray-600"
           >
-            ×
+            <X className="w-5 h-5" />
           </button>
         </div>
         
-        <form className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Full Name *
-            </label>
-            <input
-              type="text"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              placeholder="Enter your full name"
-              required
-            />
+        <div className="text-center">
+          <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-violet-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Mail className="w-8 h-8 text-white" />
           </div>
           
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Work Email *
-            </label>
-            <input
-              type="email"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              placeholder="Enter your work email"
-              required
-            />
-          </div>
+          <h4 className="text-lg font-semibold text-gray-900 mb-2">Get in Touch</h4>
+          <p className="text-gray-600 mb-6">
+            Ready to transform your subscription management? Let's discuss how SubSlayer Enterprise can help your team.
+          </p>
           
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Company Name *
-            </label>
-            <input
-              type="text"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              placeholder="Enter your company name"
-              required
-            />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Team Size
-            </label>
-            <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-              <option>1-10 employees</option>
-              <option>11-50 employees</option>
-              <option>51-200 employees</option>
-              <option>200+ employees</option>
-            </select>
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Message
-            </label>
-            <textarea
-              rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
-              placeholder="Tell us about your needs..."
-            />
-          </div>
-          
-          <div className="flex space-x-3 pt-4">
-            <button
-              type="button"
-              onClick={() => setShowContactForm(false)}
-              className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors"
+          <div className="bg-gray-50 rounded-lg p-4 mb-6">
+            <p className="text-sm text-gray-600 mb-2">Email us directly at:</p>
+            <a 
+              href="mailto:dante@nativestack.ai"
+              className="text-lg font-semibold text-purple-600 hover:text-purple-700 transition-colors"
             >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="flex-1 px-4 py-2 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white rounded-lg font-medium transition-all duration-200"
-            >
-              Send Message
-            </button>
+              dante@nativestack.ai
+            </a>
           </div>
-        </form>
+          
+          <button
+            onClick={() => setShowContactForm(false)}
+            className="w-full bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white py-3 rounded-lg font-medium transition-all duration-200"
+          >
+            Close
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -415,7 +366,7 @@ const Pricing: React.FC = () => {
       </div>
 
       {/* Contact Sales Modal */}
-      {showContactForm && <ContactForm />}
+      {showContactForm && <ContactModal />}
 
       {/* Bottom CTA */}
       <div className="bg-gradient-to-br from-purple-900 via-violet-800 to-purple-700 rounded-3xl p-8 md:p-12 text-center text-white relative overflow-hidden">
