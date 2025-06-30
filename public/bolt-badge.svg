@@ -1,9 +1,0 @@
-<svg width="120" height="40" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="120" height="40" rx="8" fill="#000000"/>
-  <g transform="translate(8, 8)">
-    <!-- Bolt icon -->
-    <path d="M12 2L3 14h6l-1 8 9-12h-6l1-8z" fill="#FFFFFF" stroke="none"/>
-  </g>
-  <text x="32" y="14" font-family="system-ui, -apple-system, sans-serif" font-size="10" font-weight="600" fill="#FFFFFF">Built with</text>
-  <text x="32" y="28" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF">Bolt</text>
-</svg>

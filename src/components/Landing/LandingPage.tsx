@@ -126,21 +126,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
   ];
 
   return (
-    <div className="min-h-screen bg-white relative">
-      {/* Bolt Badge */}
-      <a 
-        href="https://bolt.new/" 
-        target="_blank" 
-        rel="noopener noreferrer"
-        className="fixed top-4 right-4 z-50 hover:scale-105 transition-transform duration-200"
-      >
-        <img 
-          src="/bolt-badge.svg" 
-          alt="Built with Bolt" 
-          className="w-24 h-8 sm:w-28 sm:h-9"
-        />
-      </a>
-
+    <div className="min-h-screen bg-white">
       {/* Hero Section with Navigation - Seamless Purple Background */}
       <section className="relative min-h-screen flex flex-col overflow-hidden">
         {/* Unified Purple Gradient Background for both nav and hero */}
