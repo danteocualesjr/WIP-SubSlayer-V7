@@ -328,33 +328,17 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                 <p className="text-white/80">Watch how easy it is to take control of your subscriptions</p>
               </div>
 
-              {/* Video Player Placeholder */}
+              {/* YouTube Video Embed */}
               <div className="relative bg-gray-900 rounded-2xl overflow-hidden shadow-2xl">
-                <div className="aspect-video relative">
-                  {/* Placeholder for video - will be replaced with actual video URL */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="w-20 h-20 bg-red-600 rounded-full flex items-center justify-center mb-4 mx-auto hover:bg-red-700 transition-colors cursor-pointer">
-                        <Play className="w-8 h-8 text-white ml-1" />
-                      </div>
-                      <p className="text-white font-medium">Click to play demo video</p>
-                      <p className="text-gray-400 text-sm mt-2">See all features in action</p>
-                    </div>
-                  </div>
-                  
-                  {/* YouTube-style controls overlay */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                    <div className="flex items-center justify-between text-white text-sm">
-                      <div className="flex items-center space-x-4">
-                        <div className="flex items-center space-x-2">
-                          <div className="w-2 h-2 bg-red-600 rounded-full"></div>
-                          <span>Watch on</span>
-                          <span className="font-semibold">YouTube</span>
-                        </div>
-                      </div>
-                      <span className="text-white/80">Watch the full demo to see all features in action</span>
-                    </div>
-                  </div>
+                <div className="aspect-video">
+                  <iframe
+                    src="https://www.youtube.com/embed/qq_iZdAP9hg"
+                    title="SubSlayer Demo - Subscription Management Platform"
+                    className="w-full h-full"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                  ></iframe>
                 </div>
               </div>
 
