@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from './useAuth';
+import { supabase } from '../lib/supabase';
 
 interface CheckoutSessionRequest {
   priceId: string;
