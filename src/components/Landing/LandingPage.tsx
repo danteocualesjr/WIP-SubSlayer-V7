@@ -127,28 +127,28 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-purple-100">
+      {/* Purple Gradient Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-purple-900 via-violet-800 to-purple-700 backdrop-blur-xl border-b border-purple-600/30 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-violet-600 rounded-xl flex items-center justify-center transform rotate-12 shadow-lg">
+              <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center transform rotate-12 shadow-lg border border-white/30">
                 <Sword className="w-6 h-6 text-white transform -rotate-12" />
               </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent">
+              <span className="text-2xl font-bold text-white">
                 SubSlayer
               </span>
             </div>
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-gray-600 hover:text-purple-600 font-medium transition-colors">Features</a>
-              <a href="#pricing" className="text-gray-600 hover:text-purple-600 font-medium transition-colors">Pricing</a>
-              <a href="#testimonials" className="text-gray-600 hover:text-purple-600 font-medium transition-colors">Reviews</a>
+              <a href="#features" className="text-white/80 hover:text-white font-medium transition-colors">Features</a>
+              <a href="#pricing" className="text-white/80 hover:text-white font-medium transition-colors">Pricing</a>
+              <a href="#testimonials" className="text-white/80 hover:text-white font-medium transition-colors">Reviews</a>
               <button
                 onClick={onGetStarted}
-                className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white px-6 py-2 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl"
+                className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-6 py-2 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl border border-white/30 hover:border-white/50"
               >
                 Get Started
               </button>
@@ -157,7 +157,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 text-gray-600 hover:text-purple-600 transition-colors"
+              className="md:hidden p-2 text-white/80 hover:text-white transition-colors"
             >
               {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -166,14 +166,14 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden bg-white border-t border-purple-100">
+          <div className="md:hidden bg-purple-800/95 backdrop-blur-xl border-t border-purple-600/30">
             <div className="px-4 py-4 space-y-4">
-              <a href="#features" className="block text-gray-600 hover:text-purple-600 font-medium transition-colors">Features</a>
-              <a href="#pricing" className="block text-gray-600 hover:text-purple-600 font-medium transition-colors">Pricing</a>
-              <a href="#testimonials" className="block text-gray-600 hover:text-purple-600 font-medium transition-colors">Reviews</a>
+              <a href="#features" className="block text-white/80 hover:text-white font-medium transition-colors">Features</a>
+              <a href="#pricing" className="block text-white/80 hover:text-white font-medium transition-colors">Pricing</a>
+              <a href="#testimonials" className="block text-white/80 hover:text-white font-medium transition-colors">Reviews</a>
               <button
                 onClick={onGetStarted}
-                className="w-full bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200"
+                className="w-full bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 border border-white/30"
               >
                 Get Started
               </button>
