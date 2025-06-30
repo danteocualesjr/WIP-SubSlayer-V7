@@ -119,10 +119,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
   ];
 
   const stats = [
-    { number: "10K+", label: "Active Users" },
-    { number: "$2M+", label: "Saved Monthly" },
-    { number: "50K+", label: "Subscriptions Tracked" },
-    { number: "99.9%", label: "Uptime" }
+    { number: "$2,400", label: "Average yearly savings" },
+    { number: "15+", label: "Subscriptions tracked per user" },
+    { number: "24/7", label: "Monitoring & alerts" }
   ];
 
   return (
@@ -273,7 +272,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             {stats.map((stat, index) => (
               <div key={index} className="text-center bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
                 <div className="text-3xl md:text-4xl font-bold text-white mb-2">{stat.number}</div>
