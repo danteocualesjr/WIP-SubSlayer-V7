@@ -716,9 +716,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
               © 2025 SubSlayer by NativeStack AI LLC. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">Privacy Policy</a>
-              <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">Terms of Service</a>
-              <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">Cookie Policy</a>
+              <button onClick={() => handleComingSoon('Privacy Policy')} className="text-gray-400 hover:text-white text-sm transition-colors">Privacy Policy</button>
+              <button onClick={() => handleComingSoon('Terms of Service')} className="text-gray-400 hover:text-white text-sm transition-colors">Terms of Service</button>
+              <button onClick={() => handleComingSoon('Cookie Policy')} className="text-gray-400 hover:text-white text-sm transition-colors">Cookie Policy</button>
             </div>
           </div>
         </div>
