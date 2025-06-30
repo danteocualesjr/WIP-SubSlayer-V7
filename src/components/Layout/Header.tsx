@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Bell, User, Search, LogOut, Sparkles } from 'lucide-react';
+import { Bell, User, Search, LogOut, Sparkles, Crown } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useProfile } from '../../hooks/useProfile';
 import { useNotifications } from '../../hooks/useNotifications';
+import { useSubscription } from '../../hooks/useSubscription';
 
 const Header: React.FC = () => {
   const { user, signOut } = useAuth();
   const { profile } = useProfile();
   const { notifications, markAsRead, markAllAsRead, deleteNotification, getUnreadCount } = useNotifications();
+  const { subscription, getSubscriptionProduct, isActive } = useSubscription();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -40,6 +42,8 @@ const Header: React.FC = () => {
   };
 
   const unreadCount = getUnreadCount();
+  const subscriptionProduct = getSubscriptionProduct();
+  const hasActiveSubscription = isActive();
 
   const formatTimeAgo = (dateString: string) => {
     const now = new Date();
@@ -51,6 +55,27 @@ const Header: React.FC = () => {
     if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h ago`;
     return `${Math.floor(diffInMinutes / 1440)}d ago`;
   };
+
+  const getPlanDisplay = () => {
+    if (hasActiveSubscription && subscriptionProduct) {
+      return {
+        name: subscriptionProduct.name,
+        icon: Crown,
+        color: 'text-yellow-600',
+        bgColor: 'bg-yellow-50'
+      };
+    }
+    
+    return {
+      name: 'Free Plan',
+      icon: Sparkles,
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-50'
+    };
+  };
+
+  const planDisplay = getPlanDisplay();
+  const PlanIcon = planDisplay.icon;
 
   return (
     <header className={`bg-white/80 backdrop-blur-2xl border-b border-purple-200/50 sticky top-0 z-30 shadow-sm transition-all duration-300 ${
@@ -193,9 +218,9 @@ const Header: React.FC = () => {
                 <p className="text-sm font-medium text-gray-900">
                   {profile.displayName || user?.email?.split('@')[0] || 'User'}
                 </p>
-                <div className="flex items-center space-x-1">
-                  <Sparkles className="w-3 h-3 text-purple-500" />
-                  <p className="text-xs text-purple-600 font-medium">Pro Plan</p>
+                <div className={`flex items-center space-x-1 ${planDisplay.bgColor} px-2 py-1 rounded-full`}>
+                  <PlanIcon className={`w-3 h-3 ${planDisplay.color}`} />
+                  <p className={`text-xs ${planDisplay.color} font-medium`}>{planDisplay.name}</p>
                 </div>
               </div>
               <div className="relative">
@@ -222,6 +247,10 @@ const Header: React.FC = () => {
                         {profile.displayName || user?.email?.split('@')[0] || 'User'}
                       </p>
                       <p className="text-xs text-gray-600">{profile.email || user?.email}</p>
+                      <div className={`flex items-center space-x-1 mt-2 ${planDisplay.bgColor} px-2 py-1 rounded-full w-fit`}>
+                        <PlanIcon className={`w-3 h-3 ${planDisplay.color}`} />
+                        <span className={`text-xs ${planDisplay.color} font-medium`}>{planDisplay.name}</span>
+                      </div>
                     </div>
                     <button
                       onClick={() => {

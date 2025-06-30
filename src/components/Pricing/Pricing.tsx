@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Check, Star, Zap, Building2, Mail, ArrowRight, Sparkles, X } from 'lucide-react';
 import { SparklesCore } from '../ui/sparkles';
+import PricingCard from './PricingCard';
 
 const Pricing: React.FC = () => {
   const [isAnnual, setIsAnnual] = useState(false);
@@ -72,12 +73,6 @@ const Pricing: React.FC = () => {
       borderColor: 'border-emerald-200',
     },
   ];
-
-  const calculateSavings = (monthlyPrice: number, annualPrice: number) => {
-    if (monthlyPrice === 0) return 0;
-    const monthlyCost = monthlyPrice * 12;
-    return Math.round(((monthlyCost - annualPrice) / monthlyCost) * 100);
-  };
 
   const handleContactSales = () => {
     setShowContactForm(true);
@@ -200,105 +195,14 @@ const Pricing: React.FC = () => {
 
       {/* Pricing Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
-        {plans.map((plan) => {
-          const price = isAnnual ? plan.annualPrice : plan.monthlyPrice;
-          const savings = calculateSavings(plan.monthlyPrice, plan.annualPrice);
-          
-          return (
-            <div
-              key={plan.id}
-              className={`relative rounded-2xl p-8 transition-all duration-300 hover:shadow-xl ${
-                plan.popular
-                  ? 'ring-2 ring-purple-500 shadow-lg scale-105 z-10'
-                  : 'border border-gray-200 hover:border-gray-300'
-              }`}
-              style={{
-                background: plan.popular
-                  ? 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)'
-                  : 'white'
-              }}
-            >
-              {/* Popular Badge */}
-              {plan.popular && (
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                  <div className="bg-gradient-to-r from-purple-600 to-violet-600 text-white px-6 py-2 rounded-full text-sm font-semibold flex items-center space-x-1 shadow-lg">
-                    <Star className="w-4 h-4 fill-current" />
-                    <span>Most Popular</span>
-                  </div>
-                </div>
-              )}
-
-              {/* Plan Header */}
-              <div className="text-center mb-8">
-                <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${plan.gradient} flex items-center justify-center`}>
-                  {plan.id === 'free' && <Zap className="w-8 h-8 text-white" />}
-                  {plan.id === 'pro' && <Star className="w-8 h-8 text-white" />}
-                  {plan.id === 'enterprise' && <Building2 className="w-8 h-8 text-white" />}
-                </div>
-                
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
-                <p className="text-gray-600 text-sm leading-relaxed">{plan.description}</p>
-              </div>
-
-              {/* Pricing */}
-              <div className="text-center mb-8">
-                <div className="flex items-baseline justify-center space-x-1">
-                  <span className="text-5xl font-bold text-gray-900">
-                    ${plan.id === 'enterprise' ? (isAnnual ? price : `${price}+`) : price}
-                  </span>
-                  {plan.monthlyPrice > 0 && (
-                    <span className="text-gray-500 text-lg">
-                      /{isAnnual ? 'year' : 'month'}
-                    </span>
-                  )}
-                </div>
-                
-                {isAnnual && plan.monthlyPrice > 0 && savings > 0 && (
-                  <div className="mt-2">
-                    <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
-                      Save {savings}% annually
-                    </span>
-                  </div>
-                )}
-                
-                {plan.id === 'enterprise' && (
-                  <p className="text-sm text-gray-500 mt-2">Starting price per month</p>
-                )}
-              </div>
-
-              {/* Features */}
-              <div className="space-y-4 mb-8">
-                {plan.features.map((feature, index) => (
-                  <div key={index} className="flex items-start space-x-3">
-                    <div className={`w-5 h-5 rounded-full bg-gradient-to-br ${plan.gradient} flex items-center justify-center flex-shrink-0 mt-0.5`}>
-                      <Check className="w-3 h-3 text-white" />
-                    </div>
-                    <span className="text-gray-700 text-sm leading-relaxed">{feature}</span>
-                  </div>
-                ))}
-              </div>
-
-              {/* CTA Button */}
-              <button
-                onClick={plan.id === 'enterprise' ? handleContactSales : undefined}
-                className={`w-full py-4 px-6 rounded-xl font-semibold transition-all duration-200 flex items-center justify-center space-x-2 ${
-                  plan.popular
-                    ? `bg-gradient-to-r ${plan.gradient} text-white hover:shadow-lg hover:scale-105`
-                    : plan.id === 'enterprise'
-                      ? `bg-gradient-to-r ${plan.gradient} text-white hover:shadow-lg hover:scale-105`
-                      : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
-                }`}
-              >
-                <span>{plan.cta}</span>
-                {plan.id === 'enterprise' ? (
-                  <Mail className="w-4 h-4" />
-                ) : (
-                  <ArrowRight className="w-4 h-4" />
-                )}
-              </button>
-            </div>
-          );
-        })}
+        {plans.map((plan) => (
+          <PricingCard
+            key={plan.id}
+            plan={plan}
+            isAnnual={isAnnual}
+            onContactSales={handleContactSales}
+          />
+        ))}
       </div>
 
       {/* FAQ Section */}

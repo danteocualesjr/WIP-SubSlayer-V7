@@ -12,6 +12,7 @@ import Pricing from './components/Pricing/Pricing';
 import SwordiePage from './components/Swordie/SwordiePage';
 import AuthForm from './components/Auth/AuthForm';
 import LandingPage from './components/Landing/LandingPage';
+import SuccessPage from './components/Success/SuccessPage';
 import ChatbotWidget from './components/Chatbot/ChatbotWidget';
 import { useAuth } from './hooks/useAuth';
 import { useSubscriptions } from './hooks/useSubscriptions';
@@ -40,6 +41,17 @@ function App() {
   const [isMobile, setIsMobile] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showAuthForm, setShowAuthForm] = useState(false);
+  const [showSuccessPage, setShowSuccessPage] = useState(false);
+
+  // Check for success page on mount
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (window.location.pathname === '/success' || urlParams.get('success') === 'true') {
+      setShowSuccessPage(true);
+      // Clean up URL
+      window.history.replaceState({}, document.title, '/');
+    }
+  }, []);
 
   // Move all useCallback and useMemo hooks to the top, before any conditional returns
   const handleEditSubscription = useCallback((id: string, subscriptionData: any) => {
@@ -62,6 +74,10 @@ function App() {
 
   const handleGetStarted = useCallback(() => {
     setShowAuthForm(true);
+  }, []);
+
+  const handleSuccessPageClose = useCallback(() => {
+    setShowSuccessPage(false);
   }, []);
 
   // Update category data based on current subscriptions
@@ -256,6 +272,11 @@ function App() {
         <div className="w-8 h-8 border-2 border-purple-600/30 border-t-purple-600 rounded-full animate-spin" />
       </div>
     );
+  }
+
+  // Show success page if requested
+  if (showSuccessPage && user) {
+    return <SuccessPage />;
   }
 
   // Show landing page if not authenticated and not showing auth form
