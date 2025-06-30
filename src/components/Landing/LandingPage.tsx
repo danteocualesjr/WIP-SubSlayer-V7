@@ -162,9 +162,15 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                 <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center transform rotate-12 shadow-lg border border-white/30">
                   <Sword className="w-6 h-6 text-white transform -rotate-12" />
                 </div>
-                <span className="text-2xl font-bold text-white">
-                  SubSlayer
-                </span>
+                <div className="flex flex-col">
+                  <span className="text-2xl font-bold text-white">
+                    SubSlayer
+                  </span>
+                  <div className="flex items-center space-x-1">
+                    <Sparkles className="w-3 h-3 text-purple-300" />
+                    <span className="text-xs text-purple-200 font-medium">Beta</span>
+                  </div>
+                </div>
               </div>
 
               {/* Desktop Navigation */}
@@ -213,7 +219,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
           {/* Badge */}
           <div className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-sm text-white/90 px-6 py-3 rounded-full text-sm font-medium mb-8 border border-white/20 hover:bg-white/20 transition-all duration-300">
             <Sparkles className="w-4 h-4 text-yellow-300" />
-            <span>The Ultimate Subscription Management Platform</span>
+            <span>Introducing SubSlayer - Now in beta</span>
           </div>
 
           {/* Main Heading */}
