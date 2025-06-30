@@ -182,35 +182,48 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
         )}
       </nav>
 
-      {/* Enhanced Hero Section */}
-      <section className="relative h-screen flex flex-col items-center justify-center overflow-hidden bg-slate-950">
-        {/* Full-screen Sparkles Background */}
-        <div className="w-full absolute inset-0 h-screen">
+      {/* Enhanced Hero Section with Purple Gradients */}
+      <section className="relative h-screen flex flex-col items-center justify-center overflow-hidden">
+        {/* Purple Gradient Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-violet-800 to-purple-700"></div>
+        
+        {/* Sparkles Background */}
+        <div className="absolute inset-0 w-full h-full">
           <SparklesCore
-            id="tsparticlesfullpage"
+            id="hero-sparkles"
             background="transparent"
-            minSize={0.6}
-            maxSize={1.4}
-            particleDensity={100}
+            minSize={0.4}
+            maxSize={1.2}
+            particleDensity={120}
             className="w-full h-full"
-            particleColor="#FFFFFF"
-            speed={1}
+            particleColor="#ffffff"
+            speed={1.0}
           />
         </div>
+
+        {/* Gradient Overlays for depth */}
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-r from-purple-400/20 to-violet-400/20 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-gradient-to-r from-violet-400/20 to-purple-400/20 rounded-full blur-3xl"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-gradient-to-r from-purple-400/10 to-violet-400/10 rounded-full blur-3xl"></div>
+        </div>
+
+        {/* Radial gradient to prevent sharp edges */}
+        <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-purple-900/50 via-violet-800/50 to-purple-700/50 [mask-image:radial-gradient(800px_400px_at_center,transparent_20%,white)]"></div>
 
         {/* Content */}
         <div className="relative z-20 text-center px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
           {/* Badge */}
-          <div className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-sm text-white/90 px-6 py-3 rounded-full text-sm font-medium mb-8 border border-white/20">
-            <Sparkles className="w-4 h-4" />
+          <div className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-sm text-white/90 px-6 py-3 rounded-full text-sm font-medium mb-8 border border-white/20 hover:bg-white/20 transition-all duration-300">
+            <Sparkles className="w-4 h-4 text-yellow-300" />
             <span>Introducing Swordie AI - Your Smart Subscription Assistant</span>
           </div>
 
           {/* Main Heading */}
-          <h1 className="md:text-7xl text-4xl lg:text-8xl font-bold text-center text-white relative z-20 mb-8 leading-tight">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white relative z-20 mb-8 leading-tight">
             Slay Your
             <br />
-            <span className="bg-gradient-to-b from-neutral-50 to-neutral-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-yellow-300 via-white to-purple-200 bg-clip-text text-transparent">
               Subscription
             </span>
             <br />
@@ -218,7 +231,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
           </h1>
 
           {/* Subtitle */}
-          <p className="text-neutral-300 text-xl md:text-2xl max-w-3xl mx-auto mb-12 leading-relaxed">
+          <p className="text-white/90 text-xl md:text-2xl max-w-3xl mx-auto mb-12 leading-relaxed">
             Take complete control of your recurring payments with intelligent tracking, 
             AI-powered insights, and beautiful analytics. Never overpay again.
           </p>
@@ -227,14 +240,14 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
           <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-16">
             <button
               onClick={onGetStarted}
-              className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white px-8 py-4 rounded-2xl font-semibold text-lg transition-all duration-200 shadow-xl hover:shadow-2xl hover:scale-105 transform flex items-center space-x-2"
+              className="bg-white text-purple-600 hover:bg-gray-100 px-8 py-4 rounded-2xl font-semibold text-lg transition-all duration-200 shadow-xl hover:shadow-2xl hover:scale-105 transform flex items-center space-x-2"
             >
               <span>Start Free Today</span>
               <ArrowRight className="w-5 h-5" />
             </button>
-            <button className="text-white/90 hover:text-white font-semibold text-lg flex items-center space-x-2 transition-colors">
+            <button className="text-white/90 hover:text-white font-semibold text-lg flex items-center space-x-2 transition-colors group">
               <span>Watch Demo</span>
-              <div className="w-12 h-12 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center transition-colors border border-white/20">
+              <div className="w-12 h-12 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 border border-white/20 group-hover:scale-110">
                 <ArrowRight className="w-5 h-5" />
               </div>
             </button>
@@ -243,9 +256,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
             {stats.map((stat, index) => (
-              <div key={index} className="text-center">
+              <div key={index} className="text-center bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
                 <div className="text-3xl md:text-4xl font-bold text-white mb-2">{stat.number}</div>
-                <div className="text-neutral-400 font-medium">{stat.label}</div>
+                <div className="text-white/80 font-medium">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -395,6 +408,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
 
       {/* CTA Section */}
       <section className="relative py-20 overflow-hidden">
+        {/* Purple Gradient Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-violet-800 to-purple-700"></div>
+        
         {/* Sparkles Background */}
         <div className="absolute inset-0 w-full h-full">
           <SparklesCore
@@ -409,7 +425,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
           />
         </div>
 
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-violet-800 to-purple-700"></div>
+        {/* Gradient Overlays */}
         <div className="absolute inset-0 opacity-25">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-r from-purple-400/30 to-violet-400/30 rounded-full blur-3xl"></div>
           <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-gradient-to-r from-violet-400/30 to-purple-400/30 rounded-full blur-3xl"></div>
