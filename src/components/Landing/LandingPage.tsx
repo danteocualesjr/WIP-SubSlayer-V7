@@ -127,64 +127,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Purple Gradient Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-purple-900 via-violet-800 to-purple-700 backdrop-blur-xl border-b border-purple-600/30 shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center transform rotate-12 shadow-lg border border-white/30">
-                <Sword className="w-6 h-6 text-white transform -rotate-12" />
-              </div>
-              <span className="text-2xl font-bold text-white">
-                SubSlayer
-              </span>
-            </div>
-
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-white/80 hover:text-white font-medium transition-colors">Features</a>
-              <a href="#pricing" className="text-white/80 hover:text-white font-medium transition-colors">Pricing</a>
-              <a href="#testimonials" className="text-white/80 hover:text-white font-medium transition-colors">Reviews</a>
-              <button
-                onClick={onGetStarted}
-                className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-6 py-2 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl border border-white/30 hover:border-white/50"
-              >
-                Get Started
-              </button>
-            </div>
-
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 text-white/80 hover:text-white transition-colors"
-            >
-              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="md:hidden bg-purple-800/95 backdrop-blur-xl border-t border-purple-600/30">
-            <div className="px-4 py-4 space-y-4">
-              <a href="#features" className="block text-white/80 hover:text-white font-medium transition-colors">Features</a>
-              <a href="#pricing" className="block text-white/80 hover:text-white font-medium transition-colors">Pricing</a>
-              <a href="#testimonials" className="block text-white/80 hover:text-white font-medium transition-colors">Reviews</a>
-              <button
-                onClick={onGetStarted}
-                className="w-full bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 border border-white/30"
-              >
-                Get Started
-              </button>
-            </div>
-          </div>
-        )}
-      </nav>
-
-      {/* Enhanced Hero Section with Purple Gradients */}
-      <section className="relative h-screen flex flex-col items-center justify-center overflow-hidden">
-        {/* Purple Gradient Background */}
+      {/* Hero Section with Navigation - Seamless Purple Background */}
+      <section className="relative min-h-screen flex flex-col overflow-hidden">
+        {/* Unified Purple Gradient Background for both nav and hero */}
         <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-violet-800 to-purple-700"></div>
         
         {/* Sparkles Background */}
@@ -211,8 +156,63 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
         {/* Radial gradient to prevent sharp edges */}
         <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-purple-900/50 via-violet-800/50 to-purple-700/50 [mask-image:radial-gradient(800px_400px_at_center,transparent_20%,white)]"></div>
 
-        {/* Content */}
-        <div className="relative z-20 text-center px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        {/* Navigation - Now part of the hero section */}
+        <nav className="relative z-50 backdrop-blur-xl border-b border-white/10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between h-16">
+              {/* Logo */}
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center transform rotate-12 shadow-lg border border-white/30">
+                  <Sword className="w-6 h-6 text-white transform -rotate-12" />
+                </div>
+                <span className="text-2xl font-bold text-white">
+                  SubSlayer
+                </span>
+              </div>
+
+              {/* Desktop Navigation */}
+              <div className="hidden md:flex items-center space-x-8">
+                <a href="#features" className="text-white/80 hover:text-white font-medium transition-colors">Features</a>
+                <a href="#pricing" className="text-white/80 hover:text-white font-medium transition-colors">Pricing</a>
+                <a href="#testimonials" className="text-white/80 hover:text-white font-medium transition-colors">Reviews</a>
+                <button
+                  onClick={onGetStarted}
+                  className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-6 py-2 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl border border-white/30 hover:border-white/50"
+                >
+                  Get Started
+                </button>
+              </div>
+
+              {/* Mobile Menu Button */}
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="md:hidden p-2 text-white/80 hover:text-white transition-colors"
+              >
+                {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
+            </div>
+          </div>
+
+          {/* Mobile Menu */}
+          {isMenuOpen && (
+            <div className="md:hidden backdrop-blur-xl border-t border-white/10">
+              <div className="px-4 py-4 space-y-4">
+                <a href="#features" className="block text-white/80 hover:text-white font-medium transition-colors">Features</a>
+                <a href="#pricing" className="block text-white/80 hover:text-white font-medium transition-colors">Pricing</a>
+                <a href="#testimonials" className="block text-white/80 hover:text-white font-medium transition-colors">Reviews</a>
+                <button
+                  onClick={onGetStarted}
+                  className="w-full bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 border border-white/30"
+                >
+                  Get Started
+                </button>
+              </div>
+            </div>
+          )}
+        </nav>
+
+        {/* Hero Content */}
+        <div className="relative z-20 flex-1 flex flex-col items-center justify-center text-center px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
           {/* Badge */}
           <div className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-sm text-white/90 px-6 py-3 rounded-full text-sm font-medium mb-8 border border-white/20 hover:bg-white/20 transition-all duration-300">
             <Sparkles className="w-4 h-4 text-yellow-300" />
@@ -264,7 +264,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
           </div>
         </div>
 
-        {/* Gradient Overlay for smooth transition */}
+        {/* Gradient Overlay for smooth transition to white sections */}
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent z-10"></div>
       </section>
 
