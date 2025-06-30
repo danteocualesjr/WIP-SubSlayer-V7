@@ -153,9 +153,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-gradient-to-r from-purple-400/10 to-violet-400/10 rounded-full blur-3xl"></div>
         </div>
 
-        {/* Radial gradient to prevent sharp edges */}
-        <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-purple-900/50 via-violet-800/50 to-purple-700/50 [mask-image:radial-gradient(800px_400px_at_center,transparent_20%,white)]"></div>
-
         {/* Navigation - Now part of the hero section */}
         <nav className="relative z-50 backdrop-blur-xl border-b border-white/10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -263,9 +260,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
             ))}
           </div>
         </div>
-
-        {/* Gradient Overlay for smooth transition to white sections */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent z-10"></div>
       </section>
 
       {/* Features Section */}
