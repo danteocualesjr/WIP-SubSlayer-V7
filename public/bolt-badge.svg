@@ -1,0 +1,18 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="60" cy="60" r="60" fill="white"/>
+  <circle cx="60" cy="60" r="58" stroke="#E5E7EB" stroke-width="2"/>
+  
+  <!-- Bolt logo -->
+  <path d="M45 35L65 35L55 50L70 50L50 85L40 60L55 60L45 35Z" fill="black"/>
+  
+  <!-- Text around the circle -->
+  <defs>
+    <path id="circle-text" d="M 60,60 m -45,0 a 45,45 0 1,1 90,0 a 45,45 0 1,1 -90,0"/>
+  </defs>
+  
+  <text font-family="Arial, sans-serif" font-size="10" font-weight="600" fill="black">
+    <textPath href="#circle-text" startOffset="0%">
+      POWERED BY BOLT.NEW • MADE IN BOLT.NEW • 
+    </textPath>
+  </text>
+</svg>
