@@ -376,8 +376,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
               Loved by
-              <span className="bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent"> Thousands </span>
-              of Users
+              <span className="bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent"> Users </span>
+              
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               See how SubSlayer is helping people take control of their subscription spending.
