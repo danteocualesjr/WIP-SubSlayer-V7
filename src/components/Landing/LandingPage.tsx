@@ -213,14 +213,14 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
           {/* Badge */}
           <div className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-sm text-white/90 px-6 py-3 rounded-full text-sm font-medium mb-8 border border-white/20 hover:bg-white/20 transition-all duration-300">
             <Sparkles className="w-4 h-4 text-yellow-300" />
-            <span>Introducing Swordie AI - Your Smart Subscription Assistant</span>
+            <span>The Ultimate Subscription Management Platform</span>
           </div>
 
           {/* Main Heading */}
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white relative z-20 mb-8 leading-tight">
             Slay Your
             <br />
-            <span className="bg-gradient-to-r from-yellow-300 via-white to-purple-200 bg-clip-text text-transparent">
+            <span className="text-white">
               Subscription
             </span>
             <br />
