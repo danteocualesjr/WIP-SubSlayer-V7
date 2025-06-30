@@ -11,6 +11,7 @@ import Profile from './components/Profile/Profile';
 import Pricing from './components/Pricing/Pricing';
 import SwordiePage from './components/Swordie/SwordiePage';
 import AuthForm from './components/Auth/AuthForm';
+import LandingPage from './components/Landing/LandingPage';
 import ChatbotWidget from './components/Chatbot/ChatbotWidget';
 import { useAuth } from './hooks/useAuth';
 import { useSubscriptions } from './hooks/useSubscriptions';
@@ -38,6 +39,7 @@ function App() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showAuthForm, setShowAuthForm] = useState(false);
 
   // Move all useCallback and useMemo hooks to the top, before any conditional returns
   const handleEditSubscription = useCallback((id: string, subscriptionData: any) => {
@@ -56,6 +58,10 @@ function App() {
       const event = new CustomEvent('switchToCalendarView');
       window.dispatchEvent(event);
     }, 100);
+  }, []);
+
+  const handleGetStarted = useCallback(() => {
+    setShowAuthForm(true);
   }, []);
 
   // Update category data based on current subscriptions
@@ -252,8 +258,13 @@ function App() {
     );
   }
 
-  // Show auth form if not authenticated
-  if (!user) {
+  // Show landing page if not authenticated and not showing auth form
+  if (!user && !showAuthForm) {
+    return <LandingPage onGetStarted={handleGetStarted} />;
+  }
+
+  // Show auth form if not authenticated and auth form is requested
+  if (!user && showAuthForm) {
     return <AuthForm />;
   }
 
