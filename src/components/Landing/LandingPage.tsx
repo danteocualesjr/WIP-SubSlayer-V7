@@ -10,6 +10,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showContact, setShowContact] = useState(false);
   const [isAnnual, setIsAnnual] = useState(false);
+  const [showComingSoon, setShowComingSoon] = useState<string | null>(null);
 
   const features = [
     {
@@ -130,6 +131,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
     setShowContact(true);
   };
 
+  const handleComingSoon = (page: string) => {
+    setShowComingSoon(page);
+  };
+
   const ContactPage = () => (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl p-8 w-full max-w-md shadow-2xl">
@@ -168,6 +173,40 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
             className="w-full bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white py-3 rounded-lg font-medium transition-all duration-200"
           >
             Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  const ComingSoonModal = () => (
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl p-8 w-full max-w-md shadow-2xl">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xl font-bold text-gray-900">{showComingSoon}</h3>
+          <button
+            onClick={() => setShowComingSoon(null)}
+            className="text-gray-400 hover:text-gray-600"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        
+        <div className="text-center">
+          <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-violet-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Sparkles className="w-8 h-8 text-white" />
+          </div>
+          
+          <h4 className="text-lg font-semibold text-gray-900 mb-2">Coming Soon!</h4>
+          <p className="text-gray-600 mb-6">
+            We're working hard to bring you amazing {showComingSoon?.toLowerCase()} content. Stay tuned for updates!
+          </p>
+          
+          <button
+            onClick={() => setShowComingSoon(null)}
+            className="w-full bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white py-3 rounded-lg font-medium transition-all duration-200"
+          >
+            Got it!
           </button>
         </div>
       </div>
@@ -655,20 +694,19 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
             <div>
               <h4 className="font-semibold mb-4">Product</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Features</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Pricing</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">API</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Integrations</a></li>
+                <li><a href="#features" className="hover:text-white transition-colors">Features</a></li>
+                <li><a href="#pricing" className="hover:text-white transition-colors">Pricing</a></li>
+                <li><button onClick={() => handleComingSoon('Integrations')} className="hover:text-white transition-colors text-left">Integrations</button></li>
               </ul>
             </div>
 
             <div>
               <h4 className="font-semibold mb-4">Company</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">About</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
+                <li><button onClick={() => handleComingSoon('About')} className="hover:text-white transition-colors text-left">About</button></li>
+                <li><button onClick={() => handleComingSoon('Blog')} className="hover:text-white transition-colors text-left">Blog</button></li>
+                <li><button onClick={() => handleComingSoon('Careers')} className="hover:text-white transition-colors text-left">Careers</button></li>
+                <li><button onClick={handleContactSales} className="hover:text-white transition-colors text-left">Contact</button></li>
               </ul>
             </div>
           </div>
@@ -688,6 +726,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
 
       {/* Contact Modal */}
       {showContact && <ContactPage />}
+
+      {/* Coming Soon Modal */}
+      {showComingSoon && <ComingSoonModal />}
     </div>
   );
 };
