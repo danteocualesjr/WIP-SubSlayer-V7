@@ -234,7 +234,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
           {/* Badge */}
           <div className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-sm text-white/90 px-6 py-3 rounded-full text-sm font-medium mb-8 border border-white/20 hover:bg-white/20 transition-all duration-300">
             <Sparkles className="w-4 h-4 text-yellow-300" />
-            <span>Introducing SubSlayer - Now in beta</span>
+            <span>Introducing SubSlayer - Now in Beta</span>
           </div>
 
           {/* Main Heading */}
