@@ -119,7 +119,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
   ];
 
   const stats = [
-    { number: "$2,400", label: "Average yearly savings" },
+    { number: "$3,300", label: "Average yearly savings" },
     { number: "15+", label: "Subscriptions tracked per user" },
     { number: "24/7", label: "Monitoring & alerts" }
   ];
