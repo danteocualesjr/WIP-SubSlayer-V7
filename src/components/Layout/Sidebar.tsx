@@ -81,6 +81,13 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
     }
   };
 
+  const handleLogoClick = () => {
+    setActiveTab('dashboard');
+    if (isMobile) {
+      setIsMobileMenuOpen(false);
+    }
+  };
+
   // Mobile overlay backdrop
   if (isMobile && isMobileMenuOpen) {
     return (
@@ -95,7 +102,10 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
         <div className="fixed left-0 top-0 h-full w-80 bg-gradient-to-b from-white via-purple-50/30 to-violet-50/30 backdrop-blur-xl border-r border-purple-200/50 z-50 flex flex-col shadow-2xl transform transition-transform duration-300 ease-in-out">
           {/* Mobile Header */}
           <div className="p-6 border-b border-purple-200/50 flex items-center justify-between">
-            <div className="flex items-center space-x-3">
+            <button
+              onClick={handleLogoClick}
+              className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
+            >
               <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-violet-600 rounded-2xl flex items-center justify-center transform rotate-12 shadow-lg">
                 <Sword className="w-7 h-7 text-white transform -rotate-12" />
               </div>
@@ -108,7 +118,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
                   <span className="text-xs text-purple-600 font-medium">Beta</span>
                 </div>
               </div>
-            </div>
+            </button>
             <button
               onClick={() => setIsMobileMenuOpen(false)}
               className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
@@ -184,7 +194,10 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
         <div className={`p-6 border-b border-purple-200/50 transition-all duration-300 ${
           isCollapsed ? 'px-4' : 'px-6'
         }`}>
-          <div className="flex items-center space-x-3">
+          <button
+            onClick={handleLogoClick}
+            className="flex items-center space-x-3 hover:opacity-80 transition-opacity w-full"
+          >
             <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-violet-600 rounded-2xl flex items-center justify-center transform rotate-12 shadow-lg flex-shrink-0">
               <Sword className="w-7 h-7 text-white transform -rotate-12" />
             </div>
@@ -199,7 +212,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
                 </div>
               </div>
             )}
-          </div>
+          </button>
         </div>
 
         {/* Toggle Button */}
