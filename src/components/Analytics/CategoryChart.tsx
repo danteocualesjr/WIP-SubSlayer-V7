@@ -10,6 +10,7 @@ interface CategoryChartProps {
 }
 
 const CategoryChart: React.FC<CategoryChartProps> = ({ data }) => {
+  
   const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
     if (percent < 0.05) return null; // Don't show labels for slices smaller than 5%
     
