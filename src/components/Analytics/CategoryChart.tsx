@@ -22,6 +22,7 @@ const CategoryChart: React.FC<CategoryChartProps> = ({ data }) => {
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
     return (
+      
       <text 
         x={x} 
         y={y} 
