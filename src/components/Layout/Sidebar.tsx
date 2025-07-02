@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BarChart3, CreditCard, Calculator, Home, Bell, User, Settings, Sword, Tag, Sparkles, Menu, X, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { BarChart3, CreditCard, Calculator, Home, Bell, User, Settings, Sword, Tag, Sparkles, Menu, X } from 'lucide-react';
 
 interface SidebarProps {
   activeTab: string;
@@ -222,11 +222,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
             className="w-8 h-8 bg-white border border-purple-200 rounded-xl flex items-center justify-center text-purple-600 hover:text-purple-700 hover:bg-purple-50 transition-all duration-200 shadow-lg hover:shadow-xl group"
             title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
-            {isCollapsed ? (
-              <PanelLeftOpen className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
-            ) : (
-              <PanelLeftClose className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
-            )}
+            <Menu className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
           </button>
         </div>
 
