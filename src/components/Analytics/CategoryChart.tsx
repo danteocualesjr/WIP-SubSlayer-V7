@@ -35,6 +35,7 @@ const CategoryChart: React.FC<CategoryChartProps> = ({ data }) => {
         {`${(percent * 100).toFixed(0)}%`}
       </text>
     );
+    
   };
 
   if (!data || data.length === 0) {
