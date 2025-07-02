@@ -4,6 +4,7 @@ import { PieChart as PieChartIcon, Sparkles } from 'lucide-react';
 import { CategoryData } from '../../types/subscription';
 
 interface CategoryChartProps {
+  
   data: CategoryData[];
 }
 
