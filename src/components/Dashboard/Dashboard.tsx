@@ -73,7 +73,7 @@ const Dashboard: React.FC<DashboardProps> = ({
 
   // Get user's display name with improved logic
   const userName = useMemo(() => {
-    // First priority: Check if profile has a valid display name
+    // First priority: Check if profile has a valid display name that's not empty or just whitespace
     if (profile?.displayName && profile.displayName.trim() && profile.displayName !== '') {
       return profile.displayName.trim();
     }
