@@ -1,6 +1,6 @@
 import React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
-import { PieChart as PieChartIcon, Sparkles } from 'lucide-react';
+import { PieChart as PieChartIcon } from 'lucide-react';
 import { CategoryData } from '../../types/subscription';
 
 interface CategoryChartProps {
@@ -35,14 +35,7 @@ const CategoryChart: React.FC<CategoryChartProps> = ({ data }) => {
     return (
       <div className="bg-white rounded-3xl p-8 shadow-lg border border-purple-100/50 hover:shadow-xl transition-all duration-300 group">
         <div className="mb-8">
-          <div className="flex items-center space-x-4 mb-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-violet-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-              <Sparkles className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-gray-900">Spending by Category</h3>
-            </div>
-          </div>
+          <h3 className="text-xl font-bold text-gray-900 mb-3">Spending by Category</h3>
         </div>
         <div className="h-80 flex items-center justify-center">
           <div className="text-center">
@@ -58,14 +51,7 @@ const CategoryChart: React.FC<CategoryChartProps> = ({ data }) => {
   return (
     <div className="bg-white rounded-3xl p-8 shadow-lg border border-purple-100/50 hover:shadow-xl transition-all duration-300 group">
       <div className="mb-8">
-        <div className="flex items-center space-x-4 mb-3">
-          <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-violet-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-            <Sparkles className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <h3 className="text-xl font-bold text-gray-900">Spending by Category</h3>
-          </div>
-        </div>
+        <h3 className="text-xl font-bold text-gray-900 mb-3">Spending by Category</h3>
       </div>
       <div className="relative">
         <div className="absolute inset-0 bg-gradient-to-br from-purple-50/30 to-violet-50/30 rounded-2xl"></div>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, BarChart, Bar } from 'recharts';
-import { TrendingUp, TrendingDown, BarChart3, Activity, Zap, Sparkles } from 'lucide-react';
+import { TrendingUp, TrendingDown, BarChart3, Activity, Zap } from 'lucide-react';
 import { SpendingData } from '../../types/subscription';
 
 interface SpendingChartProps {
@@ -15,14 +15,7 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
     return (
       <div className="bg-white rounded-3xl p-8 shadow-lg border border-purple-100/50 hover:shadow-xl transition-all duration-300">
         <div className="mb-8">
-          <div className="flex items-center space-x-3 mb-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-violet-600 rounded-2xl flex items-center justify-center shadow-lg">
-              <Sparkles className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-gray-900">Monthly Spending Trend</h3>
-            </div>
-          </div>
+          <h3 className="text-xl font-bold text-gray-900 mb-3">Monthly Spending Trend</h3>
         </div>
         <div className="h-80 flex items-center justify-center">
           <div className="flex flex-col items-center space-y-4">
@@ -38,14 +31,7 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
     return (
       <div className="bg-white rounded-3xl p-8 shadow-lg border border-purple-100/50 hover:shadow-xl transition-all duration-300">
         <div className="mb-8">
-          <div className="flex items-center space-x-3 mb-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-violet-600 rounded-2xl flex items-center justify-center shadow-lg">
-              <Sparkles className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-gray-900">Monthly Spending Trend</h3>
-            </div>
-          </div>
+          <h3 className="text-xl font-bold text-gray-900 mb-3">Monthly Spending Trend</h3>
         </div>
         <div className="h-80 flex items-center justify-center">
           <div className="text-center">
@@ -232,13 +218,8 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
     <div className="bg-white rounded-3xl p-8 shadow-lg border border-purple-100/50 hover:shadow-xl transition-all duration-300 group">
       {/* Enhanced Header with Metrics */}
       <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center space-x-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-violet-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-            <Sparkles className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <h3 className="text-xl font-bold text-gray-900">Monthly Spending Trend</h3>
-          </div>
+        <div>
+          <h3 className="text-xl font-bold text-gray-900">Monthly Spending Trend</h3>
         </div>
         
         {/* Chart Type Selector */}
