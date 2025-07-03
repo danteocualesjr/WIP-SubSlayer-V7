@@ -36,7 +36,7 @@ const Pricing: React.FC = () => {
       monthlyPrice: 9.99,
       annualPrice: 99,
       monthlyPriceId: 'price_1RglYeCIxTxdP6ph0ajymCf0',
-      annualPriceId: 'price_1RbBQTCIxTxdP6phv3P5Yv0m',
+      annualPriceId: 'price_1RglaECIxTxdP6phSEknl1IE',
       popular: true,
       features: [
         'Unlimited subscriptions',
