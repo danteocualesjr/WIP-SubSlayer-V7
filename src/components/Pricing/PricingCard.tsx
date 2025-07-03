@@ -34,7 +34,7 @@ const PricingCard: React.FC<PricingCardProps> = ({
   const price = isAnnual ? plan.annualPrice : plan.monthlyPrice;
   const savings = plan.monthlyPrice > 0 ? Math.round(((plan.monthlyPrice * 12 - plan.annualPrice) / (plan.monthlyPrice * 12)) * 100) : 0;
 
-  const handlePurchase = async () => {
+    const handlePurchase = async () => {
     if (!user) {
       onGetStarted?.();
       return;
@@ -45,18 +45,18 @@ const PricingCard: React.FC<PricingCardProps> = ({
       return;
     }
 
-    // Find the SubSlayer product for purchase
-    const subslayerProduct = stripeProducts.find(p => p.name === 'SubSlayer');
-    
-    if (!subslayerProduct) {
-      console.error('SubSlayer product not found');
+    // Determine the correct priceId based on the billing cycle
+    const selectedPriceId = isAnnual ? plan.annualPriceId : plan.monthlyPriceId;
+
+    if (!selectedPriceId) {
+      console.error('No Stripe Price ID found for the selected plan and billing cycle.');
       return;
     }
 
     try {
       await redirectToCheckout({
-        priceId: subslayerProduct.priceId,
-        mode: subslayerProduct.mode,
+        priceId: selectedPriceId, // Use the dynamically selected priceId
+        mode: 'subscription', // Assuming all paid plans are subscriptions
         successUrl: `${window.location.origin}/success`,
         cancelUrl: `${window.location.origin}/pricing`,
       });
@@ -64,6 +64,7 @@ const PricingCard: React.FC<PricingCardProps> = ({
       console.error('Failed to redirect to checkout:', error);
     }
   };
+
 
   const getIcon = () => {
     if (plan.name === 'Free') return Zap;
