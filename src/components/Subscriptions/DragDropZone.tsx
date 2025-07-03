@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
-import { Upload, FileImage, FileText, Camera, Sparkles, X, Check, AlertCircle } from 'lucide-react';
+import { Upload, FileImage, FileText, Camera, Sparkles, X, Check, AlertCircle, RefreshCw } from 'lucide-react';
 import { useImageAnalysis } from '../../hooks/useImageAnalysis';
 
 interface DragDropZoneProps {
@@ -12,6 +12,7 @@ const DragDropZone: React.FC<DragDropZoneProps> = ({ onDataExtracted, isVisible,
   const [isDragOver, setIsDragOver] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [extractedData, setExtractedData] = useState<any>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { analyzeImage, loading, error } = useImageAnalysis();
 
@@ -70,6 +71,14 @@ const DragDropZone: React.FC<DragDropZoneProps> = ({ onDataExtracted, isVisible,
     }
 
     setUploadedFile(file);
+    
+    // Create preview for image files
+    if (file.type.startsWith('image/')) {
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+    } else {
+      setPreviewUrl(null);
+    }
 
     // Analyze the file
     const data = await analyzeImage(file);
@@ -81,17 +90,35 @@ const DragDropZone: React.FC<DragDropZoneProps> = ({ onDataExtracted, isVisible,
   const handleUseData = () => {
     if (extractedData) {
       onDataExtracted(extractedData);
+      resetState();
       onClose();
     }
   };
 
   const handleReset = () => {
+    resetState();
+  };
+
+  const resetState = () => {
     setUploadedFile(null);
     setExtractedData(null);
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+      setPreviewUrl(null);
+    }
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   };
+
+  // Clean up preview URL when component unmounts
+  React.useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
 
   if (!isVisible) return null;
 
@@ -182,17 +209,43 @@ const DragDropZone: React.FC<DragDropZoneProps> = ({ onDataExtracted, isVisible,
           ) : (
             /* Analysis Results */
             <div className="space-y-6">
-              {/* File Info */}
+              {/* File Info with Preview */}
               <div className="bg-gray-50 rounded-2xl p-4">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <FileImage className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-medium text-gray-900">{uploadedFile.name}</h4>
-                    <p className="text-sm text-gray-600">
-                      {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB
+                <div className="flex items-start space-x-4">
+                  {previewUrl ? (
+                    <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 border border-gray-200">
+                      <img 
+                        src={previewUrl} 
+                        alt="Preview" 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-20 h-20 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <FileText className="w-8 h-8 text-blue-600" />
+                    </div>
+                  )}
+                  <div className="flex-1">
+                    <h4 className="font-medium text-gray-900 mb-1">{uploadedFile.name}</h4>
+                    <p className="text-sm text-gray-600 mb-2">
+                      {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB • {uploadedFile.type}
                     </p>
+                    <div className="flex items-center space-x-2">
+                      <button
+                        onClick={handleReset}
+                        className="text-xs text-red-600 hover:text-red-700 font-medium flex items-center space-x-1"
+                      >
+                        <X className="w-3 h-3" />
+                        <span>Remove</span>
+                      </button>
+                      <button
+                        onClick={() => fileInputRef.current?.click()}
+                        className="text-xs text-blue-600 hover:text-blue-700 font-medium flex items-center space-x-1"
+                      >
+                        <RefreshCw className="w-3 h-3" />
+                        <span>Change</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -250,7 +303,10 @@ const DragDropZone: React.FC<DragDropZoneProps> = ({ onDataExtracted, isVisible,
                       <div className="bg-white rounded-lg p-3">
                         <label className="text-xs font-medium text-gray-600">Cost</label>
                         <p className="font-medium text-gray-900">
-                          {extractedData.currency || '$'}{extractedData.cost}
+                          {extractedData.currency === 'USD' ? '$' : 
+                           extractedData.currency === 'EUR' ? '€' : 
+                           extractedData.currency === 'GBP' ? '£' : 
+                           extractedData.currency || '$'}{extractedData.cost}
                         </p>
                       </div>
                     )}
