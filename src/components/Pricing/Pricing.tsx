@@ -14,6 +14,8 @@ const Pricing: React.FC = () => {
       description: 'Perfect for casual users who want to try the app',
       monthlyPrice: 0,
       annualPrice: 0,
+      monthlyPriceId: null,
+      annualPriceId: null,
       popular: false,
       features: [
         'Track up to 5 subscriptions',
