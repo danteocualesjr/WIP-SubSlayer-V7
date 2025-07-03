@@ -55,15 +55,8 @@ const UpcomingRenewals: React.FC<UpcomingRenewalsProps> = ({
   return (
     <div className="bg-white rounded-3xl p-8 shadow-lg border border-purple-100/50 hover:shadow-xl transition-all duration-300 group">
       <div className="mb-8">
-        <div className="flex items-center space-x-4 mb-3">
-          <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-violet-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-            <Calendar className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <h3 className="text-xl font-bold text-gray-900">Upcoming Renewals</h3>
-            <p className="text-gray-600">Next 30 days</p>
-          </div>
-        </div>
+        <h3 className="text-xl font-bold text-gray-900 mb-3">Upcoming Renewals</h3>
+        <p className="text-gray-600">Next 30 days</p>
       </div>
 
       <div className="space-y-4">
