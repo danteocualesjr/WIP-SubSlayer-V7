@@ -71,31 +71,42 @@ const Dashboard: React.FC<DashboardProps> = ({
     };
   }, [subscriptions, spendingData]);
 
-  // Get user's display name with proper fallback
+  // Get user's display name with improved logic
   const userName = useMemo(() => {
-    // First try the profile display name
-    if (profile.displayName && profile.displayName.trim()) {
+    // First priority: Check if profile has a valid display name
+    if (profile?.displayName && profile.displayName.trim() && profile.displayName !== '') {
       return profile.displayName.trim();
     }
     
-    // Then try extracting from email
+    // Second priority: Try to extract a reasonable name from email
     if (user?.email) {
       const emailUsername = user.email.split('@')[0];
-      // If it looks like a real name (contains letters and maybe numbers), use it
+      
+      // If the email username looks like a real name (not just random characters)
       if (emailUsername && emailUsername.length > 0) {
-        // Convert common patterns like "john.doe" or "john_doe" to "John Doe"
-        const formatted = emailUsername
-          .replace(/[._-]/g, ' ')
-          .split(' ')
-          .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-          .join(' ');
-        return formatted;
+        // Handle common patterns like "john.doe", "john_doe", "johndoe123"
+        const cleanedName = emailUsername
+          .replace(/[._-]/g, ' ') // Replace dots, underscores, dashes with spaces
+          .replace(/\d+/g, '') // Remove numbers
+          .trim();
+        
+        // If we have something meaningful after cleaning
+        if (cleanedName && cleanedName.length > 1) {
+          // Capitalize each word
+          const formatted = cleanedName
+            .split(' ')
+            .filter(word => word.length > 0) // Remove empty strings
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+            .join(' ');
+          
+          return formatted || 'User';
+        }
       }
     }
     
     // Final fallback
     return 'User';
-  }, [profile.displayName, user?.email]);
+  }, [profile?.displayName, user?.email]);
 
   // Generate category data for pie chart
   const categoryData = useMemo(() => {
