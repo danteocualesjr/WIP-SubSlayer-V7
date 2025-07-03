@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { X, Plus, Sparkles, Search, Star, Upload } from 'lucide-react';
+import { X, Plus, Sparkles, Search, Star } from 'lucide-react';
 import { Subscription } from '../../types/subscription';
 import { useSettings } from '../../hooks/useSettings';
-import DragDropZone from './DragDropZone';
 
 interface AddSubscriptionModalProps {
   isOpen: boolean;
@@ -31,7 +30,6 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
 }) => {
   const { settings } = useSettings();
   const [showPopularServices, setShowPopularServices] = useState(!subscription);
-  const [showDragDrop, setShowDragDrop] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [formData, setFormData] = useState({
     name: '',
@@ -255,7 +253,6 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
         setShowPopularServices(true);
       }
       setSearchTerm('');
-      setShowDragDrop(false);
     }
   }, [isOpen, subscription, settings.currency]);
 
@@ -340,21 +337,6 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
     setShowPopularServices(false);
   };
 
-  const handleDragDropData = (extractedData: any) => {
-    setFormData(prev => ({
-      ...prev,
-      name: extractedData.name || prev.name,
-      description: extractedData.description || prev.description,
-      cost: extractedData.cost?.toString() || prev.cost,
-      currency: extractedData.currency || prev.currency,
-      billingCycle: extractedData.billingCycle || prev.billingCycle,
-      nextBilling: extractedData.nextBilling || prev.nextBilling,
-      category: extractedData.category || prev.category,
-    }));
-    setShowPopularServices(false);
-    setShowDragDrop(false);
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.cost || !formData.nextBilling) return;
@@ -379,308 +361,286 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <>
+    <div 
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4"
+      onClick={handleBackdropClick}
+      style={{ 
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 9999
+      }}
+    >
       <div 
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4"
-        onClick={handleBackdropClick}
-        style={{ 
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          zIndex: 9999
-        }}
+        className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-purple-100"
+        onClick={handleModalContentClick}
       >
-        <div 
-          className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-purple-100"
-          onClick={handleModalContentClick}
-        >
-          <div className="flex items-center justify-between mb-6 sm:mb-8">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-purple-600 to-violet-600 rounded-xl sm:rounded-2xl flex items-center justify-center">
-                <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-              </div>
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
-                {subscription ? 'Edit Subscription' : 'Add New Subscription'}
-              </h2>
+        <div className="flex items-center justify-between mb-6 sm:mb-8">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-purple-600 to-violet-600 rounded-xl sm:rounded-2xl flex items-center justify-center">
+              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
-            <button
-              onClick={onClose}
-              className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-xl sm:rounded-2xl transition-colors"
-              type="button"
-            >
-              <X className="w-5 h-5 sm:w-6 sm:h-6" />
-            </button>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
+              {subscription ? 'Edit Subscription' : 'Add New Subscription'}
+            </h2>
           </div>
+          <button
+            onClick={onClose}
+            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-xl sm:rounded-2xl transition-colors"
+            type="button"
+          >
+            <X className="w-5 h-5 sm:w-6 sm:h-6" />
+          </button>
+        </div>
 
-          {/* Import Button */}
-          {!subscription && (
-            <div className="mb-6">
+        {/* Popular Services Section */}
+        {showPopularServices && !subscription && (
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-2">
+                <Star className="w-5 h-5 text-yellow-500" />
+                <h3 className="text-lg font-semibold text-gray-900">Popular Services</h3>
+              </div>
               <button
-                onClick={() => setShowDragDrop(true)}
-                className="w-full flex items-center justify-center space-x-3 p-4 bg-gradient-to-r from-purple-50 to-violet-50 hover:from-purple-100 hover:to-violet-100 border border-purple-200 rounded-2xl transition-all duration-200 group"
+                onClick={() => setShowPopularServices(false)}
+                className="text-purple-600 hover:text-purple-700 font-medium text-sm"
               >
-                <Upload className="w-5 h-5 text-purple-600 group-hover:scale-110 transition-transform" />
-                <span className="font-medium text-purple-700">Import from Image/Document</span>
+                Add Custom
               </button>
             </div>
-          )}
 
-          {/* Popular Services Section */}
-          {showPopularServices && !subscription && (
-            <div className="mb-8">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center space-x-2">
-                  <Star className="w-5 h-5 text-yellow-500" />
-                  <h3 className="text-lg font-semibold text-gray-900">Popular Services</h3>
+            {/* Search Bar */}
+            <div className="relative mb-4">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <input
+                type="text"
+                placeholder="Search services..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              />
+            </div>
+
+            {/* Services Grid */}
+            <div className="max-h-96 overflow-y-auto space-y-6">
+              {Object.entries(servicesByCategory).map(([category, services]) => (
+                <div key={category}>
+                  <h4 className="text-sm font-semibold text-gray-700 mb-3 sticky top-0 bg-white py-1">
+                    {category}
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {services.map((service) => (
+                      <button
+                        key={service.name}
+                        onClick={() => handleServiceSelect(service)}
+                        className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:border-purple-300 hover:bg-purple-50 transition-all duration-200 text-left group"
+                      >
+                        <div
+                          className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-semibold text-sm flex-shrink-0"
+                          style={{ backgroundColor: service.color }}
+                        >
+                          {service.name.substring(0, 2).toUpperCase()}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h5 className="font-medium text-gray-900 group-hover:text-purple-700 transition-colors truncate">
+                            {service.name}
+                          </h5>
+                          <p className="text-xs text-gray-600 truncate">{service.description}</p>
+                          <div className="flex items-center space-x-2 mt-1">
+                            {service.commonPrices.monthly && (
+                              <span className="text-xs font-medium text-green-600">
+                                ${service.commonPrices.monthly}/mo
+                              </span>
+                            )}
+                            {service.commonPrices.annual && (
+                              <span className="text-xs font-medium text-blue-600">
+                                ${service.commonPrices.annual}/yr
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
                 </div>
+              ))}
+            </div>
+
+            {filteredServices.length === 0 && (
+              <div className="text-center py-8">
+                <p className="text-gray-500 mb-2">No services found</p>
                 <button
                   onClick={() => setShowPopularServices(false)}
-                  className="text-purple-600 hover:text-purple-700 font-medium text-sm"
+                  className="text-purple-600 hover:text-purple-700 font-medium"
                 >
-                  Add Custom
+                  Add custom subscription
                 </button>
               </div>
+            )}
+          </div>
+        )}
 
-              {/* Search Bar */}
-              <div className="relative mb-4">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <input
-                  type="text"
-                  placeholder="Search services..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                />
-              </div>
-
-              {/* Services Grid */}
-              <div className="max-h-96 overflow-y-auto space-y-6">
-                {Object.entries(servicesByCategory).map(([category, services]) => (
-                  <div key={category}>
-                    <h4 className="text-sm font-semibold text-gray-700 mb-3 sticky top-0 bg-white py-1">
-                      {category}
-                    </h4>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {services.map((service) => (
-                        <button
-                          key={service.name}
-                          onClick={() => handleServiceSelect(service)}
-                          className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:border-purple-300 hover:bg-purple-50 transition-all duration-200 text-left group"
-                        >
-                          <div
-                            className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-semibold text-sm flex-shrink-0"
-                            style={{ backgroundColor: service.color }}
-                          >
-                            {service.name.substring(0, 2).toUpperCase()}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <h5 className="font-medium text-gray-900 group-hover:text-purple-700 transition-colors truncate">
-                              {service.name}
-                            </h5>
-                            <p className="text-xs text-gray-600 truncate">{service.description}</p>
-                            <div className="flex items-center space-x-2 mt-1">
-                              {service.commonPrices.monthly && (
-                                <span className="text-xs font-medium text-green-600">
-                                  ${service.commonPrices.monthly}/mo
-                                </span>
-                              )}
-                              {service.commonPrices.annual && (
-                                <span className="text-xs font-medium text-blue-600">
-                                  ${service.commonPrices.annual}/yr
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {filteredServices.length === 0 && (
-                <div className="text-center py-8">
-                  <p className="text-gray-500 mb-2">No services found</p>
-                  <button
-                    onClick={() => setShowPopularServices(false)}
-                    className="text-purple-600 hover:text-purple-700 font-medium"
-                  >
-                    Add custom subscription
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Manual Form */}
-          {(!showPopularServices || subscription) && (
-            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-              {!subscription && (
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900">Subscription Details</h3>
-                  <button
-                    type="button"
-                    onClick={() => setShowPopularServices(true)}
-                    className="text-purple-600 hover:text-purple-700 font-medium text-sm"
-                  >
-                    Choose from Popular
-                  </button>
-                </div>
-              )}
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Service Name *
-                </label>
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-purple-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
-                  placeholder="e.g., ChatGPT Plus, Netflix, Spotify"
-                  required
-                  autoFocus
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Description
-                </label>
-                <input
-                  type="text"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-purple-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
-                  placeholder="Brief description"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Cost *
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={formData.cost}
-                    onChange={(e) => setFormData({ ...formData, cost: e.target.value })}
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-purple-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
-                    placeholder="0.00"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Currency
-                  </label>
-                  <select
-                    value={formData.currency}
-                    onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-purple-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
-                  >
-                    {currencies.slice(0, 10).map((currency) => (
-                      <option key={currency.code} value={currency.code}>
-                        {currency.symbol} {currency.code}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Billing Cycle
-                </label>
-                <select
-                  value={formData.billingCycle}
-                  onChange={(e) => setFormData({ ...formData, billingCycle: e.target.value as 'monthly' | 'annual' })}
-                  className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-purple-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
-                >
-                  <option value="monthly">Monthly</option>
-                  <option value="annual">Annual</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Next Billing Date *
-                </label>
-                <input
-                  type="date"
-                  value={formData.nextBilling}
-                  onChange={(e) => setFormData({ ...formData, nextBilling: e.target.value })}
-                  className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-purple-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Category
-                </label>
-                <select
-                  value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-purple-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
-                >
-                  <option value="">Select a category</option>
-                  {categories.map((category) => (
-                    <option key={category} value={category}>{category}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-3">
-                  Color
-                </label>
-                <div className="flex flex-wrap gap-2 sm:gap-3">
-                  {colors.map((color) => (
-                    <button
-                      key={color}
-                      type="button"
-                      onClick={() => setFormData({ ...formData, color })}
-                      className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl border-2 transition-all duration-200 hover:scale-110 ${
-                        formData.color === color ? 'border-gray-900 scale-110 shadow-lg' : 'border-gray-200 hover:border-gray-400'
-                      }`}
-                      style={{ backgroundColor: color }}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 pt-4 sm:pt-6">
+        {/* Manual Form */}
+        {(!showPopularServices || subscription) && (
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+            {!subscription && (
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900">Subscription Details</h3>
                 <button
                   type="button"
-                  onClick={onClose}
-                  className="flex-1 px-4 sm:px-6 py-2 sm:py-3 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl sm:rounded-2xl font-semibold transition-colors text-sm sm:text-base"
+                  onClick={() => setShowPopularServices(true)}
+                  className="text-purple-600 hover:text-purple-700 font-medium text-sm"
                 >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="flex-1 px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white rounded-xl sm:rounded-2xl font-semibold transition-all duration-300 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl text-sm sm:text-base"
-                >
-                  <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
-                  <span>{subscription ? 'Update' : 'Add'} Subscription</span>
+                  Choose from Popular
                 </button>
               </div>
-            </form>
-          )}
-        </div>
-      </div>
+            )}
 
-      {/* Drag Drop Zone */}
-      <DragDropZone
-        isVisible={showDragDrop}
-        onClose={() => setShowDragDrop(false)}
-        onDataExtracted={handleDragDropData}
-      />
-    </>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Service Name *
+              </label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-purple-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
+                placeholder="e.g., ChatGPT Plus, Netflix, Spotify"
+                required
+                autoFocus
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Description
+              </label>
+              <input
+                type="text"
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-purple-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
+                placeholder="Brief description"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 sm:gap-4">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Cost *
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={formData.cost}
+                  onChange={(e) => setFormData({ ...formData, cost: e.target.value })}
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-purple-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
+                  placeholder="0.00"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Currency
+                </label>
+                <select
+                  value={formData.currency}
+                  onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-purple-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
+                >
+                  {currencies.slice(0, 10).map((currency) => (
+                    <option key={currency.code} value={currency.code}>
+                      {currency.symbol} {currency.code}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Billing Cycle
+              </label>
+              <select
+                value={formData.billingCycle}
+                onChange={(e) => setFormData({ ...formData, billingCycle: e.target.value as 'monthly' | 'annual' })}
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-purple-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
+              >
+                <option value="monthly">Monthly</option>
+                <option value="annual">Annual</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Next Billing Date *
+              </label>
+              <input
+                type="date"
+                value={formData.nextBilling}
+                onChange={(e) => setFormData({ ...formData, nextBilling: e.target.value })}
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-purple-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Category
+              </label>
+              <select
+                value={formData.category}
+                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-purple-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
+              >
+                <option value="">Select a category</option>
+                {categories.map((category) => (
+                  <option key={category} value={category}>{category}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-3">
+                Color
+              </label>
+              <div className="flex flex-wrap gap-2 sm:gap-3">
+                {colors.map((color) => (
+                  <button
+                    key={color}
+                    type="button"
+                    onClick={() => setFormData({ ...formData, color })}
+                    className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl border-2 transition-all duration-200 hover:scale-110 ${
+                      formData.color === color ? 'border-gray-900 scale-110 shadow-lg' : 'border-gray-200 hover:border-gray-400'
+                    }`}
+                    style={{ backgroundColor: color }}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 pt-4 sm:pt-6">
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex-1 px-4 sm:px-6 py-2 sm:py-3 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl sm:rounded-2xl font-semibold transition-colors text-sm sm:text-base"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="flex-1 px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white rounded-xl sm:rounded-2xl font-semibold transition-all duration-300 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl text-sm sm:text-base"
+              >
+                <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span>{subscription ? 'Update' : 'Add'} Subscription</span>
+              </button>
+            </div>
+          </form>
+        )}
+      </div>
+    </div>
   );
 };
 
