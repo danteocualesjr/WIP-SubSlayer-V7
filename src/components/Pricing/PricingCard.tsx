@@ -7,8 +7,8 @@ import { stripeProducts } from '../../stripe-config';
 interface PricingCardProps {
   plan: {
     name: string;
-    monthlyPrice: number;
-    annualPrice: number;
+    monthlyPrice: number | null;
+    annualPrice: number | null;
     description: string;
     features: string[];
     cta: string;
@@ -32,7 +32,7 @@ const PricingCard: React.FC<PricingCardProps> = ({
   const { redirectToCheckout, loading, error } = useStripe();
 
   const price = isAnnual ? plan.annualPrice : plan.monthlyPrice;
-  const savings = plan.monthlyPrice > 0 ? Math.round(((plan.monthlyPrice * 12 - plan.annualPrice) / (plan.monthlyPrice * 12)) * 100) : 0;
+  const savings = plan.monthlyPrice && plan.annualPrice && plan.monthlyPrice > 0 ? Math.round(((plan.monthlyPrice * 12 - plan.annualPrice) / (plan.monthlyPrice * 12)) * 100) : 0;
 
   const handlePurchase = async () => {
     // Handle Free plan - no payment needed
@@ -108,18 +108,26 @@ const PricingCard: React.FC<PricingCardProps> = ({
         
         <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
         <p className="text-gray-600 mb-4">{plan.description}</p>
-        <div className="flex items-baseline justify-center space-x-1">
-          <span className="text-5xl font-bold text-gray-900">
-            ${plan.name === 'Enterprise' ? (isAnnual ? price : `${price}+`) : price}
-          </span>
-          {plan.monthlyPrice > 0 && (
-            <span className="text-gray-500 text-lg">
-              /{isAnnual ? 'year' : 'month'}
-            </span>
-          )}
-        </div>
         
-        {isAnnual && plan.monthlyPrice > 0 && savings > 0 && (
+        {/* Price Display */}
+        {plan.name === 'Enterprise' ? (
+          <div className="flex items-baseline justify-center space-x-1">
+            <span className="text-5xl font-bold text-gray-900">Custom</span>
+          </div>
+        ) : (
+          <div className="flex items-baseline justify-center space-x-1">
+            <span className="text-5xl font-bold text-gray-900">
+              ${price}
+            </span>
+            {plan.monthlyPrice && plan.monthlyPrice > 0 && (
+              <span className="text-gray-500 text-lg">
+                /{isAnnual ? 'year' : 'month'}
+              </span>
+            )}
+          </div>
+        )}
+        
+        {isAnnual && plan.monthlyPrice && plan.monthlyPrice > 0 && savings > 0 && (
           <div className="mt-2">
             <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
               Save {savings}% annually
