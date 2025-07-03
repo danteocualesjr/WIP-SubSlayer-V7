@@ -41,7 +41,6 @@ const CategoryChart: React.FC<CategoryChartProps> = ({ data }) => {
             </div>
             <div>
               <h3 className="text-xl font-bold text-gray-900">Spending by Category</h3>
-              <p className="text-gray-600">Distribution of your subscription costs</p>
             </div>
           </div>
         </div>
@@ -65,7 +64,6 @@ const CategoryChart: React.FC<CategoryChartProps> = ({ data }) => {
           </div>
           <div>
             <h3 className="text-xl font-bold text-gray-900">Spending by Category</h3>
-            <p className="text-gray-600">Distribution of your subscription costs</p>
           </div>
         </div>
       </div>

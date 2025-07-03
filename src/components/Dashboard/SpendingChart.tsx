@@ -21,7 +21,6 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
             </div>
             <div>
               <h3 className="text-xl font-bold text-gray-900">Monthly Spending Trend</h3>
-              <p className="text-gray-600">Track your subscription costs over time</p>
             </div>
           </div>
         </div>
@@ -45,7 +44,6 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
             </div>
             <div>
               <h3 className="text-xl font-bold text-gray-900">Monthly Spending Trend</h3>
-              <p className="text-gray-600">Track your subscription costs over time</p>
             </div>
           </div>
         </div>
@@ -239,8 +237,7 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
             <Sparkles className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h3 className="text-xl font-bold text-gray-900 mb-1">Monthly Spending Trend</h3>
-            <p className="text-gray-600">Track your subscription costs over time</p>
+            <h3 className="text-xl font-bold text-gray-900">Monthly Spending Trend</h3>
           </div>
         </div>
         
