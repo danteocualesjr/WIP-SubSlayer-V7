@@ -34,14 +34,24 @@ const PricingCard: React.FC<PricingCardProps> = ({
   const price = isAnnual ? plan.annualPrice : plan.monthlyPrice;
   const savings = plan.monthlyPrice > 0 ? Math.round(((plan.monthlyPrice * 12 - plan.annualPrice) / (plan.monthlyPrice * 12)) * 100) : 0;
 
-    const handlePurchase = async () => {
-    if (!user) {
-      onGetStarted?.();
+  const handlePurchase = async () => {
+    // Handle Free plan - no payment needed
+    if (plan.monthlyPrice === 0 && plan.annualPrice === 0) {
+      if (onGetStarted) {
+        onGetStarted();
+      }
       return;
     }
 
+    // Handle Contact Sales
     if (plan.cta === 'Contact Sales') {
       onContactSales?.();
+      return;
+    }
+
+    // Require authentication for paid plans
+    if (!user) {
+      onGetStarted?.();
       return;
     }
 
@@ -55,8 +65,8 @@ const PricingCard: React.FC<PricingCardProps> = ({
 
     try {
       await redirectToCheckout({
-        priceId: selectedPriceId, // Use the dynamically selected priceId
-        mode: 'subscription', // Assuming all paid plans are subscriptions
+        priceId: selectedPriceId,
+        mode: 'subscription',
         successUrl: `${window.location.origin}/success`,
         cancelUrl: `${window.location.origin}/pricing`,
       });
@@ -64,7 +74,6 @@ const PricingCard: React.FC<PricingCardProps> = ({
       console.error('Failed to redirect to checkout:', error);
     }
   };
-
 
   const getIcon = () => {
     if (plan.name === 'Free') return Zap;
