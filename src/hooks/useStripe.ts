@@ -56,6 +56,15 @@ export function useStripe() {
 
       if (!response.ok) {
         const errorData = await response.json();
+        
+        // Enhanced error handling for Stripe configuration issues
+        if (errorData.error?.includes('recurring price') || errorData.error?.includes('subscription mode')) {
+          throw new Error(
+            `Stripe Configuration Error: The price ID "${priceId}" is not configured as a recurring price in your Stripe Dashboard. ` +
+            `Please go to dashboard.stripe.com → Products → Prices and ensure this price is set up as "Recurring" not "One-time".`
+          );
+        }
+        
         throw new Error(errorData.error || 'Failed to create checkout session');
       }
 
@@ -65,6 +74,15 @@ export function useStripe() {
       const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred';
       setError(errorMessage);
       console.error('Checkout session creation failed:', err);
+      
+      // Log additional debugging information
+      console.error('Debug info:', {
+        priceId,
+        mode,
+        userId: user?.id,
+        timestamp: new Date().toISOString()
+      });
+      
       return null;
     } finally {
       setLoading(false);
