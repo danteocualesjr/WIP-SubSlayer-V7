@@ -222,11 +222,11 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
           <h3 className="text-xl font-bold text-gray-900">Monthly Spending Trend</h3>
         </div>
         
-        {/* Chart Type Selector */}
+        {/* Chart Type Selector - Icons Only */}
         <div className="flex bg-gray-100 rounded-2xl p-1.5 shadow-inner">
           <button
             onClick={() => setChartType('area')}
-            className={`p-3 rounded-xl transition-all duration-200 flex items-center space-x-2 ${
+            className={`p-3 rounded-xl transition-all duration-200 ${
               chartType === 'area'
                 ? 'bg-white text-purple-600 shadow-lg scale-105'
                 : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
@@ -234,11 +234,10 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
             title="Area Chart"
           >
             <Zap className="w-4 h-4" />
-            <span className="text-sm font-medium hidden sm:block">Area</span>
           </button>
           <button
             onClick={() => setChartType('bar')}
-            className={`p-3 rounded-xl transition-all duration-200 flex items-center space-x-2 ${
+            className={`p-3 rounded-xl transition-all duration-200 ${
               chartType === 'bar'
                 ? 'bg-white text-purple-600 shadow-lg scale-105'
                 : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
@@ -246,7 +245,6 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
             title="Bar Chart"
           >
             <BarChart3 className="w-4 h-4" />
-            <span className="text-sm font-medium hidden sm:block">Bar</span>
           </button>
         </div>
       </div>
