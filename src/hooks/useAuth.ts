@@ -21,8 +21,8 @@ export function useAuth() {
           if (error.message?.includes('refresh_token_not_found') || 
               error.message?.includes('Invalid Refresh Token')) {
             clearAuthData();
-            // Force a page reload to start fresh
-            window.location.reload();
+            // Force a clean navigation to root instead of reload
+            window.location.href = '/';
             return;
           }
         }
