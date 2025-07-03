@@ -2,7 +2,7 @@ import React from 'react';
 import { Check, Star, Zap, Building2, Mail } from 'lucide-react';
 import { useStripe } from '../../hooks/useStripe';
 import { useAuth } from '../../hooks/useAuth';
-import { stripeProducts, getPriceId } from '../../stripe-config';
+import { stripeProducts } from '../../stripe-config';
 
 interface PricingCardProps {
   plan: {
@@ -43,7 +43,7 @@ const PricingCard: React.FC<PricingCardProps> = ({
       return;
     }
 
-    // Find the SubSlayer product and get the correct price ID
+    // Find the SubSlayer product for purchase
     const subslayerProduct = stripeProducts.find(p => p.name === 'SubSlayer');
     
     if (!subslayerProduct) {
@@ -51,17 +51,9 @@ const PricingCard: React.FC<PricingCardProps> = ({
       return;
     }
 
-    // Get the correct price ID based on billing period
-    const priceId = getPriceId(subslayerProduct.id, isAnnual);
-    
-    if (!priceId) {
-      console.error('Price ID not found for billing period');
-      return;
-    }
-
     try {
       await redirectToCheckout({
-        priceId: priceId,
+        priceId: subslayerProduct.priceId,
         mode: subslayerProduct.mode,
         successUrl: `${window.location.origin}/success`,
         cancelUrl: `${window.location.origin}/pricing`,
