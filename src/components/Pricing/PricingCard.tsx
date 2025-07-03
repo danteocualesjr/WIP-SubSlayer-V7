@@ -56,6 +56,12 @@ const PricingCard: React.FC<PricingCardProps> = ({
       // Use the correct price ID based on billing period
       const priceId = isAnnual ? subslayerProduct.annualPriceId : subslayerProduct.monthlyPriceId;
 
+      console.log('Attempting checkout with:', {
+        priceId,
+        isAnnual,
+        planName: plan.name
+      });
+
       try {
         await redirectToCheckout({
           priceId: priceId,
