@@ -14,6 +14,8 @@ interface PricingCardProps {
     cta: string;
     popular: boolean;
     gradient: string;
+    monthlyPriceId: string | null; 
+    annualPriceId: string | null; 
   };
   isAnnual: boolean;
   onContactSales?: () => void;
