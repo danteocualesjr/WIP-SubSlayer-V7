@@ -154,4 +154,4 @@ const PricingCard: React.FC<PricingCardProps> = ({
   );
 };
 
-export default PricingCard;s
+export default PricingCard;
