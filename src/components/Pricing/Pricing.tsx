@@ -59,6 +59,8 @@ const Pricing: React.FC = () => {
       description: 'For startups and teams managing multiple tools/licenses',
       monthlyPrice: 99,
       annualPrice: 990,
+      monthlyPriceId: null,
+      annualPriceId: null,
       popular: false,
       features: [
         'Everything in Pro',
