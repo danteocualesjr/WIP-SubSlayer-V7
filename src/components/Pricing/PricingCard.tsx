@@ -43,23 +43,29 @@ const PricingCard: React.FC<PricingCardProps> = ({
       return;
     }
 
-    // Find the SubSlayer product for purchase
-    const subslayerProduct = stripeProducts.find(p => p.name === 'SubSlayer');
-    
-    if (!subslayerProduct) {
-      console.error('SubSlayer product not found');
-      return;
-    }
+    // Only proceed with purchase for Pro plan
+    if (plan.name === 'Pro') {
+      // Find the SubSlayer product
+      const subslayerProduct = stripeProducts.find(p => p.name === 'SubSlayer');
+      
+      if (!subslayerProduct) {
+        console.error('SubSlayer product not found');
+        return;
+      }
 
-    try {
-      await redirectToCheckout({
-        priceId: subslayerProduct.priceId,
-        mode: subslayerProduct.mode,
-        successUrl: `${window.location.origin}/success`,
-        cancelUrl: `${window.location.origin}/pricing`,
-      });
-    } catch (error) {
-      console.error('Failed to redirect to checkout:', error);
+      // Use the correct price ID based on billing period
+      const priceId = isAnnual ? subslayerProduct.annualPriceId : subslayerProduct.monthlyPriceId;
+
+      try {
+        await redirectToCheckout({
+          priceId: priceId,
+          mode: subslayerProduct.mode,
+          successUrl: `${window.location.origin}/success`,
+          cancelUrl: `${window.location.origin}/pricing`,
+        });
+      } catch (error) {
+        console.error('Failed to redirect to checkout:', error);
+      }
     }
   };
 
