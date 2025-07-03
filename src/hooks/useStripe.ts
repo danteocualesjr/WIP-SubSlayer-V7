@@ -58,14 +58,25 @@ export function useStripe() {
         const errorData = await response.json();
         
         // Enhanced error handling for Stripe configuration issues
-        if (errorData.error?.includes('recurring price') || errorData.error?.includes('subscription mode')) {
+        if (errorData.error?.includes('recurring price') || 
+            errorData.error?.includes('subscription mode') ||
+            errorData.error?.includes('one-time') ||
+            errorData.error?.includes('recurring')) {
           throw new Error(
-            `Stripe Configuration Error: The price ID "${priceId}" is not configured as a recurring price in your Stripe Dashboard. ` +
-            `Please go to dashboard.stripe.com → Products → Prices and ensure this price is set up as "Recurring" not "One-time".`
+            `This subscription plan is not properly configured. The price needs to be set up as a recurring subscription in Stripe. Please contact support for assistance.`
           );
         }
         
-        throw new Error(errorData.error || 'Failed to create checkout session');
+        // Handle other common Stripe errors
+        if (errorData.error?.includes('price') && errorData.error?.includes('not found')) {
+          throw new Error('This pricing plan is currently unavailable. Please try a different plan or contact support.');
+        }
+        
+        if (errorData.error?.includes('customer')) {
+          throw new Error('There was an issue with your account. Please try again or contact support.');
+        }
+        
+        throw new Error(errorData.error || 'Unable to process payment. Please try again or contact support.');
       }
 
       const data = await response.json();
@@ -75,13 +86,15 @@ export function useStripe() {
       setError(errorMessage);
       console.error('Checkout session creation failed:', err);
       
-      // Log additional debugging information
-      console.error('Debug info:', {
-        priceId,
-        mode,
-        userId: user?.id,
-        timestamp: new Date().toISOString()
-      });
+      // Log additional debugging information for developers
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Debug info:', {
+          priceId,
+          mode,
+          userId: user?.id,
+          timestamp: new Date().toISOString()
+        });
+      }
       
       return null;
     } finally {

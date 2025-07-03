@@ -1,5 +1,5 @@
 import React from 'react';
-import { Check, Star, Zap, Building2, Mail, AlertCircle } from 'lucide-react';
+import { Check, Star, Zap, Building2, Mail, AlertCircle, RefreshCw } from 'lucide-react';
 import { useStripe } from '../../hooks/useStripe';
 import { useAuth } from '../../hooks/useAuth';
 import { stripeProducts } from '../../stripe-config';
@@ -134,8 +134,15 @@ const PricingCard: React.FC<PricingCardProps> = ({
           <div className="flex items-start space-x-3">
             <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
             <div>
-              <h4 className="text-sm font-medium text-red-800 mb-1">Configuration Error</h4>
+              <h4 className="text-sm font-medium text-red-800 mb-1">Payment Error</h4>
               <p className="text-sm text-red-700">{error}</p>
+              <button
+                onClick={() => window.location.reload()}
+                className="mt-2 text-sm text-red-600 hover:text-red-800 underline flex items-center space-x-1"
+              >
+                <RefreshCw className="w-3 h-3" />
+                <span>Try again</span>
+              </button>
             </div>
           </div>
         </div>
