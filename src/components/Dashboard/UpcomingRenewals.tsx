@@ -53,17 +53,25 @@ const UpcomingRenewals: React.FC<UpcomingRenewalsProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">Upcoming Renewals</h3>
-        <p className="text-sm text-gray-600">Next 30 days</p>
+    <div className="bg-white rounded-3xl p-8 shadow-lg border border-purple-100/50 hover:shadow-xl transition-all duration-300 group">
+      <div className="mb-8">
+        <div className="flex items-center space-x-4 mb-3">
+          <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-violet-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+            <Calendar className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <h3 className="text-xl font-bold text-gray-900">Upcoming Renewals</h3>
+            <p className="text-gray-600">Next 30 days</p>
+          </div>
+        </div>
       </div>
 
       <div className="space-y-4">
         {upcomingRenewals.length === 0 ? (
           <div className="text-center py-8">
-            <Clock className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-            <p className="text-gray-500 text-sm">No upcoming renewals in the next 30 days</p>
+            <Clock className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <h4 className="text-lg font-semibold text-gray-900 mb-2">No upcoming renewals</h4>
+            <p className="text-gray-500 text-sm">You don't have any subscription renewals in the next 30 days</p>
           </div>
         ) : (
           upcomingRenewals.map((subscription) => {
@@ -74,17 +82,17 @@ const UpcomingRenewals: React.FC<UpcomingRenewalsProps> = ({
               <div
                 key={subscription.id}
                 onClick={() => handleSubscriptionClick(subscription)}
-                className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all duration-200 cursor-pointer hover:shadow-sm group"
+                className="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-purple-50/30 rounded-2xl hover:from-purple-50 hover:to-violet-50 transition-all duration-200 cursor-pointer hover:shadow-md group/item border border-gray-100 hover:border-purple-200"
               >
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-4">
                   <div 
-                    className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-semibold text-sm shadow-sm group-hover:shadow-md transition-shadow"
+                    className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-semibold text-sm shadow-lg group-hover/item:shadow-xl transition-shadow duration-200"
                     style={{ backgroundColor: subscription.color || '#8B5CF6' }}
                   >
                     {subscription.name.substring(0, 2).toUpperCase()}
                   </div>
                   <div>
-                    <h4 className="font-medium text-gray-900 group-hover:text-purple-700 transition-colors">
+                    <h4 className="font-semibold text-gray-900 group-hover/item:text-purple-700 transition-colors">
                       {subscription.name}
                     </h4>
                     <p className="text-sm text-gray-600">
@@ -94,15 +102,15 @@ const UpcomingRenewals: React.FC<UpcomingRenewalsProps> = ({
                 </div>
                 
                 <div className="flex items-center space-x-3">
-                  <span className="font-semibold text-gray-900 group-hover:text-purple-700 transition-colors">
+                  <span className="font-bold text-gray-900 group-hover/item:text-purple-700 transition-colors">
                     ${subscription.cost.toFixed(2)}
                   </span>
-                  <div className={`flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium transition-colors ${
+                  <div className={`flex items-center space-x-1 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${
                     isUrgent 
-                      ? 'bg-red-100 text-red-700 group-hover:bg-red-200' 
+                      ? 'bg-red-100 text-red-700 group-hover/item:bg-red-200' 
                       : daysUntil <= 7 
-                        ? 'bg-yellow-100 text-yellow-700 group-hover:bg-yellow-200'
-                        : 'bg-green-100 text-green-700 group-hover:bg-green-200'
+                        ? 'bg-yellow-100 text-yellow-700 group-hover/item:bg-yellow-200'
+                        : 'bg-green-100 text-green-700 group-hover/item:bg-green-200'
                   }`}>
                     {isUrgent && <AlertCircle className="w-3 h-3" />}
                     <span>{daysUntil} days</span>
@@ -115,13 +123,13 @@ const UpcomingRenewals: React.FC<UpcomingRenewalsProps> = ({
       </div>
 
       {/* View All Subscriptions Button */}
-      <div className="mt-6 pt-4 border-t border-gray-100">
+      <div className="mt-8 pt-6 border-t border-gray-100">
         <button
           onClick={handleViewAllSubscriptions}
-          className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-purple-50 to-violet-50 hover:from-purple-100 hover:to-violet-100 text-purple-700 rounded-xl font-medium transition-all duration-200 border border-purple-200 hover:border-purple-300 group"
+          className="w-full flex items-center justify-center space-x-2 px-6 py-4 bg-gradient-to-r from-purple-50 to-violet-50 hover:from-purple-100 hover:to-violet-100 text-purple-700 rounded-2xl font-semibold transition-all duration-200 border border-purple-200 hover:border-purple-300 group/button shadow-sm hover:shadow-md"
         >
           <span>View All Subscriptions</span>
-          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
+          <ArrowRight className="w-5 h-5 group-hover/button:translate-x-1 transition-transform duration-200" />
         </button>
       </div>
     </div>
