@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
+  Chart,
   AreaChart,
   LinearXAxis,
   LinearXAxisTickSeries,
@@ -14,6 +15,7 @@ import {
   GridlineSeries,
   Gridline,
   ChartDataTypes,
+  ChartTooltip,
 } from 'reaviz';
 import { TrendingUp, TrendingDown, BarChart3, Activity, Zap } from 'lucide-react';
 import { SpendingData } from '../../types/subscription';
@@ -187,86 +189,90 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
           transition={{ delay: 0.4 }}
           className="h-80 reaviz-chart-container"
         >
-          <AreaChart
+          <Chart
             height={320}
             data={chartData}
-            xAxis={
-              <LinearXAxis
-                type="category"
-                tickSeries={
-                  <LinearXAxisTickSeries
-                    label={
-                      <LinearXAxisTickLabel
-                        fill="var(--reaviz-tick-fill)"
-                        fontSize={12}
-                        fontWeight={500}
-                      />
-                    }
-                    tickSize={0}
-                  />
-                }
-                axisLine={null}
-              />
-            }
-            yAxis={
-              <LinearYAxis
-                axisLine={null}
-                tickSeries={
-                  <LinearYAxisTickSeries 
-                    line={null} 
-                    label={
-                      <LinearXAxisTickLabel
-                        format={(value) => `$${value}`}
-                        fill="var(--reaviz-tick-fill)"
-                        fontSize={12}
-                        fontWeight={500}
-                      />
-                    }
-                    tickSize={0}
-                  />
-                }
-              />
-            }
-            series={
-              <AreaSeries
-                type="standard"
-                interpolation="smooth"
-                area={
-                  <Area
-                    gradient={
-                      <Gradient
-                        stops={[
-                          <GradientStop key="start" offset="0%" stopColor="#8B5CF6" stopOpacity={0.8} />,
-                          <GradientStop key="middle" offset="50%" stopColor="#3B82F6" stopOpacity={0.4} />,
-                          <GradientStop key="end" offset="100%" stopColor="#3B82F6" stopOpacity={0.1} />,
-                        ]}
-                      />
-                    }
-                  />
-                }
-                line={{
-                  stroke: '#8B5CF6',
-                  strokeWidth: 3,
-                }}
-                symbols={{
-                  fill: '#8B5CF6',
-                  size: 6,
-                  strokeWidth: 2,
-                  stroke: '#ffffff',
-                }}
-              />
-            }
-            gridlines={
-              <GridlineSeries 
-                line={
-                  <Gridline 
-                    strokeColor="var(--reaviz-gridline-stroke)" 
-                    strokeDasharray="2,4"
-                  />
-                } 
-              />
-            }
-          />
+          >
+            <AreaChart
+              xAxis={
+                <LinearXAxis
+                  type="category"
+                  tickSeries={
+                    <LinearXAxisTickSeries
+                      label={
+                        <LinearXAxisTickLabel
+                          fill="var(--reaviz-tick-fill)"
+                          fontSize={12}
+                          fontWeight={500}
+                        />
+                      }
+                      tickSize={0}
+                    />
+                  }
+                  axisLine={null}
+                />
+              }
+              yAxis={
+                <LinearYAxis
+                  axisLine={null}
+                  tickSeries={
+                    <LinearYAxisTickSeries 
+                      line={null} 
+                      label={
+                        <LinearXAxisTickLabel
+                          format={(value) => `$${value}`}
+                          fill="var(--reaviz-tick-fill)"
+                          fontSize={12}
+                          fontWeight={500}
+                        />
+                      }
+                      tickSize={0}
+                    />
+                  }
+                />
+              }
+              series={
+                <AreaSeries
+                  type="standard"
+                  interpolation="smooth"
+                  area={
+                    <Area
+                      gradient={
+                        <Gradient
+                          stops={[
+                            <GradientStop key="start" offset="0%" stopColor="#8B5CF6" stopOpacity={0.8} />,
+                            <GradientStop key="middle" offset="50%" stopColor="#3B82F6" stopOpacity={0.4} />,
+                            <GradientStop key="end" offset="100%" stopColor="#3B82F6" stopOpacity={0.1} />,
+                          ]}
+                        />
+                      }
+                    />
+                  }
+                  line={{
+                    stroke: '#8B5CF6',
+                    strokeWidth: 3,
+                  }}
+                  symbols={{
+                    fill: '#8B5CF6',
+                    size: 6,
+                    strokeWidth: 2,
+                    stroke: '#ffffff',
+                  }}
+                />
+              }
+              gridlines={
+                <GridlineSeries 
+                  line={
+                    <Gridline 
+                      strokeColor="var(--reaviz-gridline-stroke)" 
+                      strokeDasharray="2,4"
+                    />
+                  } 
+                />
+              }
+            />
+            <ChartTooltip />
+          </Chart>
         </motion.div>
 
         {/* Insights */}
