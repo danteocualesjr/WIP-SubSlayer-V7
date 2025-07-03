@@ -71,14 +71,29 @@ const Dashboard: React.FC<DashboardProps> = ({
     };
   }, [subscriptions, spendingData]);
 
-  // Get user's display name
+  // Get user's display name with proper fallback
   const userName = useMemo(() => {
-    if (profile.displayName) {
-      return profile.displayName;
+    // First try the profile display name
+    if (profile.displayName && profile.displayName.trim()) {
+      return profile.displayName.trim();
     }
+    
+    // Then try extracting from email
     if (user?.email) {
-      return user.email.split('@')[0];
+      const emailUsername = user.email.split('@')[0];
+      // If it looks like a real name (contains letters and maybe numbers), use it
+      if (emailUsername && emailUsername.length > 0) {
+        // Convert common patterns like "john.doe" or "john_doe" to "John Doe"
+        const formatted = emailUsername
+          .replace(/[._-]/g, ' ')
+          .split(' ')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+          .join(' ');
+        return formatted;
+      }
     }
+    
+    // Final fallback
     return 'User';
   }, [profile.displayName, user?.email]);
 
