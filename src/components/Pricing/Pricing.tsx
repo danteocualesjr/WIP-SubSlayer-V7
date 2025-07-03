@@ -35,7 +35,7 @@ const Pricing: React.FC = () => {
       description: 'For power users who actively manage subscriptions',
       monthlyPrice: 9.99,
       annualPrice: 99,
-      monthlyPriceId: 'price_1RbBQTCIxTxdP6phlkFN2tER',
+      monthlyPriceId: 'price_1RglYeCIxTxdP6ph0ajymCf0',
       annualPriceId: 'price_1RbBQTCIxTxdP6phv3P5Yv0m',
       popular: true,
       features: [
