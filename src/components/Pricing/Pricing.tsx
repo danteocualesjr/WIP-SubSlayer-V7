@@ -202,12 +202,14 @@ const Pricing: React.FC = () => {
       {/* Pricing Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
         {plans.map((plan) => (
+      
           <PricingCard
             key={plan.id}
             plan={plan}
             isAnnual={isAnnual}
             onContactSales={handleContactSales}
           />
+      
         ))}
       </div>
 
