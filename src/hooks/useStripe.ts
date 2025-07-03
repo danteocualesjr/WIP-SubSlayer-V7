@@ -34,10 +34,17 @@ export function useStripe() {
     setError(null);
 
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      // Refresh the session to ensure we have a valid access token
+      const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
+      
+      if (refreshError) {
+        throw new Error(`Session refresh failed: ${refreshError.message}`);
+      }
+
+      const session = refreshData.session;
       
       if (!session?.access_token) {
-        throw new Error('No valid session found');
+        throw new Error('No valid session found after refresh');
       }
 
       const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/stripe-checkout`, {
