@@ -203,12 +203,17 @@ const Pricing: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
         {plans.map((plan) => (
       
-          <PricingCard
+        <PricingCard
             key={plan.id}
-            plan={plan}
+            plan={{
+              ...plan, // Keep all existing plan properties
+              monthlyPriceId: plan.monthlyPriceId, // Pass the new monthly price ID
+              annualPriceId: plan.annualPriceId,   // Pass the new annual price ID
+            }}
             isAnnual={isAnnual}
             onContactSales={handleContactSales}
           />
+
       
         ))}
       </div>
