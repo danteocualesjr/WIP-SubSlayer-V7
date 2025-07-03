@@ -21,6 +21,7 @@
     "react-dom": "^18.3.1",
     "react-markdown": "^10.1.0",
     "recharts": "^2.8.0",
+    "reaviz": "^15.0.0",
     "tailwind-merge": "^2.2.0"
   },
   "devDependencies": {
