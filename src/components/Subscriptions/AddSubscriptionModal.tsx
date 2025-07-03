@@ -414,7 +414,7 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
             </button>
           </div>
 
-          {/* Smart Import Button */}
+          {/* Import Button */}
           {!subscription && (
             <div className="mb-6">
               <button
@@ -422,10 +422,7 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
                 className="w-full flex items-center justify-center space-x-3 p-4 bg-gradient-to-r from-purple-50 to-violet-50 hover:from-purple-100 hover:to-violet-100 border border-purple-200 rounded-2xl transition-all duration-200 group"
               >
                 <Upload className="w-5 h-5 text-purple-600 group-hover:scale-110 transition-transform" />
-                <span className="font-medium text-purple-700">Smart Import from Image/Document</span>
-                <div className="px-2 py-1 bg-purple-200 text-purple-700 text-xs font-medium rounded-full">
-                  AI Powered
-                </div>
+                <span className="font-medium text-purple-700">Import from Image/Document</span>
               </button>
             </div>
           )}

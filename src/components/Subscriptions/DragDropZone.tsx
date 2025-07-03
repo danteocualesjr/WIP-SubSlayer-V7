@@ -132,7 +132,7 @@ const DragDropZone: React.FC<DragDropZoneProps> = ({ onDataExtracted, isVisible,
               <Sparkles className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-gray-900">Smart Subscription Import</h2>
+              <h2 className="text-xl font-bold text-gray-900">Subscription Import</h2>
               <p className="text-sm text-gray-600">Drop images or documents to auto-fill subscription details</p>
             </div>
           </div>
@@ -258,7 +258,7 @@ const DragDropZone: React.FC<DragDropZoneProps> = ({ onDataExtracted, isVisible,
                     <div>
                       <h4 className="font-medium text-blue-900">Analyzing your file...</h4>
                       <p className="text-sm text-blue-700">
-                        Extracting subscription information using AI
+                        Extracting subscription information
                       </p>
                     </div>
                   </div>
