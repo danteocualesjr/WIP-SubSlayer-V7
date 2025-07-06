@@ -58,6 +58,7 @@ export function useAuth() {
         console.log('Token refreshed successfully');
       } else if (event === 'SIGNED_OUT') {
         clearAuthData();
+        window.location.href = '/';
       }
 
       try {
@@ -70,6 +71,7 @@ export function useAuth() {
         setSession(null);
         setUser(null);
         setLoading(false);
+        window.location.href = '/';
       }
     });
 
