@@ -7,6 +7,7 @@ import AddSubscriptionModal from './AddSubscriptionModal';
 import DeleteConfirmationModal from './DeleteConfirmationModal';
 import { SparklesCore } from '../ui/sparkles';
 import { Subscription } from '../../types/subscription';
+import { useSubscription } from '../../hooks/useSubscription';
 
 interface SubscriptionsProps {
   subscriptions: Subscription[];
@@ -33,6 +34,11 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'paused' | 'cancelled'>('all');
   const [filterCategory, setFilterCategory] = useState<string>('all');
+  
+  // Get subscription status to check for free tier
+  const { subscription: stripeSubscription } = useSubscription();
+  const isFreeTier = !stripeSubscription || !stripeSubscription.subscriptionId;
+  const isAtSubscriptionLimit = isFreeTier && subscriptions.length >= 7;
   
   // Load view mode from localStorage, default to 'grid' if not found
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'calendar'>(() => {
@@ -152,9 +158,12 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
   const handleAddOrEdit = (subscriptionData: Omit<Subscription, 'id' | 'createdAt'>) => {
     if (editingSubscription) {
       onEditSubscription(editingSubscription.id, subscriptionData);
-      setEditingSubscription(null);
+    } else if (!isAtSubscriptionLimit || !isFreeTier) {
     } else {
       onAddSubscription(subscriptionData);
+    } else {
+      // Show upgrade modal or message
+      alert('Free tier is limited to 7 subscriptions. Please upgrade to Pro for unlimited subscriptions.');
     }
   };
 
@@ -364,7 +373,19 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
             <div>
               <div className="flex items-center space-x-3 mb-4 sm:mb-6">
                 <CreditCard className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" />
-                <h1 className="text-2xl sm:text-4xl font-bold">Subscriptions</h1>
+                <div>
+                  <h1 className="text-2xl sm:text-4xl font-bold">Subscriptions</h1>
+                  {isFreeTier && (
+                    <div className="text-white/80 text-sm flex items-center mt-1">
+                      <span>{subscriptions.length}/7 subscriptions used</span>
+                      {isAtSubscriptionLimit && (
+                        <span className="ml-2 bg-yellow-400/20 text-yellow-100 px-2 py-0.5 rounded-full text-xs">
+                          Limit reached
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
               <p className="text-lg sm:text-xl text-white/90 mb-6 sm:mb-8 max-w-2xl">
                 Take complete control of your recurring subscriptions and optimize your spending
@@ -374,11 +395,32 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
             {/* Action Button */}
             <div className="flex-shrink-0">
               <button
-                onClick={() => setShowAddModal(true)}
-                className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2 border border-white/30 hover:border-white/50 shadow-lg hover:shadow-xl"
+                onClick={() => {
+                  if (isAtSubscriptionLimit && isFreeTier) {
+                    // Navigate to pricing page
+                    window.dispatchEvent(new CustomEvent('navigateToTab', { 
+                      detail: { tab: 'pricing' } 
+                    }));
+                  } else {
+                    setShowAddModal(true);
+                  }
+                }}
+                className={`backdrop-blur-sm px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2 border shadow-lg hover:shadow-xl ${
+                  isAtSubscriptionLimit && isFreeTier
+                    ? 'bg-yellow-500/80 hover:bg-yellow-500 text-white border-yellow-400/50 hover:border-yellow-400'
+                    : 'bg-white/20 hover:bg-white/30 text-white border-white/30 hover:border-white/50'
+                }`}
               >
-                <Plus className="w-5 h-5" />
-                <span>Add Subscription</span>
+                {isAtSubscriptionLimit && isFreeTier ? (
+                  <>
+                    <span>Upgrade to Pro</span>
+                  </>
+                ) : (
+                  <>
+                    <Plus className="w-5 h-5" />
+                    <span>Add Subscription</span>
+                  </>
+                )}
               </button>
             </div>
           </div>

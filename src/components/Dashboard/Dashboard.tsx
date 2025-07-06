@@ -10,6 +10,7 @@ import { SparklesCore } from '../ui/sparkles';
 import { Subscription, SpendingData } from '../../types/subscription';
 import { useAuth } from '../../hooks/useAuth';
 import { useProfile } from '../../hooks/useProfile'; 
+import { useSubscription } from '../../hooks/useSubscription';
 
 interface DashboardProps {
   subscriptions: Subscription[];
@@ -30,8 +31,13 @@ const Dashboard: React.FC<DashboardProps> = ({
 }) => {
   const { user } = useAuth();
   const { profile } = useProfile();
+  const { subscription: stripeSubscription } = useSubscription();
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingSubscription, setEditingSubscription] = useState<Subscription | null>(null);
+  
+  // Check if user is on free tier and at subscription limit
+  const isFreeTier = !stripeSubscription || !stripeSubscription.subscriptionId;
+  const isAtSubscriptionLimit = isFreeTier && subscriptions.length >= 7;
   
   // Memoize calculations to prevent unnecessary re-renders
   const dashboardStats = useMemo(() => {
@@ -128,11 +134,20 @@ const Dashboard: React.FC<DashboardProps> = ({
 
   const handleAddSubscription = useCallback((subscriptionData: Omit<Subscription, 'id' | 'createdAt'>) => {
     if (onAddSubscription) {
-      onAddSubscription(subscriptionData);
+      // Check if at subscription limit
+      if (isFreeTier && subscriptions.length >= 7) {
+        alert('Free tier is limited to 7 subscriptions. Please upgrade to Pro for unlimited subscriptions.');
+        // Navigate to pricing page
+        window.dispatchEvent(new CustomEvent('navigateToTab', { 
+          detail: { tab: 'pricing' } 
+        }));
+      } else {
+        onAddSubscription(subscriptionData);
+      }
     }
     setShowAddModal(false);
     setEditingSubscription(null);
-  }, [onAddSubscription]);
+  }, [onAddSubscription, isFreeTier, subscriptions.length]);
 
   const handleEditSubscription = useCallback((subscription: Subscription) => {
     setEditingSubscription(subscription);
@@ -196,16 +211,47 @@ const Dashboard: React.FC<DashboardProps> = ({
               <p className="text-lg sm:text-xl text-white/90 mb-6 sm:mb-8 max-w-2xl">
                 Slay your subscription chaos
               </p>
+              {isFreeTier && (
+                <div className="text-white/80 text-sm flex items-center">
+                  <span>{subscriptions.length}/7 subscriptions used</span>
+                  {isAtSubscriptionLimit && (
+                    <span className="ml-2 bg-yellow-400/20 text-yellow-100 px-2 py-0.5 rounded-full text-xs">
+                      Limit reached
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
             
             {/* Action Button */}
             <div className="flex-shrink-0">
               <button
-                onClick={() => setShowAddModal(true)}
-                className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2 border border-white/30 hover:border-white/50 shadow-lg hover:shadow-xl"
+                onClick={() => {
+                  if (isAtSubscriptionLimit && isFreeTier) {
+                    // Navigate to pricing page
+                    window.dispatchEvent(new CustomEvent('navigateToTab', { 
+                      detail: { tab: 'pricing' } 
+                    }));
+                  } else {
+                    setShowAddModal(true);
+                  }
+                }}
+                className={`backdrop-blur-sm px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2 border shadow-lg hover:shadow-xl ${
+                  isAtSubscriptionLimit && isFreeTier
+                    ? 'bg-yellow-500/80 hover:bg-yellow-500 text-white border-yellow-400/50 hover:border-yellow-400'
+                    : 'bg-white/20 hover:bg-white/30 text-white border-white/30 hover:border-white/50'
+                }`}
               >
-                <Plus className="w-5 h-5" />
-                <span>Add Subscription</span>
+                {isAtSubscriptionLimit && isFreeTier ? (
+                  <>
+                    <span>Upgrade to Pro</span>
+                  </>
+                ) : (
+                  <>
+                    <Plus className="w-5 h-5" />
+                    <span>Add Subscription</span>
+                  </>
+                )}
               </button>
             </div>
           </div>

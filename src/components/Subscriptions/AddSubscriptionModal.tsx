@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { X, Plus, Sparkles, Search, Star } from 'lucide-react';
 import { Subscription } from '../../types/subscription';
 import { useSettings } from '../../hooks/useSettings';
+import { useSubscription } from '../../hooks/useSubscription';
 
 interface AddSubscriptionModalProps {
   isOpen: boolean;
@@ -29,6 +30,10 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
   subscription
 }) => {
   const { settings } = useSettings();
+  const { subscription: stripeSubscription } = useSubscription();
+  
+  // Check if user is on free tier and at subscription limit
+  const isFreeTier = !stripeSubscription || !stripeSubscription.subscriptionId;
   const [showPopularServices, setShowPopularServices] = useState(!subscription);
   const [searchTerm, setSearchTerm] = useState('');
   const [formData, setFormData] = useState({
@@ -350,7 +355,7 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.cost || !formData.nextBilling) return;
-
+    
     onAdd({
       ...formData,
       cost: parseFloat(formData.cost),
@@ -408,6 +413,11 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-purple-600 to-violet-600 rounded-xl sm:rounded-2xl flex items-center justify-center">
               <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+              {isFreeTier && !subscription && (
+                <div className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-yellow-400 text-xs text-white w-5 h-5 rounded-full flex items-center justify-center font-bold">
+                  {subscriptions.length}/7
+                </div>
+              )}
             </div>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
               {subscription ? 'Edit Subscription' : 'Add New Subscription'}

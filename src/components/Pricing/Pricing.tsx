@@ -19,11 +19,10 @@ const Pricing: React.FC = () => {
       popular: false,
       features: [
         'Track up to 7 subscriptions',
-        'Email reminders 3 days before renewal',
+        'Email reminders',
         'Monthly spend overview',
         'Basic analytics',
         'Cost simulator (1 scenario only)'
-        
       ],
       cta: 'Get Started',
       gradient: 'from-gray-500 to-gray-600',
