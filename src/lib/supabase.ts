@@ -3,50 +3,27 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-// Check if environment variables are available
-const isSupabaseConfigured = supabaseUrl && supabaseAnonKey;
-
-let supabase: any = null;
-
-if (isSupabaseConfigured) {
-  try {
-    // Validate URL format
-    new URL(supabaseUrl);
-    
-    // Create Supabase client
-    supabase = createClient(supabaseUrl, supabaseAnonKey, {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-        detectSessionInUrl: true,
-      },
-    });
-
-    // Add error handling for auth state changes
-    supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'TOKEN_REFRESHED') {
-        console.log('Token refreshed successfully');
-      } else if (event === 'SIGNED_OUT') {
-        // Clear any corrupted session data
-        localStorage.removeItem('supabase.auth.token');
-        sessionStorage.removeItem('supabase.auth.token');
-      }
-    });
-
-  } catch (error) {
-    console.warn('Failed to create Supabase client:', error);
-    supabase = null;
-  }
-} else {
-  console.warn('Supabase environment variables not configured. Running in demo mode.');
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Missing Supabase environment variables. Please check your .env file.');
 }
 
-// Export a safe supabase client that won't throw errors
-export { supabase };
+// Create Supabase client
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+  },
+  global: {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  },
+});
 
 // Export a function to check if Supabase is properly configured
 export const isSupabaseReady = () => {
-  return supabase !== null && isSupabaseConfigured;
+  return !!(supabaseUrl && supabaseAnonKey);
 };
 
 // Helper function to clear corrupted auth data
