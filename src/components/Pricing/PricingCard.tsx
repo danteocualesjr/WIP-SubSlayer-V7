@@ -117,7 +117,9 @@ const PricingCard: React.FC<PricingCardProps> = ({
         ) : (
           <div className="flex items-baseline justify-center space-x-1">
             <span className="text-5xl font-bold text-gray-900">
-              ${price}
+              {plan.name === 'Free' ? '$0' : 
+               plan.name === 'Enterprise' ? 'Custom' : 
+               `$${price}`}
             </span>
             {plan.monthlyPrice && plan.monthlyPrice > 0 && (
               <span className="text-gray-500 text-lg">
