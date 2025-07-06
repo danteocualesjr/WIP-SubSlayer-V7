@@ -95,6 +95,7 @@ const Header: React.FC = () => {
   const PlanIcon = planDisplay.icon;
 
   return (
+    <>
     <header className={`bg-white/80 backdrop-blur-2xl border-b border-purple-200/50 sticky top-0 z-30 shadow-sm transition-all duration-300 ${
       isMobile ? 'ml-0' : (sidebarCollapsed ? 'ml-20' : 'ml-64')
     }`}>
@@ -307,14 +308,15 @@ const Header: React.FC = () => {
       )}
     </header>
 
-    {/* Notification Details Modal */}
-    <NotificationDetailsModal
-      isOpen={showNotificationDetails}
-      onClose={() => setShowNotificationDetails(false)}
-      notification={selectedNotification}
-      onMarkAsRead={handleNotificationMarkAsRead}
-      onDelete={handleNotificationDelete}
-    />
+      {/* Notification Details Modal */}
+      <NotificationDetailsModal
+        isOpen={showNotificationDetails}
+        onClose={() => setShowNotificationDetails(false)}
+        notification={selectedNotification}
+        onMarkAsRead={handleNotificationMarkAsRead}
+        onDelete={handleNotificationDelete}
+      />
+    </>
   );
 };
 
