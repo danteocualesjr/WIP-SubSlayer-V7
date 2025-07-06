@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, DollarSign, Clock, Info, CreditCard } from 'lucide-react';
 import { Subscription } from '../../types/subscription';
 import { useSettings } from '../../hooks/useSettings';
 
@@ -181,33 +181,40 @@ const CalendarView: React.FC<CalendarViewProps> = ({ subscriptions }) => {
   return (
     <div className="space-y-6">
       {/* Calendar Header */}
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <div className="flex items-center justify-between mb-6">
+      <div className="bg-white rounded-3xl p-8 shadow-lg border border-purple-100/50 hover:shadow-xl transition-all duration-300 overflow-hidden relative">
+        {/* Decorative elements */}
+        <div className="absolute -top-24 -right-24 w-48 h-48 bg-gradient-to-br from-purple-200/20 to-blue-200/20 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-gradient-to-br from-purple-200/20 to-blue-200/20 rounded-full blur-3xl"></div>
+        
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0 mb-8">
           <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-3">
-              <CalendarIcon className="w-6 h-6 text-purple-600" />
-              <h2 className="text-2xl font-bold text-gray-900">
+            <div className="w-14 h-14 bg-gradient-to-br from-purple-600 to-violet-600 rounded-2xl flex items-center justify-center shadow-lg">
+              <CalendarIcon className="w-7 h-7 text-white" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-800 to-violet-700 bg-clip-text text-transparent">
                 {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
               </h2>
+              <p className="text-gray-600">Subscription renewal calendar</p>
             </div>
+          </div>
+          
+          <div className="flex items-center space-x-3">
             <button
               onClick={goToToday}
-              className="px-3 py-1 text-sm bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors"
+              className="px-4 py-2 text-sm bg-purple-100 text-purple-700 rounded-xl hover:bg-purple-200 transition-colors font-medium shadow-sm"
             >
               Today
             </button>
-          </div>
-          
-          <div className="flex items-center space-x-2">
             <button
               onClick={() => navigateMonth('prev')}
-              className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-all duration-200 hover:scale-110"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <button
               onClick={() => navigateMonth('next')}
-              className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-all duration-200 hover:scale-110"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
@@ -215,50 +222,65 @@ const CalendarView: React.FC<CalendarViewProps> = ({ subscriptions }) => {
         </div>
 
         {/* Month Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl p-4">
-            <p className="text-sm text-gray-600 mb-1">Renewals This Month</p>
-            <p className="text-2xl font-bold text-purple-600">{totalRenewalsThisMonth}</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-gradient-to-br from-purple-50 to-violet-50 rounded-2xl p-5 border border-purple-100 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 transform">
+            <div className="flex items-center space-x-3 mb-2">
+              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-violet-500 rounded-xl flex items-center justify-center shadow-md">
+                <CreditCard className="w-5 h-5 text-white" />
+              </div>
+              <p className="text-sm text-gray-600 font-medium">Renewals</p>
+            </div>
+            <p className="text-3xl font-bold text-purple-600">{totalRenewalsThisMonth}</p>
           </div>
-          <div className="bg-gradient-to-r from-emerald-50 to-green-50 rounded-xl p-4">
-            <p className="text-sm text-gray-600 mb-1">Total Amount</p>
-            <p className="text-2xl font-bold text-emerald-600">${totalAmountThisMonth.toFixed(2)}</p>
+          <div className="bg-gradient-to-br from-emerald-50 to-green-50 rounded-2xl p-5 border border-emerald-100 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 transform">
+            <div className="flex items-center space-x-3 mb-2">
+              <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-green-500 rounded-xl flex items-center justify-center shadow-md">
+                <DollarSign className="w-5 h-5 text-white" />
+              </div>
+              <p className="text-sm text-gray-600 font-medium">Total Amount</p>
+            </div>
+            <p className="text-3xl font-bold text-emerald-600">${totalAmountThisMonth.toFixed(2)}</p>
           </div>
-          <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl p-4">
-            <p className="text-sm text-gray-600 mb-1">Average per Renewal</p>
-            <p className="text-2xl font-bold text-orange-600">
+          <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-2xl p-5 border border-orange-100 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 transform">
+            <div className="flex items-center space-x-3 mb-2">
+              <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center shadow-md">
+                <Info className="w-5 h-5 text-white" />
+              </div>
+              <p className="text-sm text-gray-600 font-medium">Average</p>
+            </div>
+            <p className="text-3xl font-bold text-orange-600">
               ${totalRenewalsThisMonth > 0 ? (totalAmountThisMonth / totalRenewalsThisMonth).toFixed(2) : '0.00'}
             </p>
           </div>
         </div>
 
         {/* Day Headers */}
-        <div className="grid grid-cols-7 gap-0 mb-2">
+        <div className="grid grid-cols-7 gap-0 mb-3">
           {dayNames.map((day) => (
-            <div key={day} className="p-3 text-center text-sm font-medium text-gray-600 bg-gray-50 border border-gray-100">
+            <div key={day} className="p-3 text-center text-sm font-bold text-gray-700 bg-gray-50/70 border-b-2 border-gray-100">
               {day}
             </div>
           ))}
         </div>
 
         {/* Calendar Grid */}
-        <div className="grid grid-cols-7 gap-0 border border-gray-200 rounded-lg overflow-hidden">
+        <div className="grid grid-cols-7 gap-0 border border-gray-200 rounded-xl overflow-hidden shadow-sm">
           {renderCalendarDays()}
         </div>
 
         {/* Legend */}
-        <div className="mt-6 flex items-center justify-center space-x-6 text-sm text-gray-600">
-          <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 bg-purple-100 border border-purple-200 rounded"></div>
-            <span>Today</span>
+        <div className="mt-8 flex items-center justify-center space-x-8 text-sm text-gray-600 bg-gray-50 py-4 px-6 rounded-xl">
+          <div className="flex items-center space-x-2 group">
+            <div className="w-4 h-4 bg-purple-100 border border-purple-200 rounded-lg group-hover:scale-125 transition-transform"></div>
+            <span className="font-semibold">Today</span>
           </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 bg-purple-600 rounded"></div>
-            <span>Subscription Renewal</span>
+          <div className="flex items-center space-x-2 group">
+            <div className="w-4 h-4 bg-purple-500 rounded-full shadow-sm group-hover:scale-125 transition-transform"></div>
+            <span className="font-semibold">Subscription Renewal</span>
           </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 bg-gray-100 border border-gray-200 rounded"></div>
-            <span>Past Date</span>
+          <div className="flex items-center space-x-2 group">
+            <div className="w-4 h-4 bg-gray-100 border border-gray-200 rounded-lg group-hover:scale-125 transition-transform"></div>
+            <span className="font-semibold">Past Date</span>
           </div>
         </div>
       </div>
@@ -266,48 +288,48 @@ const CalendarView: React.FC<CalendarViewProps> = ({ subscriptions }) => {
       {/* Tooltip for subscription details */}
       {tooltipInfo.visible && tooltipInfo.date && (
         <div 
-          className="fixed z-50 bg-white rounded-xl shadow-xl border border-purple-100 p-4 w-72 max-h-96 overflow-y-auto"
+          className="fixed z-50 bg-white/95 backdrop-blur-md rounded-xl shadow-2xl border border-purple-200 p-5 w-80 max-h-96 overflow-y-auto"
           style={{ 
             left: tooltipInfo.x,
             top: tooltipInfo.y - 10,
             transform: 'translate(-50%, -100%)'
           }}
         >
-          <div className="flex items-center justify-between mb-3">
-            <h4 className="text-sm font-semibold text-gray-900">
+          <div className="flex items-center justify-between mb-4">
+            <h4 className="text-base font-bold text-gray-900">
               {tooltipInfo.date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
             </h4>
-            <span className="text-xs font-medium px-2 py-1 bg-purple-100 text-purple-700 rounded-full">
+            <span className="text-xs font-semibold px-3 py-1 bg-purple-100 text-purple-700 rounded-full">
               {tooltipInfo.subscriptions.length} renewals
             </span>
           </div>
           
-          <div className="max-h-64 overflow-y-auto space-y-3">
+          <div className="max-h-64 overflow-y-auto space-y-3 pr-1">
             {tooltipInfo.subscriptions.map((subscription) => (
               <div 
                 key={subscription.id} 
-                className="flex items-center justify-between p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                className="flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors border border-gray-100 shadow-sm"
               >
                 <div className="flex items-center space-x-2">
                   <div 
-                    className="w-8 h-8 rounded-md flex items-center justify-center text-white font-semibold text-xs"
+                    className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-semibold text-xs shadow-md"
                     style={{ backgroundColor: subscription.color || '#8B5CF6' }}
                   >
                     {subscription.name.substring(0, 2).toUpperCase()}
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{subscription.name}</p>
-                    <p className="text-xs text-gray-500">{subscription.category || 'Uncategorized'}</p>
+                    <p className="text-sm font-semibold text-gray-900">{subscription.name}</p>
+                    <p className="text-xs text-gray-500 font-medium">{subscription.category || 'Uncategorized'}</p>
                   </div>
                 </div>
-                <span className="text-sm font-bold text-gray-900">${subscription.cost.toFixed(2)}</span>
+                <span className="text-sm font-bold bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent">${subscription.cost.toFixed(2)}</span>
               </div>
             ))}
           </div>
           
-          <div className="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center">
-            <span className="text-sm text-gray-600">Total</span>
-            <span className="text-sm font-bold text-purple-700">
+          <div className="mt-4 pt-3 border-t border-gray-200 flex justify-between items-center">
+            <span className="text-sm font-medium text-gray-600">Total</span>
+            <span className="text-base font-bold text-purple-700">
               ${tooltipInfo.subscriptions.reduce((sum, sub) => sum + sub.cost, 0).toFixed(2)}
             </span>
           </div>
@@ -316,10 +338,15 @@ const CalendarView: React.FC<CalendarViewProps> = ({ subscriptions }) => {
 
       {/* Upcoming Renewals List for Current Month */}
       {totalRenewalsThisMonth > 0 && (
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            Renewals in {monthNames[currentDate.getMonth()]}
-          </h3>
+        <div className="bg-white rounded-3xl p-8 shadow-lg border border-purple-100/50 hover:shadow-xl transition-all duration-300">
+          <div className="flex items-center space-x-3 mb-6">
+            <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-violet-600 rounded-xl flex items-center justify-center shadow-lg">
+              <Clock className="w-5 h-5 text-white" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900">
+              Renewals in {monthNames[currentDate.getMonth()]}
+            </h3>
+          </div>
           <div className="space-y-3">
             {subscriptions
               .filter(sub => {
@@ -339,31 +366,31 @@ const CalendarView: React.FC<CalendarViewProps> = ({ subscriptions }) => {
                 return (
                   <div
                     key={subscription.id}
-                    className={`flex items-center justify-between p-4 rounded-xl border transition-all duration-200 ${
+                    className={`flex items-center justify-between p-5 rounded-xl border transition-all duration-200 ${
                       isUrgent 
-                        ? 'bg-red-50 border-red-200' 
+                        ? 'bg-red-50 border-red-200 shadow-md' 
                         : isPast 
                           ? 'bg-gray-50 border-gray-200' 
-                          : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
+                          : 'bg-gray-50 border-gray-200 hover:bg-gray-100 hover:shadow-md'
                     }`}
                   >
                     <div className="flex items-center space-x-3">
                       <div
-                        className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-semibold text-sm"
+                        className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-semibold text-sm shadow-md"
                         style={{ backgroundColor: subscription.color || '#8B5CF6' }}
                       >
                         {subscription.name.substring(0, 2).toUpperCase()}
                       </div>
                       <div>
-                        <h4 className="font-medium text-gray-900">{subscription.name}</h4>
-                        <p className="text-sm text-gray-600">
+                        <h4 className="font-semibold text-gray-900">{subscription.name}</h4>
+                        <p className="text-sm text-gray-600 font-medium">
                           {formatDate(subscription.nextBilling)}
                         </p>
                       </div>
                     </div>
                     
                     <div className="flex items-center space-x-3">
-                      <span className="font-semibold text-gray-900">
+                      <span className="font-bold text-lg bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent">
                         ${subscription.cost.toFixed(2)}
                       </span>
                       <div className={`px-3 py-1 rounded-full text-xs font-medium ${
@@ -392,12 +419,14 @@ const CalendarView: React.FC<CalendarViewProps> = ({ subscriptions }) => {
 
       {/* Empty State */}
       {totalRenewalsThisMonth === 0 && (
-        <div className="bg-white rounded-2xl p-12 shadow-sm border border-gray-100 text-center">
-          <CalendarIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+        <div className="bg-white rounded-3xl p-12 shadow-lg border border-purple-100/50 text-center">
+          <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <CalendarIcon className="w-10 h-10 text-gray-400" />
+          </div>
+          <h3 className="text-xl font-bold text-gray-900 mb-3">
             No Renewals in {monthNames[currentDate.getMonth()]}
           </h3>
-          <p className="text-gray-600">
+          <p className="text-gray-600 text-lg max-w-md mx-auto">
             You don't have any subscription renewals scheduled for this month.
           </p>
         </div>
