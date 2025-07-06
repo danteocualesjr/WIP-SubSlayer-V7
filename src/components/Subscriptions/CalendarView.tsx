@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from 'lucide-react';
 import { Subscription } from '../../types/subscription';
 import { useSettings } from '../../hooks/useSettings';
-import { useState } from 'react';
 
 interface CalendarViewProps {
   subscriptions: Subscription[];
