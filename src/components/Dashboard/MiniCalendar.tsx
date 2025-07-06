@@ -15,11 +15,13 @@ const MiniCalendar: React.FC<MiniCalendarProps> = ({ subscriptions, onSwitchToCa
     visible: boolean;
     x: number;
     y: number;
+    date: Date;
     subscriptions: Subscription[];
   }>({
     visible: false,
     x: 0,
     y: 0,
+    date: new Date(),
     subscriptions: []
   });
 
@@ -72,8 +74,9 @@ const MiniCalendar: React.FC<MiniCalendarProps> = ({ subscriptions, onSwitchToCa
       const rect = e.currentTarget.getBoundingClientRect();
       setTooltipInfo({
         visible: true,
-        x: rect.left + window.scrollX,
-        y: rect.bottom + window.scrollY,
+        x: rect.left + rect.width / 2,
+        y: rect.top,
+        date,
         subscriptions: daySubscriptions
       });
     }
@@ -208,36 +211,42 @@ const MiniCalendar: React.FC<MiniCalendarProps> = ({ subscriptions, onSwitchToCa
       {/* Tooltip for subscription renewals */}
       {tooltipInfo.visible && (
         <div 
-          className="fixed z-50 bg-white rounded-xl shadow-xl border border-purple-100 p-3 w-64 max-h-64 overflow-y-auto"
+          className="fixed z-50 bg-white rounded-xl shadow-xl border border-purple-100 p-3 w-64 max-h-80 overflow-y-auto"
           style={{ 
-            left: `${tooltipInfo.x}px`, 
-            top: `${tooltipInfo.y + 10}px`,
-            transform: 'translateX(-50%)'
+            left: tooltipInfo.x,
+            top: tooltipInfo.y - 10,
+            transform: 'translate(-50%, -100%)'
           }}
         >
-          <h4 className="text-sm font-semibold text-gray-900 mb-2">
-            Renewals on {new Date(currentDate.getFullYear(), currentDate.getMonth(), parseInt(tooltipInfo.subscriptions[0]?.nextBilling.split('-')[2] || '1')).toLocaleDateString()}
+          <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center justify-between">
+            <span>Renewals on {tooltipInfo.date.toLocaleDateString()}</span>
+            <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">
+              {tooltipInfo.subscriptions.length}
+            </span>
           </h4>
-          <div className="space-y-2">
+          <div className="space-y-3">
             {tooltipInfo.subscriptions.map((sub) => (
-              <div key={sub.id} className="flex items-center justify-between">
+              <div key={sub.id} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
                 <div className="flex items-center space-x-2">
                   <div 
-                    className="w-6 h-6 rounded-md flex items-center justify-center text-white text-xs font-semibold"
+                    className="w-8 h-8 rounded-md flex items-center justify-center text-white text-xs font-semibold"
                     style={{ backgroundColor: sub.color || '#8B5CF6' }}
                   >
-                    {sub.name.substring(0, 1).toUpperCase()}
+                    {sub.name.substring(0, 2).toUpperCase()}
                   </div>
-                  <span className="text-xs font-medium text-gray-900">{sub.name}</span>
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">{sub.name}</p>
+                    <p className="text-xs text-gray-500">{sub.category || 'Uncategorized'}</p>
+                  </div>
                 </div>
-                <span className="text-xs font-semibold text-gray-900">{formatCurrency(sub.cost)}</span>
+                <span className="text-sm font-bold text-gray-900">${sub.cost.toFixed(2)}</span>
               </div>
             ))}
           </div>
-          <div className="mt-2 pt-2 border-t border-gray-100 flex justify-between items-center">
-            <span className="text-xs text-gray-500">Total</span>
-            <span className="text-xs font-bold text-purple-600">
-              {formatCurrency(tooltipInfo.subscriptions.reduce((sum, sub) => sum + sub.cost, 0))}
+          <div className="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center">
+            <span className="text-sm text-gray-600">Total</span>
+            <span className="text-sm font-bold text-purple-700">
+              ${tooltipInfo.subscriptions.reduce((sum, sub) => sum + sub.cost, 0).toFixed(2)}
             </span>
           </div>
         </div>

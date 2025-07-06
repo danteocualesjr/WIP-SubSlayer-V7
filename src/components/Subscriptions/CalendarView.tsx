@@ -74,11 +74,11 @@ const CalendarView: React.FC<CalendarViewProps> = ({ subscriptions }) => {
   const handleDayMouseEnter = (e: React.MouseEvent, date: Date) => {
     const daySubscriptions = getSubscriptionsForDate(date);
     if (daySubscriptions.length > 0) {
-      const rect = e.currentTarget.getBoundingClientRect();
+      const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
       setTooltipInfo({
         visible: true,
-        x: rect.left + window.scrollX + rect.width / 2,
-        y: rect.top + window.scrollY,
+        x: rect.left + rect.width / 2,
+        y: rect.top,
         date: date,
         subscriptions: daySubscriptions
       });
@@ -266,10 +266,10 @@ const CalendarView: React.FC<CalendarViewProps> = ({ subscriptions }) => {
       {/* Tooltip for subscription details */}
       {tooltipInfo.visible && tooltipInfo.date && (
         <div 
-          className="fixed z-50 bg-white rounded-xl shadow-xl border border-purple-100 p-4 w-72"
+          className="fixed z-50 bg-white rounded-xl shadow-xl border border-purple-100 p-4 w-72 max-h-96 overflow-y-auto"
           style={{ 
-            left: `${tooltipInfo.x}px`, 
-            top: `${tooltipInfo.y - 10}px`,
+            left: tooltipInfo.x,
+            top: tooltipInfo.y - 10,
             transform: 'translate(-50%, -100%)'
           }}
         >
