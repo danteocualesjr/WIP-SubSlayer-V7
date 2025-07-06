@@ -129,20 +129,23 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
   // Popular services database
   const popularServices: PopularService[] = [
     // AI & Productivity
-    { name: 'ChatGPT Plus', category: 'AI', color: '#10A37F', description: 'AI assistant for writing, coding, and analysis', commonPrices: { monthly: 20 }, billingCycle: 'monthly' },
+    { name: 'OpenAI', category: 'AI', color: '#10A37F', description: 'AI assistant for writing, coding, and analysis', commonPrices: { monthly: 20 }, billingCycle: 'monthly' },
     { name: 'Claude Pro', category: 'AI', color: '#D97706', description: 'Advanced AI assistant by Anthropic', commonPrices: { monthly: 20 }, billingCycle: 'monthly' },
     { name: 'Cursor Windsurf', category: 'AI', color: '#000000', description: 'AI-powered code editor with advanced features', commonPrices: { monthly: 20 }, billingCycle: 'monthly' },
     { name: 'Claude Code', category: 'AI', color: '#D97706', description: 'AI coding assistant by Anthropic', commonPrices: { monthly: 20 }, billingCycle: 'monthly' },
-    { name: 'Replit', category: 'AI', color: '#F26207', description: 'AI-powered collaborative coding platform', commonPrices: { monthly: 20 }, billingCycle: 'monthly' },
+    { name: 'Replit', category: 'AI', color: '#F26207', description: 'AI-powered collaborative coding platform', commonPrices: { monthly: 25 }, billingCycle: 'monthly' },
     { name: 'Bolt.new', category: 'AI', color: '#8B5CF6', description: 'AI web development platform', commonPrices: { monthly: 20 }, billingCycle: 'monthly' },
-    { name: 'Lovable', category: 'AI', color: '#EC4899', description: 'AI-powered app development platform', commonPrices: { monthly: 20 }, billingCycle: 'monthly' },
+    { name: 'Lovable', category: 'AI', color: '#EC4899', description: 'AI-powered app development platform', commonPrices: { monthly: 25 }, billingCycle: 'monthly' },
     { name: 'v0', category: 'AI', color: '#000000', description: 'AI UI generator by Vercel', commonPrices: { monthly: 20 }, billingCycle: 'monthly' },
+    { name: 'Google AI Pro', category: 'AI', color: '#4285F4', description: 'Advanced AI models and tools by Google', commonPrices: { monthly: 20 }, billingCycle: 'monthly' },
+    { name: 'X/Twitter', category: 'AI', color: '#000000', description: 'Social media platform with AI features', commonPrices: { monthly: 8 }, billingCycle: 'monthly' },
     { name: 'GitHub Copilot', category: 'Development', color: '#000000', description: 'AI-powered code completion', commonPrices: { monthly: 10 }, billingCycle: 'monthly' },
     { name: 'Notion', category: 'Productivity', color: '#000000', description: 'All-in-one workspace for notes and docs', commonPrices: { monthly: 8, annual: 96 }, billingCycle: 'monthly' },
     { name: 'Obsidian', category: 'Productivity', color: '#7C3AED', description: 'Knowledge management and note-taking', commonPrices: { monthly: 8 }, billingCycle: 'monthly' },
     
     // Business
     { name: 'Doola', category: 'Business', color: '#4F46E5', description: 'Business formation and compliance platform', commonPrices: { monthly: 99 }, billingCycle: 'monthly' },
+    { name: 'Domain.com', category: 'Business', color: '#FF6B35', description: 'Domain registration and web hosting services', commonPrices: { monthly: 12.99 }, billingCycle: 'monthly' },
     
     // Entertainment
     { name: 'Netflix', category: 'Entertainment', color: '#E50914', description: 'Streaming movies and TV shows', commonPrices: { monthly: 15.49 }, billingCycle: 'monthly' },
@@ -161,12 +164,14 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
     { name: 'YouTube Music', category: 'Music', color: '#FF0000', description: 'Google music streaming service', commonPrices: { monthly: 10.99 }, billingCycle: 'monthly' },
     { name: 'Amazon Music Unlimited', category: 'Music', color: '#FF9900', description: 'Amazon music streaming', commonPrices: { monthly: 10.99 }, billingCycle: 'monthly' },
     { name: 'Tidal', category: 'Music', color: '#000000', description: 'High-fidelity music streaming', commonPrices: { monthly: 10.99 }, billingCycle: 'monthly' },
+    { name: 'Distrokid', category: 'Music', color: '#1DB954', description: 'Music distribution platform for artists', commonPrices: { monthly: 19.99 }, billingCycle: 'monthly' },
     
     // Development & Design
     { name: 'Adobe Creative Cloud', category: 'Design', color: '#FF0000', description: 'Creative suite for designers', commonPrices: { monthly: 52.99, annual: 599.88 }, billingCycle: 'monthly' },
     { name: 'Figma', category: 'Design', color: '#F24E1E', description: 'Collaborative design tool', commonPrices: { monthly: 12, annual: 144 }, billingCycle: 'monthly' },
     { name: 'Canva Pro', category: 'Design', color: '#00C4CC', description: 'Design tool for non-designers', commonPrices: { monthly: 12.99, annual: 119.99 }, billingCycle: 'annual' },
     { name: 'GitHub Pro', category: 'Development', color: '#000000', description: 'Advanced GitHub features', commonPrices: { monthly: 4 }, billingCycle: 'monthly' },
+    { name: 'Supabase', category: 'Development', color: '#3ECF8E', description: 'Open source Firebase alternative', commonPrices: { monthly: 25 }, billingCycle: 'monthly' },
     { name: 'Vercel Pro', category: 'Development', color: '#000000', description: 'Frontend deployment platform', commonPrices: { monthly: 20 }, billingCycle: 'monthly' },
     { name: 'Netlify Pro', category: 'Development', color: '#00C7B7', description: 'Web development platform', commonPrices: { monthly: 19 }, billingCycle: 'monthly' },
     
@@ -198,6 +203,7 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
     { name: 'LinkedIn Learning', category: 'Education', color: '#0077B5', description: 'Professional skill development', commonPrices: { monthly: 29.99, annual: 239.88 }, billingCycle: 'annual' },
     { name: 'Duolingo Plus', category: 'Education', color: '#58CC02', description: 'Language learning app', commonPrices: { monthly: 6.99, annual: 83.88 }, billingCycle: 'annual' },
     { name: 'The Rundown University', category: 'Education', color: '#FF6B35', description: 'AI and business education platform', commonPrices: { monthly: 49 }, billingCycle: 'monthly' },
+    { name: 'Innovating With AI', category: 'Education', color: '#8B5CF6', description: 'AI innovation and implementation courses', commonPrices: { monthly: 39 }, billingCycle: 'monthly' },
     
     // Health & Fitness
     { name: 'Peloton App', category: 'Health & Fitness', color: '#000000', description: 'Fitness classes and workouts', commonPrices: { monthly: 12.99 }, billingCycle: 'monthly' },
