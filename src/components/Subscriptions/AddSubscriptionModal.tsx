@@ -38,13 +38,13 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
     currency: settings.currency || 'USD',
     billingCycle: 'monthly' as 'monthly' | 'annual',
     nextBilling: '',
-    category: '',
+    categories: [] as string[],
     status: 'active' as 'active' | 'cancelled' | 'paused',
     color: '#8B5CF6'
   });
 
   const categories = [
-    'AI', 'Entertainment', 'Productivity', 'Development', 'Design', 'Education', 
+    'AI', 'Business', 'Entertainment', 'Productivity', 'Development', 'Design', 'Education', 
     'Health & Fitness', 'News & Media', 'Music', 'Storage', 'Social Media', 'Other'
   ];
 
@@ -232,7 +232,7 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
           currency: subscription.currency || settings.currency || 'USD',
           billingCycle: subscription.billingCycle || 'monthly',
           nextBilling: subscription.nextBilling || '',
-          category: subscription.category || '',
+          categories: subscription.category ? [subscription.category] : [],
           status: subscription.status || 'active',
           color: subscription.color || '#8B5CF6'
         });
@@ -246,7 +246,7 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
           currency: settings.currency || 'USD',
           billingCycle: 'monthly',
           nextBilling: '',
-          category: '',
+          categories: [],
           status: 'active',
           color: '#8B5CF6'
         });
@@ -330,7 +330,7 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
       currency: settings.currency || 'USD',
       billingCycle: service.billingCycle,
       nextBilling: '',
-      category: service.category,
+      categories: [service.category],
       status: 'active',
       color: service.color
     });
@@ -344,8 +344,25 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
     onAdd({
       ...formData,
       cost: parseFloat(formData.cost),
+      category: formData.categories.join(', '), // Convert array back to string for compatibility
     });
     onClose();
+  };
+
+  const toggleCategory = (category: string) => {
+    setFormData(prev => ({
+      ...prev,
+      categories: prev.categories.includes(category)
+        ? prev.categories.filter(c => c !== category)
+        : [...prev.categories, category]
+    }));
+  };
+
+  const removeCategory = (category: string) => {
+    setFormData(prev => ({
+      ...prev,
+      categories: prev.categories.filter(c => c !== category)
+    }));
   };
 
   const handleModalContentClick = (e: React.MouseEvent) => {
@@ -587,19 +604,52 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Category
+              <label className="block text-sm font-semibold text-gray-700 mb-3">
+                Categories
               </label>
-              <select
-                value={formData.category}
-                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-purple-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
-              >
-                <option value="">Select a category</option>
+              
+              {/* Selected Categories */}
+              {formData.categories.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {formData.categories.map((category) => (
+                    <span
+                      key={category}
+                      className="inline-flex items-center space-x-1 bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-medium"
+                    >
+                      <span>{category}</span>
+                      <button
+                        type="button"
+                        onClick={() => removeCategory(category)}
+                        className="text-purple-500 hover:text-purple-700 ml-1"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+              
+              {/* Category Selection Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {categories.map((category) => (
-                  <option key={category} value={category}>{category}</option>
+                  <button
+                    key={category}
+                    type="button"
+                    onClick={() => toggleCategory(category)}
+                    className={`p-3 text-sm font-medium rounded-xl transition-all duration-200 border-2 ${
+                      formData.categories.includes(category)
+                        ? 'bg-purple-100 border-purple-300 text-purple-700'
+                        : 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100 hover:border-gray-300'
+                    }`}
+                  >
+                    {category}
+                  </button>
                 ))}
-              </select>
+              </div>
+              
+              <p className="text-xs text-gray-500 mt-2">
+                Select one or more categories that best describe this subscription
+              </p>
             </div>
 
             <div>
