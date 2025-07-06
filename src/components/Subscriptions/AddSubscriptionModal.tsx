@@ -9,6 +9,7 @@ interface AddSubscriptionModalProps {
   onClose: () => void;
   onAdd: (subscription: Omit<Subscription, 'id' | 'createdAt'>) => void;
   subscription?: Subscription;
+  subscriptions?: Subscription[];
 }
 
 interface PopularService {
@@ -27,7 +28,8 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
   isOpen,
   onClose,
   onAdd,
-  subscription
+  subscription,
+  subscriptions = []
 }) => {
   const { settings } = useSettings();
   const { subscription: stripeSubscription } = useSubscription();

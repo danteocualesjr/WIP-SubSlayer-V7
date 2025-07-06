@@ -335,6 +335,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
           onClose={handleModalClose}
           onAdd={handleAddOrEdit}
           subscription={editingSubscription || undefined}
+          subscriptions={subscriptions}
         />
       </div>
     );
@@ -773,6 +774,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
         onClose={handleModalClose}
         onAdd={handleAddOrEdit}
         subscription={editingSubscription || undefined}
+        subscriptions={subscriptions}
       />
 
       {/* Delete Confirmation Modal */}

@@ -345,6 +345,7 @@ const Dashboard: React.FC<DashboardProps> = ({
         onClose={handleModalClose}
         onAdd={editingSubscription ? handleSaveEdit : handleAddSubscription}
         subscription={editingSubscription || undefined}
+        subscriptions={subscriptions}
       />
     </div>
   );
