@@ -79,7 +79,7 @@ const UpcomingRenewals: React.FC<UpcomingRenewalsProps> = ({
               >
                 <div className="flex items-center space-x-4">
                   <div 
-                    className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-semibold text-sm shadow-lg group-hover/item:shadow-xl transition-shadow duration-200"
+                    className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-semibold text-sm shadow-lg group-hover/item:shadow-xl transition-shadow duration-200 flex-shrink-0"
                     style={{ backgroundColor: subscription.color || '#8B5CF6' }}
                   >
                     {subscription.name.substring(0, 2).toUpperCase()}

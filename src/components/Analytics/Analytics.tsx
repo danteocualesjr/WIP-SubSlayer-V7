@@ -204,7 +204,7 @@ const Analytics: React.FC<AnalyticsProps> = ({
                   <div key={subscription.id} className="flex items-center justify-between p-4 sm:p-6 bg-gradient-to-r from-purple-50/50 to-violet-50/50 rounded-xl sm:rounded-2xl border border-purple-100/50 hover:shadow-lg transition-all duration-300">
                     <div className="flex items-center space-x-3 sm:space-x-4 flex-1 min-w-0">
                       <div
-                        className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center text-white font-bold text-sm shadow-lg flex-shrink-0"
+                        className="w-12 h-12 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center text-white font-bold text-sm shadow-lg flex-shrink-0"
                         style={{ backgroundColor: subscription.color || '#8B5CF6' }}
                       >
                         {subscription.name.substring(0, 2).toUpperCase()}
