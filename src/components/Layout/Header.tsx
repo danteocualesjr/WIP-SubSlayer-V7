@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Bell, User, Search, LogOut, Sparkles, Crown } from 'lucide-react';
+import NotificationDetailsModal from '../Notifications/NotificationDetailsModal';
 import { useAuth } from '../../hooks/useAuth';
 import { useProfile } from '../../hooks/useProfile';
 import { useNotifications } from '../../hooks/useNotifications';
@@ -12,6 +13,8 @@ const Header: React.FC = () => {
   const { subscription, getSubscriptionProduct, isActive } = useSubscription();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [showNotificationDetails, setShowNotificationDetails] = useState(false);
+  const [selectedNotification, setSelectedNotification] = useState<any>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -72,6 +75,20 @@ const Header: React.FC = () => {
       color: 'text-purple-600',
       bgColor: 'bg-purple-50'
     };
+  };
+
+  const handleNotificationClick = (notification: any) => {
+    setSelectedNotification(notification);
+    setShowNotificationDetails(true);
+    setShowNotifications(false);
+  };
+
+  const handleNotificationMarkAsRead = (id: string) => {
+    markAsRead(id);
+  };
+
+  const handleNotificationDelete = (id: string) => {
+    deleteNotification(id);
   };
 
   const planDisplay = getPlanDisplay();
@@ -149,9 +166,10 @@ const Header: React.FC = () => {
                         .map((notification) => (
                           <div
                             key={notification.id}
+                            onClick={() => handleNotificationClick(notification)}
                             className={`px-4 sm:px-6 py-4 hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 border-b border-purple-50 last:border-b-0 transition-all duration-300 ${
                               !notification.read ? 'bg-gradient-to-r from-purple-50/50 to-blue-50/50' : ''
-                            }`}
+                            } cursor-pointer`}
                           >
                             <div className="flex items-start justify-between">
                               <div className="flex items-start space-x-3 flex-1">
@@ -288,6 +306,15 @@ const Header: React.FC = () => {
         />
       )}
     </header>
+
+    {/* Notification Details Modal */}
+    <NotificationDetailsModal
+      isOpen={showNotificationDetails}
+      onClose={() => setShowNotificationDetails(false)}
+      notification={selectedNotification}
+      onMarkAsRead={handleNotificationMarkAsRead}
+      onDelete={handleNotificationDelete}
+    />
   );
 };
 
