@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { Subscription } from '../types/subscription';
 import { useAuth } from './useAuth';
+import { useSubscription } from './useSubscription';
 
 export function useSubscriptions() {
   const { user } = useAuth();
