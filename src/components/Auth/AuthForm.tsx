@@ -12,7 +12,7 @@ const AuthForm: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
-  const { signUp, signIn } = useAuth();
+  const { signUp, signIn, signInWithGoogle } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,9 +41,21 @@ const AuthForm: React.FC = () => {
     }
   };
 
-  const handleGoogleSignIn = () => {
-    // Placeholder for Google sign-in functionality
-    console.log('Google sign-in clicked');
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    setError(null);
+    setMessage(null);
+    
+    try {
+      const { error } = await signInWithGoogle();
+      if (error) {
+        setError(error.message);
+      }
+    } catch (err) {
+      setError('An unexpected error occurred during Google sign-in');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleLogoClick = () => {
@@ -103,12 +115,19 @@ const AuthForm: React.FC = () => {
           {/* Google Sign In Button */}
           <button
             onClick={handleGoogleSignIn}
-            className="w-full flex items-center justify-center space-x-3 px-6 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white hover:bg-white/20 transition-all duration-300"
+            className="w-full flex items-center justify-center space-x-3 px-6 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white hover:bg-white/20 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={loading}
           >
-            <div className="w-5 h-5 bg-white rounded-full flex items-center justify-center">
-              <span className="text-xs font-bold text-gray-800">G</span>
-            </div>
-            <span className="font-medium">Continue with Google</span>
+            {loading ? (
+              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            ) : (
+              <>
+                <div className="w-5 h-5 bg-white rounded-full flex items-center justify-center">
+                  <span className="text-xs font-bold text-gray-800">G</span>
+                </div>
+                <span className="font-medium">Continue with Google</span>
+              </>
+            )}
           </button>
 
           {/* Divider */}

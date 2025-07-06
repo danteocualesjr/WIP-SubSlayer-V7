@@ -7,6 +7,21 @@ export function useAuth() {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const signInWithGoogle = async () => {
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/`
+        }
+      });
+      return { data, error };
+    } catch (error) {
+      console.error('Google sign in error:', error);
+      return { data: null, error };
+    }
+  };
+
   useEffect(() => {
     let mounted = true;
 
@@ -127,6 +142,7 @@ export function useAuth() {
     loading,
     signUp,
     signIn,
+    signInWithGoogle,
     signOut,
   };
 }
