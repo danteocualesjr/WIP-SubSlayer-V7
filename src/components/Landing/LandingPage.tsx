@@ -582,7 +582,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                     <p className="text-gray-600 mb-4">{plan.description}</p>
                     <div className="flex items-baseline justify-center space-x-1 min-h-[60px]">
                       <span className="text-5xl font-bold text-gray-900">
-                        ${plan.name === 'Enterprise' ? (isAnnual ? price : `${price}+`) : price}
+                        {plan.name === 'Free' ? '$0' : 
+                         plan.name === 'Enterprise' ? 'Custom' : 
+                         `$${price}`}
                       </span>
                       {plan.monthlyPrice > 0 && (
                         <span className="text-gray-500 text-lg">
