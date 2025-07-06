@@ -142,7 +142,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
         {/* Subscription Info */}
         <div className={`flex items-start space-x-4 mb-4 ${isSelectionMode ? 'ml-8' : ''}`}>
           <div
-            className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-lg"
+            className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-lg flex-shrink-0"
             style={{ backgroundColor: subscription.color || '#8B5CF6' }}
           >
             {subscription.name.substring(0, 2).toUpperCase()}

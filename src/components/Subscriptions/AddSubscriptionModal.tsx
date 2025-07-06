@@ -462,10 +462,10 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
                       <button
                         key={service.name}
                         onClick={() => handleServiceSelect(service)}
-                        className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:border-purple-300 hover:bg-purple-50 transition-all duration-200 text-left group"
+                        className="flex items-center p-3 border border-gray-200 rounded-lg hover:border-purple-300 hover:bg-purple-50 transition-all duration-200 text-left group"
                       >
                         <div
-                          className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-semibold text-sm flex-shrink-0"
+                          className="w-12 h-12 rounded-lg flex items-center justify-center text-white font-semibold text-sm flex-shrink-0 mr-3"
                           style={{ backgroundColor: service.color }}
                         >
                           {service.name.substring(0, 2).toUpperCase()}
