@@ -130,6 +130,7 @@ const AuthForm: React.FC = () => {
               <div className="relative">
                 <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 pointer-events-none">
                   <Mail className="text-white/80 w-5 h-5" />
+                </div>
                 <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 pointer-events-none">
                   <Mail className="text-white/80 w-5 h-5" />
                 </div>
@@ -162,6 +163,7 @@ const AuthForm: React.FC = () => {
               <div className="relative">
                 <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 pointer-events-none">
                   <Lock className="text-white/80 w-5 h-5" />
+                </div>
                 <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 pointer-events-none">
                   <Lock className="text-white/80 w-5 h-5" />
                 </div>
