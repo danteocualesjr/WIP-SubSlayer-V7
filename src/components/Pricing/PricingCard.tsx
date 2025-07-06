@@ -37,6 +37,7 @@ const PricingCard: React.FC<PricingCardProps> = ({
   const handlePurchase = async () => {
     // Handle Free plan - no payment needed
     if (plan.monthlyPrice === 0 && plan.annualPrice === 0) {
+      // For free plan, just close the modal if open
       if (onGetStarted) {
         onGetStarted();
       }

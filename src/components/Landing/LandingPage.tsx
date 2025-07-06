@@ -76,7 +76,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
       annualPriceId: null,
       description: "Perfect for getting started",
       features: [
-        "Track up to 5 subscriptions",
+        "Track up to 7 subscriptions",
         "Email reminders",
         "Monthly spend overview",
         "Basic analytics",

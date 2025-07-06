@@ -18,7 +18,7 @@ const Pricing: React.FC = () => {
       annualPriceId: null,
       popular: false,
       features: [
-        'Track up to 5 subscriptions',
+        'Track up to 7 subscriptions',
         'Email reminders 3 days before renewal',
         'Monthly spend overview',
         'Basic analytics',
