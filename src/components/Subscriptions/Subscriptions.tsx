@@ -159,7 +159,6 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
     if (editingSubscription) {
       onEditSubscription(editingSubscription.id, subscriptionData);
     } else if (!isAtSubscriptionLimit || !isFreeTier) {
-    } else {
       onAddSubscription(subscriptionData);
     } else {
       // Show upgrade modal or message
