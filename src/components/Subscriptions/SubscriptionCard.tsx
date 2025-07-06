@@ -144,7 +144,6 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
           <div
             className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-lg flex-shrink-0"
             style={{ backgroundColor: subscription.color || '#8B5CF6' }}
-            aria-label={`${subscription.name} logo`}
           >
             {subscription.name.substring(0, 2).toUpperCase()}
           </div>

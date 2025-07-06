@@ -116,7 +116,6 @@ const SubscriptionListItem: React.FC<SubscriptionListItemProps> = ({
               <div
                 className="w-12 h-12 rounded-lg flex items-center justify-center text-white font-semibold text-sm flex-shrink-0"
                 style={{ backgroundColor: subscription.color || '#8B5CF6' }}
-                aria-label={`${subscription.name} logo`}
               >
                 {subscription.name.substring(0, 2).toUpperCase()}
               </div>
