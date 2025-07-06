@@ -9,7 +9,7 @@ import AddSubscriptionModal from '../Subscriptions/AddSubscriptionModal';
 import { SparklesCore } from '../ui/sparkles';
 import { Subscription, SpendingData } from '../../types/subscription';
 import { useAuth } from '../../hooks/useAuth';
-import { useProfile } from '../../hooks/useProfile';
+import { useProfile } from '../../hooks/useProfile'; 
 
 interface DashboardProps {
   subscriptions: Subscription[];
@@ -289,6 +289,7 @@ const Dashboard: React.FC<DashboardProps> = ({
         <MiniCalendar 
           subscriptions={subscriptions}
           onSwitchToCalendar={handleSwitchToCalendar}
+          key="mini-calendar"
         />
       </div>
 

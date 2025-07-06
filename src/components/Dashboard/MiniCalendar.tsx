@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from 'lucide-react';
 import { Subscription } from '../../types/subscription';
+import { useSettings } from '../../hooks/useSettings';
 
 interface MiniCalendarProps {
   subscriptions: Subscription[];
@@ -8,7 +9,19 @@ interface MiniCalendarProps {
 }
 
 const MiniCalendar: React.FC<MiniCalendarProps> = ({ subscriptions, onSwitchToCalendar }) => {
+  const { formatCurrency } = useSettings();
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [tooltipInfo, setTooltipInfo] = useState<{
+    visible: boolean;
+    x: number;
+    y: number;
+    subscriptions: Subscription[];
+  }>({
+    visible: false,
+    x: 0,
+    y: 0,
+    subscriptions: []
+  });
 
   const getDaysInMonth = (date: Date) => {
     return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
@@ -48,6 +61,23 @@ const MiniCalendar: React.FC<MiniCalendarProps> = ({ subscriptions, onSwitchToCa
     return date < today;
   };
 
+  const handleDayMouseEnter = (e: React.MouseEvent, date: Date) => {
+    const daySubscriptions = getSubscriptionsForDate(date);
+    if (daySubscriptions.length > 0) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      setTooltipInfo({
+        visible: true,
+        x: rect.left + window.scrollX,
+        y: rect.bottom + window.scrollY,
+        subscriptions: daySubscriptions
+      });
+    }
+  };
+
+  const handleDayMouseLeave = () => {
+    setTooltipInfo(prev => ({ ...prev, visible: false }));
+  };
+
   const renderCalendarDays = () => {
     const daysInMonth = getDaysInMonth(currentDate);
     const firstDay = getFirstDayOfMonth(currentDate);
@@ -67,20 +97,24 @@ const MiniCalendar: React.FC<MiniCalendarProps> = ({ subscriptions, onSwitchToCa
       const isCurrentDay = isToday(date);
       const isPast = isPastDate(date);
 
+      const hasRenewals = daySubscriptions.length > 0;
+
       days.push(
         <div
           key={day}
-          className={`h-8 flex items-center justify-center text-xs font-medium relative transition-all duration-200 rounded-lg ${
+          className={`h-8 flex items-center justify-center text-xs font-medium relative transition-all duration-200 rounded-lg cursor-default ${
             isCurrentDay 
               ? 'bg-purple-100 text-purple-700 shadow-sm' 
               : isPast 
                 ? 'text-gray-400' 
-                : 'text-gray-700 hover:bg-gray-50'
+                : hasRenewals ? 'text-gray-700 hover:bg-gray-50' : 'text-gray-700'
           }`}
+          onMouseEnter={hasRenewals ? (e) => handleDayMouseEnter(e, date) : undefined}
+          onMouseLeave={hasRenewals ? handleDayMouseLeave : undefined}
         >
           {day}
-          {daySubscriptions.length > 0 && (
-            <div className="absolute -top-1 -right-1 w-2 h-2 bg-gradient-to-r from-purple-500 to-violet-500 rounded-full animate-pulse shadow-sm"></div>
+          {hasRenewals && (
+            <div className="absolute -top-1 -right-1 w-2 h-2 bg-gradient-to-r from-purple-500 to-violet-500 rounded-full shadow-sm"></div>
           )}
         </div>
       );
@@ -165,6 +199,44 @@ const MiniCalendar: React.FC<MiniCalendarProps> = ({ subscriptions, onSwitchToCa
       <div className="grid grid-cols-7 gap-1 mb-6">
         {renderCalendarDays()}
       </div>
+      
+      {/* Tooltip for subscription renewals */}
+      {tooltipInfo.visible && (
+        <div 
+          className="absolute z-50 bg-white rounded-xl shadow-xl border border-purple-100 p-3 w-64 max-h-64 overflow-y-auto"
+          style={{ 
+            left: `${tooltipInfo.x}px`, 
+            top: `${tooltipInfo.y + 10}px`,
+            transform: 'translateX(-50%)'
+          }}
+        >
+          <h4 className="text-sm font-semibold text-gray-900 mb-2">
+            Renewals on {new Date(currentDate.getFullYear(), currentDate.getMonth(), parseInt(tooltipInfo.subscriptions[0]?.nextBilling.split('-')[2] || '1')).toLocaleDateString()}
+          </h4>
+          <div className="space-y-2">
+            {tooltipInfo.subscriptions.map((sub) => (
+              <div key={sub.id} className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <div 
+                    className="w-6 h-6 rounded-md flex items-center justify-center text-white text-xs font-semibold"
+                    style={{ backgroundColor: sub.color || '#8B5CF6' }}
+                  >
+                    {sub.name.substring(0, 1).toUpperCase()}
+                  </div>
+                  <span className="text-xs font-medium text-gray-900">{sub.name}</span>
+                </div>
+                <span className="text-xs font-semibold text-gray-900">{formatCurrency(sub.cost)}</span>
+              </div>
+            ))}
+          </div>
+          <div className="mt-2 pt-2 border-t border-gray-100 flex justify-between items-center">
+            <span className="text-xs text-gray-500">Total</span>
+            <span className="text-xs font-bold text-purple-600">
+              {formatCurrency(tooltipInfo.subscriptions.reduce((sum, sub) => sum + sub.cost, 0))}
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* Legend */}
       <div className="flex items-center justify-center space-x-6 text-xs text-gray-600">

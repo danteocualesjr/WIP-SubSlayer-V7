@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from 'lucide-react';
 import { Subscription } from '../../types/subscription';
 import { useSettings } from '../../hooks/useSettings';
+import { useState } from 'react';
 
 interface CalendarViewProps {
   subscriptions: Subscription[];
@@ -9,7 +10,20 @@ interface CalendarViewProps {
 
 const CalendarView: React.FC<CalendarViewProps> = ({ subscriptions }) => {
   const { formatDate } = useSettings();
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const [currentDate, setCurrentDate] = useState<Date>(new Date());
+  const [tooltipInfo, setTooltipInfo] = useState<{
+    visible: boolean;
+    x: number;
+    y: number;
+    date: Date | null;
+    subscriptions: Subscription[];
+  }>({
+    visible: false,
+    x: 0,
+    y: 0,
+    date: null,
+    subscriptions: []
+  });
 
   const getDaysInMonth = (date: Date) => {
     return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
@@ -53,6 +67,24 @@ const CalendarView: React.FC<CalendarViewProps> = ({ subscriptions }) => {
     return date < today;
   };
 
+  const handleDayMouseEnter = (e: React.MouseEvent, date: Date) => {
+    const daySubscriptions = getSubscriptionsForDate(date);
+    if (daySubscriptions.length > 0) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      setTooltipInfo({
+        visible: true,
+        x: rect.left + window.scrollX + rect.width / 2,
+        y: rect.top + window.scrollY,
+        date: date,
+        subscriptions: daySubscriptions
+      });
+    }
+  };
+
+  const handleDayMouseLeave = () => {
+    setTooltipInfo(prev => ({ ...prev, visible: false }));
+  };
+
   const renderCalendarDays = () => {
     const daysInMonth = getDaysInMonth(currentDate);
     const firstDay = getFirstDayOfMonth(currentDate);
@@ -75,13 +107,15 @@ const CalendarView: React.FC<CalendarViewProps> = ({ subscriptions }) => {
       days.push(
         <div
           key={day}
-          className={`h-24 border border-gray-100 p-2 transition-all duration-200 ${
+          className={`h-24 border border-gray-100 p-2 transition-all duration-200 relative ${
             isCurrentDay 
               ? 'bg-purple-50 border-purple-200' 
               : isPast 
                 ? 'bg-gray-50' 
                 : 'bg-white hover:bg-gray-50'
           }`}
+          onMouseEnter={(e) => handleDayMouseEnter(e, date)}
+          onMouseLeave={handleDayMouseLeave}
         >
           <div className={`text-sm font-medium mb-1 ${
             isCurrentDay 
@@ -94,7 +128,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({ subscriptions }) => {
           </div>
           
           <div className="space-y-1">
-            {daySubscriptions.slice(0, 2).map((subscription, index) => (
+            {daySubscriptions.slice(0, 3).map((subscription, index) => (
               <div
                 key={subscription.id}
                 className="text-xs px-2 py-1 rounded-md text-white font-medium truncate"
@@ -104,9 +138,9 @@ const CalendarView: React.FC<CalendarViewProps> = ({ subscriptions }) => {
                 {subscription.name}
               </div>
             ))}
-            {daySubscriptions.length > 2 && (
+            {daySubscriptions.length > 3 && (
               <div className="text-xs text-gray-500 px-2">
-                +{daySubscriptions.length - 2} more
+                +{daySubscriptions.length - 3} more
               </div>
             )}
           </div>
@@ -224,6 +258,57 @@ const CalendarView: React.FC<CalendarViewProps> = ({ subscriptions }) => {
           </div>
         </div>
       </div>
+
+      {/* Tooltip for subscription details */}
+      {tooltipInfo.visible && tooltipInfo.date && (
+        <div 
+          className="fixed z-50 bg-white rounded-xl shadow-xl border border-purple-100 p-4 w-72"
+          style={{ 
+            left: `${tooltipInfo.x}px`, 
+            top: `${tooltipInfo.y - 10}px`,
+            transform: 'translate(-50%, -100%)'
+          }}
+        >
+          <div className="flex items-center justify-between mb-3">
+            <h4 className="text-sm font-semibold text-gray-900">
+              {tooltipInfo.date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+            </h4>
+            <span className="text-xs font-medium px-2 py-1 bg-purple-100 text-purple-700 rounded-full">
+              {tooltipInfo.subscriptions.length} renewals
+            </span>
+          </div>
+          
+          <div className="max-h-64 overflow-y-auto space-y-3">
+            {tooltipInfo.subscriptions.map((subscription) => (
+              <div 
+                key={subscription.id} 
+                className="flex items-center justify-between p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                <div className="flex items-center space-x-2">
+                  <div 
+                    className="w-8 h-8 rounded-md flex items-center justify-center text-white font-semibold text-xs"
+                    style={{ backgroundColor: subscription.color || '#8B5CF6' }}
+                  >
+                    {subscription.name.substring(0, 2).toUpperCase()}
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">{subscription.name}</p>
+                    <p className="text-xs text-gray-500">{subscription.category || 'Uncategorized'}</p>
+                  </div>
+                </div>
+                <span className="text-sm font-bold text-gray-900">${subscription.cost.toFixed(2)}</span>
+              </div>
+            ))}
+          </div>
+          
+          <div className="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center">
+            <span className="text-sm text-gray-600">Total</span>
+            <span className="text-sm font-bold text-purple-700">
+              ${tooltipInfo.subscriptions.reduce((sum, sub) => sum + sub.cost, 0).toFixed(2)}
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* Upcoming Renewals List for Current Month */}
       {totalRenewalsThisMonth > 0 && (
