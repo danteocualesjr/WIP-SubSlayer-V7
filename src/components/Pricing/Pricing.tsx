@@ -22,7 +22,8 @@ const Pricing: React.FC = () => {
         'Email reminders 3 days before renewal',
         'Monthly spend overview',
         'Basic analytics',
-        'Cost simulator (1 scenario only)',
+        'Cost simulator (1 scenario only)'
+        
       ],
       cta: 'Get Started',
       gradient: 'from-gray-500 to-gray-600',

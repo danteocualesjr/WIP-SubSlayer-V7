@@ -72,52 +72,68 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
   const pricingPlans = [
     {
       name: "Free",
-      monthlyPrice: 0,
-      annualPrice: 0,
+      monthlyPriceId: null,
+      annualPriceId: null,
       description: "Perfect for getting started",
       features: [
         "Track up to 5 subscriptions",
-        "Basic analytics",
         "Email reminders",
-        "Cost simulator (1 scenario)"
+        "Monthly spend overview",
+        "Basic analytics",
+        "Cost simulator (1 scenario only)"
       ],
       cta: "Get Started Free",
       popular: false,
-      gradient: "from-gray-500 to-gray-600"
+      gradient: "from-gray-500 to-gray-600",
+      bgGradient: "from-gray-50 to-white",
+      borderColor: "border-gray-200"
     },
     {
       name: "Pro",
+      monthlyPriceId: "price_1RglYeCIxTxdP6ph0ajymCf0",
+      annualPriceId: "price_1RglaECIxTxdP6phSEknl1IE",
       monthlyPrice: 9.99,
       annualPrice: 99,
       description: "For power users",
       features: [
         "Unlimited subscriptions",
-        "Advanced analytics",
-        "AI insights with Swordie",
-        "Custom categories",
-        "CSV export",
+        "Custom renewal reminders (1–7 days)",
+        "Full cost simulator access",
+        "Monthly and annual spend tracking",
+        "Smart insights (duplicate/unused subscriptions)",
+        "Categorization with tags (Work, Entertainment)",
+        "CSV export of history",
         "Priority support"
       ],
       cta: "Start Pro Trial",
       popular: true,
-      gradient: "from-purple-600 to-violet-600"
+      gradient: "from-purple-600 to-violet-600",
+      bgGradient: "from-purple-50 to-violet-50",
+      borderColor: "border-purple-200"
     },
     {
       name: "Enterprise",
-      monthlyPrice: 99,
-      annualPrice: 990,
+      monthlyPriceId: null,
+      annualPriceId: null,
+      monthlyPrice: null,
+      annualPrice: null,
       description: "For teams and businesses",
       features: [
         "Everything in Pro",
-        "Team management",
-        "SSO integration",
-        "Advanced reporting",
-        "Dedicated support",
-        "Custom integrations"
+        "Unlimited users",
+        "Team dashboards & role-based access",
+        "Company-wide subscription reporting",
+        "Renewal controls (pause/assign/approve)",
+        "Slack/Email admin alerts",
+        "Accounting integrations (QuickBooks, Xero)",
+        "SSO & Google Workspace integration",
+        "Dedicated success manager"
       ],
       cta: "Contact Sales",
       popular: false,
-      gradient: "from-emerald-600 to-teal-600"
+      gradient: "from-emerald-600 to-teal-600",
+      bgGradient: "from-emerald-50 to-teal-50",
+      borderColor: "border-emerald-200"
     }
   ];
 
@@ -546,10 +562,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
               return (
                 <div
                   key={index}
-                  className={`relative rounded-2xl p-8 transition-all duration-300 hover:shadow-xl ${
+                  className={`relative rounded-2xl p-8 transition-all duration-300 hover:shadow-xl bg-gradient-to-br ${
                     plan.popular
                       ? 'ring-2 ring-purple-500 shadow-lg scale-105 z-10 bg-white'
-                      : 'border border-gray-200 hover:border-gray-300 bg-white'
+                      : `border ${plan.borderColor} hover:border-gray-300 ${plan.bgGradient}`
                   }`}
                 >
                   {plan.popular && (
@@ -564,7 +580,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                   <div className="text-center mb-8">
                     <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
                     <p className="text-gray-600 mb-4">{plan.description}</p>
-                    <div className="flex items-baseline justify-center space-x-1">
+                    <div className="flex items-baseline justify-center space-x-1 min-h-[60px]">
                       <span className="text-5xl font-bold text-gray-900">
                         ${plan.name === 'Enterprise' ? (isAnnual ? price : `${price}+`) : price}
                       </span>
