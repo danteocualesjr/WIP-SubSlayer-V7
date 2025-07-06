@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, DollarSign, Clock } from 'lucide-react';
 import { Subscription } from '../../types/subscription';
 import { useSettings } from '../../hooks/useSettings';
 
@@ -9,7 +9,7 @@ interface MiniCalendarProps {
 }
 
 const MiniCalendar: React.FC<MiniCalendarProps> = ({ subscriptions, onSwitchToCalendar }) => {
-  const { formatCurrency } = useSettings();
+  const { formatCurrency, formatDate } = useSettings();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [tooltipInfo, setTooltipInfo] = useState<{
     visible: boolean;
@@ -155,97 +155,117 @@ const MiniCalendar: React.FC<MiniCalendarProps> = ({ subscriptions, onSwitchToCa
     .reduce((sum, sub) => sum + sub.cost, 0);
 
   return (
-    <div className="bg-white rounded-3xl p-8 shadow-lg border border-purple-100/50 hover:shadow-xl transition-all duration-300 group">
+    <div className="bg-white rounded-3xl p-8 shadow-lg border border-purple-100/50 hover:shadow-xl transition-all duration-300 group overflow-hidden relative">
+      {/* Decorative elements */}
+      <div className="absolute -top-24 -right-24 w-48 h-48 bg-gradient-to-br from-purple-200/20 to-blue-200/20 rounded-full blur-3xl"></div>
+      <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-gradient-to-br from-purple-200/20 to-blue-200/20 rounded-full blur-3xl"></div>
+      
       {/* Month Navigation */}
       <div className="flex items-center justify-between mb-6">
         <button
           onClick={() => navigateMonth('prev')}
-          className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-colors"
+          className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-all duration-200 hover:scale-110"
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
         
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-violet-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+          <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-violet-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
             <CalendarIcon className="w-5 h-5 text-white" />
           </div>
-          <h4 className="text-lg font-bold text-gray-900">
+          <h4 className="text-xl font-bold bg-gradient-to-r from-purple-800 to-violet-700 bg-clip-text text-transparent">
             {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
           </h4>
         </div>
         
         <button
           onClick={() => navigateMonth('next')}
-          className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-colors"
+          className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-all duration-200 hover:scale-110"
         >
           <ChevronRight className="w-5 h-5" />
         </button>
       </div>
 
       {/* Month Stats */}
-      <div className="grid grid-cols-2 gap-4 mb-6">
-        <div className="bg-gradient-to-br from-purple-50 to-violet-50 rounded-2xl p-4 border border-purple-100">
-          <p className="text-xs text-gray-600 mb-1 font-medium">Renewals</p>
-          <p className="text-2xl font-bold text-purple-600">{totalRenewalsThisMonth}</p>
+      <div className="grid grid-cols-2 gap-4 mb-8">
+        <div className="bg-gradient-to-br from-purple-50 to-violet-50 rounded-2xl p-4 border border-purple-100 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 transform">
+          <div className="flex items-center space-x-2 mb-2">
+            <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-violet-500 rounded-lg flex items-center justify-center shadow-md">
+              <Clock className="w-4 h-4 text-white" />
+            </div>
+            <p className="text-xs text-gray-600 font-medium">Renewals</p>
+          </div>
+          <p className="text-3xl font-bold text-purple-600">{totalRenewalsThisMonth}</p>
         </div>
-        <div className="bg-gradient-to-br from-emerald-50 to-green-50 rounded-2xl p-4 border border-emerald-100">
-          <p className="text-xs text-gray-600 mb-1 font-medium">Amount</p>
-          <p className="text-2xl font-bold text-emerald-600">${totalAmountThisMonth.toFixed(2)}</p>
+        <div className="bg-gradient-to-br from-emerald-50 to-green-50 rounded-2xl p-4 border border-emerald-100 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 transform">
+          <div className="flex items-center space-x-2 mb-2">
+            <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-green-500 rounded-lg flex items-center justify-center shadow-md">
+              <DollarSign className="w-4 h-4 text-white" />
+            </div>
+            <p className="text-xs text-gray-600 font-medium">Amount</p>
+          </div>
+          <p className="text-3xl font-bold text-emerald-600">${totalAmountThisMonth.toFixed(2)}</p>
         </div>
       </div>
 
       {/* Day Headers */}
-      <div className="grid grid-cols-7 gap-1 mb-3">
+      <div className="grid grid-cols-7 gap-2 mb-4">
         {dayNames.map((day, index) => (
-          <div key={index} className="text-center text-xs font-semibold text-gray-500 py-2">
+          <div key={index} className="text-center text-xs font-bold text-gray-500 py-2">
             {day}
           </div>
         ))}
       </div>
 
       {/* Calendar Grid */}
-      <div className="grid grid-cols-7 gap-1 mb-6">
+      <div className="grid grid-cols-7 gap-2 mb-8">
         {renderCalendarDays()}
       </div>
       
       {/* Tooltip for subscription renewals */}
       {tooltipInfo.visible && (
         <div 
-          className="fixed z-50 bg-white rounded-xl shadow-xl border border-purple-100 p-3 w-64 max-h-80 overflow-y-auto"
+          className="fixed z-50 bg-white/95 backdrop-blur-md rounded-xl shadow-2xl border border-purple-200 p-4 w-72 max-h-96 overflow-y-auto"
           style={{ 
             left: tooltipInfo.x,
             top: tooltipInfo.y - 10,
             transform: 'translate(-50%, -100%)'
           }}
         >
-          <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center justify-between">
-            <span>Renewals on {tooltipInfo.date.toLocaleDateString()}</span>
-            <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">
+          <div className="flex items-center justify-between mb-4">
+            <h4 className="text-base font-bold text-gray-900">
+              {tooltipInfo.date.toLocaleDateString(undefined, { 
+                month: 'short', 
+                day: 'numeric', 
+                year: 'numeric' 
+              })}
+            </h4>
+            <span className="text-xs bg-purple-100 text-purple-700 px-3 py-1 rounded-full font-semibold">
               {tooltipInfo.subscriptions.length}
             </span>
-          </h4>
-          <div className="space-y-3">
+          </div>
+          <div className="space-y-3 max-h-64 overflow-y-auto pr-1">
             {tooltipInfo.subscriptions.map((sub) => (
-              <div key={sub.id} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
+              <div key={sub.id} className="flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors border border-gray-100 shadow-sm">
                 <div className="flex items-center space-x-2">
                   <div 
-                    className="w-8 h-8 rounded-md flex items-center justify-center text-white text-xs font-semibold"
+                    className="w-10 h-10 rounded-lg flex items-center justify-center text-white text-xs font-semibold shadow-md"
                     style={{ backgroundColor: sub.color || '#8B5CF6' }}
                   >
                     {sub.name.substring(0, 2).toUpperCase()}
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{sub.name}</p>
-                    <p className="text-xs text-gray-500">{sub.category || 'Uncategorized'}</p>
+                    <p className="text-sm font-semibold text-gray-900">{sub.name}</p>
+                    <p className="text-xs text-gray-500 font-medium">{sub.category || 'Uncategorized'}</p>
                   </div>
                 </div>
-                <span className="text-sm font-bold text-gray-900">${sub.cost.toFixed(2)}</span>
+                <span className="text-sm font-bold bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent">${sub.cost.toFixed(2)}</span>
               </div>
             ))}
           </div>
-          <div className="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center">
-            <span className="text-sm text-gray-600">Total</span>
-            <span className="text-sm font-bold text-purple-700">
+          <div className="mt-4 pt-3 border-t border-gray-200 flex justify-between items-center">
+            <span className="text-sm font-medium text-gray-600">Total</span>
+            <span className="text-base font-bold text-purple-700">
               ${tooltipInfo.subscriptions.reduce((sum, sub) => sum + sub.cost, 0).toFixed(2)}
             </span>
           </div>
@@ -253,14 +273,14 @@ const MiniCalendar: React.FC<MiniCalendarProps> = ({ subscriptions, onSwitchToCa
       )}
 
       {/* Legend */}
-      <div className="flex items-center justify-center space-x-6 text-xs text-gray-600">
-        <div className="flex items-center space-x-2">
-          <div className="w-3 h-3 bg-purple-100 border border-purple-200 rounded-lg"></div>
-          <span className="font-medium">Today</span>
+      <div className="flex items-center justify-center space-x-8 text-xs text-gray-600 bg-gray-50 py-3 px-4 rounded-xl">
+        <div className="flex items-center space-x-2 group">
+          <div className="w-4 h-4 bg-purple-100 border border-purple-200 rounded-lg group-hover:scale-125 transition-transform"></div>
+          <span className="font-semibold">Today</span>
         </div>
-        <div className="flex items-center space-x-2">
-          <div className="w-3 h-3 bg-purple-500 rounded-full shadow-sm"></div>
-          <span className="font-medium">Renewal</span>
+        <div className="flex items-center space-x-2 group">
+          <div className="w-4 h-4 bg-purple-500 rounded-full shadow-sm group-hover:scale-125 transition-transform"></div>
+          <span className="font-semibold">Renewal</span>
         </div>
       </div>
     </div>
