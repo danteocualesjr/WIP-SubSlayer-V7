@@ -60,16 +60,6 @@ export function useSubscriptions() {
   const addSubscription = async (subscriptionData: Omit<Subscription, 'id' | 'createdAt'>) => {
     if (!user) return { error: 'User not authenticated' };
 
-    // Check if user is on free tier and already has 7 subscriptions
-    const { subscription } = useSubscription();
-    const isFreeTier = !subscription || !subscription.subscriptionId;
-    
-    if (isFreeTier && subscriptions.length >= 7) {
-      return { 
-        error: 'Free tier is limited to 7 subscriptions. Please upgrade to Pro for unlimited subscriptions.' 
-      };
-    }
-
     try {
       const { data, error } = await supabase
         .from('subscriptions')
