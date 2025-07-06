@@ -128,14 +128,14 @@ const AuthForm: React.FC = () => {
                 Email
               </label>
               <div className="relative">
-                <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 pointer-events-none bg-transparent">
+                <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 pointer-events-none">
                   <Mail className="text-white/80 w-5 h-5" />
                 </div>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 bg-white/15 rounded-2xl text-white placeholder-white/60 focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 border-0 outline-none"
+                  className="w-full pl-12 pr-4 py-4 bg-white/15 rounded-2xl text-white placeholder-white/60 focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 border-0 outline-none [&::placeholder]:text-white/60"
                   placeholder="Enter your email"
                   required
                 />
@@ -158,14 +158,14 @@ const AuthForm: React.FC = () => {
                 )}
               </div>
               <div className="relative">
-                <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 pointer-events-none bg-transparent">
+                <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 pointer-events-none">
                   <Lock className="text-white/80 w-5 h-5" />
                 </div>
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-12 pr-14 py-4 bg-white/15 rounded-2xl text-white placeholder-white/60 focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 border-0 outline-none"
+                  className="w-full pl-12 pr-14 py-4 bg-white/15 rounded-2xl text-white placeholder-white/60 focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 border-0 outline-none [&::placeholder]:text-white/60"
                   placeholder="Enter your password"
                   required
                   minLength={6}
