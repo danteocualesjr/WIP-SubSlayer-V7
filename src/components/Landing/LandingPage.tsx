@@ -368,7 +368,15 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
               <span>Start Free Today</span>
               <ArrowRight className="w-5 h-5" />
             </button>
-            <button className="text-white/90 hover:text-white font-semibold text-lg flex items-center space-x-2 transition-colors group">
+            <button 
+              onClick={() => {
+                const demoSection = document.getElementById('demo');
+                if (demoSection) {
+                  demoSection.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+              className="text-white/90 hover:text-white font-semibold text-lg flex items-center space-x-2 transition-colors group"
+            >
               <span>Watch Demo</span>
               <div className="w-12 h-12 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 border border-white/20 group-hover:scale-110">
                 <ArrowRight className="w-5 h-5" />
