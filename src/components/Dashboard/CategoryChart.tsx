@@ -118,6 +118,9 @@ const CategoryChart: React.FC<CategoryChartProps> = ({ data }) => {
       <div className="mb-8">
         <h3 className="text-xl font-bold text-gray-900 mb-3">Spending by Category</h3>
           <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-violet-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 animate-pulse">
+            <Sparkles className="w-6 h-6 text-white" />
+          </div>
+      </div>
       <div className="relative">
         {/* Decorative background elements */}
         <div className="absolute inset-0 bg-gradient-to-br from-purple-50/30 to-violet-50/30 rounded-2xl overflow-hidden">
