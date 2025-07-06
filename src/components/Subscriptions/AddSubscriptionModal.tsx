@@ -141,6 +141,9 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
     { name: 'Notion', category: 'Productivity', color: '#000000', description: 'All-in-one workspace for notes and docs', commonPrices: { monthly: 8, annual: 96 }, billingCycle: 'monthly' },
     { name: 'Obsidian', category: 'Productivity', color: '#7C3AED', description: 'Knowledge management and note-taking', commonPrices: { monthly: 8 }, billingCycle: 'monthly' },
     
+    // Business
+    { name: 'Doola', category: 'Business', color: '#4F46E5', description: 'Business formation and compliance platform', commonPrices: { monthly: 99 }, billingCycle: 'monthly' },
+    
     // Entertainment
     { name: 'Netflix', category: 'Entertainment', color: '#E50914', description: 'Streaming movies and TV shows', commonPrices: { monthly: 15.49 }, billingCycle: 'monthly' },
     { name: 'Disney+', category: 'Entertainment', color: '#113CCF', description: 'Disney, Marvel, Star Wars content', commonPrices: { monthly: 7.99, annual: 79.99 }, billingCycle: 'monthly' },
@@ -194,6 +197,7 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
     { name: 'Udemy Pro', category: 'Education', color: '#A435F0', description: 'Professional development courses', commonPrices: { monthly: 29.99, annual: 360 }, billingCycle: 'annual' },
     { name: 'LinkedIn Learning', category: 'Education', color: '#0077B5', description: 'Professional skill development', commonPrices: { monthly: 29.99, annual: 239.88 }, billingCycle: 'annual' },
     { name: 'Duolingo Plus', category: 'Education', color: '#58CC02', description: 'Language learning app', commonPrices: { monthly: 6.99, annual: 83.88 }, billingCycle: 'annual' },
+    { name: 'The Rundown University', category: 'Education', color: '#FF6B35', description: 'AI and business education platform', commonPrices: { monthly: 49 }, billingCycle: 'monthly' },
     
     // Health & Fitness
     { name: 'Peloton App', category: 'Health & Fitness', color: '#000000', description: 'Fitness classes and workouts', commonPrices: { monthly: 12.99 }, billingCycle: 'monthly' },
