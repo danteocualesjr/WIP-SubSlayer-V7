@@ -33,7 +33,12 @@ const CalendarView: React.FC<CalendarViewProps> = ({ subscriptions }) => {
   };
 
   const getSubscriptionsForDate = (date: Date) => {
-    const dateString = date.toISOString().split('T')[0];
+    // Format the date to YYYY-MM-DD format for comparison
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const dateString = `${year}-${month}-${day}`;
+    
     return subscriptions.filter(sub => 
       sub.nextBilling === dateString && sub.status === 'active'
     );

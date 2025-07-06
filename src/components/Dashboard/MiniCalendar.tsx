@@ -32,7 +32,12 @@ const MiniCalendar: React.FC<MiniCalendarProps> = ({ subscriptions, onSwitchToCa
   };
 
   const getSubscriptionsForDate = (date: Date) => {
-    const dateString = date.toISOString().split('T')[0];
+    // Format the date to YYYY-MM-DD format for comparison
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const dateString = `${year}-${month}-${day}`;
+    
     return subscriptions.filter(sub => 
       sub.nextBilling === dateString && sub.status === 'active'
     );
@@ -203,7 +208,7 @@ const MiniCalendar: React.FC<MiniCalendarProps> = ({ subscriptions, onSwitchToCa
       {/* Tooltip for subscription renewals */}
       {tooltipInfo.visible && (
         <div 
-          className="absolute z-50 bg-white rounded-xl shadow-xl border border-purple-100 p-3 w-64 max-h-64 overflow-y-auto"
+          className="fixed z-50 bg-white rounded-xl shadow-xl border border-purple-100 p-3 w-64 max-h-64 overflow-y-auto"
           style={{ 
             left: `${tooltipInfo.x}px`, 
             top: `${tooltipInfo.y + 10}px`,
