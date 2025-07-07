@@ -19,6 +19,7 @@ export function useAuth() {
       });
       
       return { data, error };
+      
     } catch (error) {
       console.error('Google sign in error:', error);
       return { data: null, error };
