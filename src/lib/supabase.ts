@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { PROFILE_STORAGE_PREFIX } from './constants';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -29,11 +30,15 @@ export const isSupabaseReady = () => {
 // Helper function to clear corrupted auth data
 export const clearAuthData = () => {
   try {
-    // Clear all possible auth-related storage keys
+    // Clear all possible auth-related storage keys but preserve user data
     const keysToRemove = [];
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
-      if (key && key.includes('supabase')) {
+      if (key && (
+        key.includes('supabase.auth') || 
+        key.includes('sb-') || 
+        key.includes('supabase-auth')
+      )) {
         keysToRemove.push(key);
       }
     }
@@ -43,7 +48,11 @@ export const clearAuthData = () => {
     const sessionKeysToRemove = [];
     for (let i = 0; i < sessionStorage.length; i++) {
       const key = sessionStorage.key(i);
-      if (key && key.includes('supabase')) {
+      if (key && (
+        key.includes('supabase.auth') || 
+        key.includes('sb-') || 
+        key.includes('supabase-auth')
+      )) {
         sessionKeysToRemove.push(key);
       }
     }

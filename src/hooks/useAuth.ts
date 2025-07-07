@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase, clearAuthData } from '../lib/supabase';
+import { PROFILE_STORAGE_PREFIX } from '../lib/constants';
 
 export function useAuth() {
   
@@ -129,9 +130,8 @@ export function useAuth() {
   const signOut = async () => {
     try {
       const { error } = await supabase.auth.signOut();
-      if (!error) {
-        clearAuthData();
-      }
+      // Always clear auth data regardless of error to ensure clean state
+      clearAuthData();
       return { error };
     } catch (error) {
       console.error('Sign out error:', error);

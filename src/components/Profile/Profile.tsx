@@ -14,6 +14,7 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
   const { user, signOut } = useAuth();
   const { profile, loading: profileLoading, saveProfile } = useProfile();
   const [showEditModal, setShowEditModal] = useState(false);
+  const [profileLoaded, setProfileLoaded] = useState(false);
 
   // Listen for navigation event from header
   useEffect(() => {
@@ -27,6 +28,19 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
       window.removeEventListener('navigateToProfile', handleNavigateToProfile);
     };
   }, []);
+
+  // Force profile reload when component mounts
+  useEffect(() => {
+    if (user && !profileLoaded) {
+      // Add a small delay to ensure auth is fully initialized
+      const timer = setTimeout(() => {
+        console.log('Forcing profile reload');
+        setProfileLoaded(true);
+      }, 500);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [user, profileLoaded]);
 
   const activeSubscriptions = subscriptions.filter(sub => sub.status === 'active');
   const totalMonthlySpend = activeSubscriptions.reduce((sum, sub) => {
