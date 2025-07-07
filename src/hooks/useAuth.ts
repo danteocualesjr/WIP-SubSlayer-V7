@@ -17,6 +17,7 @@ export function useAuth() {
           redirectTo: `${window.location.origin}`
         }
       });
+      
       return { data, error };
     } catch (error) {
       console.error('Google sign in error:', error);
