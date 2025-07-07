@@ -9,6 +9,7 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
 
   const signInWithGoogle = async () => {
+    
     try {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
