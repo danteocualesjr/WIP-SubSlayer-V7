@@ -19,6 +19,7 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
   useEffect(() => {
     const handleNavigateToProfile = () => {
     };
+  });
 
   const activeSubscriptions = subscriptions.filter(sub => sub.status === 'active');
   const totalMonthlySpend = activeSubscriptions.reduce((sum, sub) => {
