@@ -190,7 +190,7 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
               </linearGradient>
               <filter id="barShadow" x="-10%" y="-10%" width="120%" height="130%">
                 <feDropShadow dx="0" dy="4" stdDeviation="3" floodColor="#8B5CF6" floodOpacity="0.15"/>
-              </linearGradient>
+              </filter>
             </defs>
             <CartesianGrid 
               strokeDasharray="5 5" 
