@@ -263,6 +263,22 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
           </div>
         </div>
 
+        <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-4 border border-blue-100">
+          <div className="flex items-center space-x-3">
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+              isPositive ? 'bg-gradient-to-br from-red-500 to-orange-500' : 'bg-gradient-to-br from-green-500 to-emerald-500'
+            }`}>
+              {isPositive ? <TrendingUp className="w-5 h-5 text-white" /> : <TrendingDown className="w-5 h-5 text-white" />}
+            </div>
+            <div>
+              <p className="text-sm text-gray-600 font-medium">vs Last Month</p>
+              <p className={`text-xl font-bold ${isPositive ? 'text-red-600' : 'text-green-600'}`}>
+                {isPositive ? '+' : ''}{changePercentage.toFixed(1)}%
+              </p>
+            </div>
+          </div>
+        </div>
+
         <div className="bg-gradient-to-br from-emerald-50 to-green-50 rounded-2xl p-4 border border-emerald-100">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-green-500 rounded-xl flex items-center justify-center">
