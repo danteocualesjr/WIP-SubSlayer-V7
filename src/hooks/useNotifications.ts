@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from './useAuth';
 import { useSettings } from './useSettings';
-import { NOTIFICATIONS_STORAGE_PREFIX } from '../lib/constants';
 import { Subscription } from '../types/subscription';
 
 export interface NotificationItem {
@@ -36,29 +35,11 @@ export function useNotifications() {
   const loadNotifications = () => {
     try {
       setLoading(true);
-      const savedNotifications = localStorage.getItem(`${NOTIFICATIONS_STORAGE_PREFIX}${user?.id}`);
+      const savedNotifications = localStorage.getItem(`notifications_${user?.id}`);
       
       if (savedNotifications) {
         const parsedNotifications = JSON.parse(savedNotifications);
         setNotifications(parsedNotifications);
-      } else {
-        // Try legacy storage key
-        const legacyNotifications = localStorage.getItem(`notifications_${user?.id}`);
-        if (legacyNotifications) {
-          try {
-            const parsedNotifications = JSON.parse(legacyNotifications);
-            setNotifications(parsedNotifications);
-            
-            // Migrate to new key format
-            localStorage.setItem(`${NOTIFICATIONS_STORAGE_PREFIX}${user?.id}`, legacyNotifications);
-            console.log('Migrated notifications to new storage key format');
-          } catch (e) {
-            console.warn('Failed to parse legacy notifications:', e);
-            setNotifications([]);
-          }
-        } else {
-          setNotifications([]);
-        }
       }
     } catch (error) {
       console.error('Error loading notifications:', error);
@@ -71,11 +52,7 @@ export function useNotifications() {
     if (!user) return;
     
     try {
-      localStorage.setItem(`${NOTIFICATIONS_STORAGE_PREFIX}${user.id}`, JSON.stringify(newNotifications));
-      
-      // Also update legacy storage for backward compatibility
       localStorage.setItem(`notifications_${user.id}`, JSON.stringify(newNotifications));
-      
       setNotifications(newNotifications);
     } catch (error) {
       console.error('Error saving notifications:', error);

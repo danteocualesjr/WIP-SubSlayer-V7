@@ -158,7 +158,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
   const handleAddOrEdit = (subscriptionData: Omit<Subscription, 'id' | 'createdAt'>) => {
     if (editingSubscription) {
       onEditSubscription(editingSubscription.id, subscriptionData);
-    } else if (!isAtSubscriptionLimit || !isFreeTier || subscriptions.length === 0) {
+    } else if (!isAtSubscriptionLimit || !isFreeTier) {
       onAddSubscription(subscriptionData);
     } else {
       // Show upgrade modal or message

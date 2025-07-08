@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from './useAuth';
-import { SETTINGS_STORAGE_PREFIX } from '../lib/constants';
 
 export interface AppSettings {
   currency: string;
@@ -41,7 +40,7 @@ export function useSettings() {
   useEffect(() => {
     if (user) {
       loadSettings();
-    } else if (!user) {
+    } else {
       setSettings(defaultSettings);
       setLoading(false);
     }
@@ -55,27 +54,13 @@ export function useSettings() {
   const loadSettings = () => {
     try {
       setLoading(true);
-      const savedSettings = localStorage.getItem(`${SETTINGS_STORAGE_PREFIX}${user?.id}`);
+      const savedSettings = localStorage.getItem(`settings_${user?.id}`);
       
       if (savedSettings) {
         const parsedSettings = JSON.parse(savedSettings);
         setSettings({ ...defaultSettings, ...parsedSettings });
       } else {
-        // Try legacy storage key
-        const legacySettings = localStorage.getItem(`settings_${user?.id}`);
-        if (legacySettings) {
-          try {
-            const parsedSettings = JSON.parse(legacySettings);
-            setSettings({ ...defaultSettings, ...parsedSettings });
-            
-            // Migrate to new key format
-            localStorage.setItem(`${SETTINGS_STORAGE_PREFIX}${user?.id}`, legacySettings);
-            console.log('Migrated settings to new storage key format');
-          } catch (e) {
-            console.warn('Failed to parse legacy settings:', e);
-            setSettings(defaultSettings);
-          }
-        }
+        setSettings(defaultSettings);
       }
     } catch (error) {
       console.error('Error loading settings:', error);
@@ -91,9 +76,6 @@ export function useSettings() {
     try {
       const updatedSettings = { ...settings, ...newSettings };
       setSettings(updatedSettings);
-      localStorage.setItem(`${SETTINGS_STORAGE_PREFIX}${user.id}`, JSON.stringify(updatedSettings));
-      
-      // Also update legacy storage for backward compatibility
       localStorage.setItem(`settings_${user.id}`, JSON.stringify(updatedSettings));
       
       // Apply theme immediately if changed
@@ -124,8 +106,7 @@ export function useSettings() {
 
     try {
       setSettings(defaultSettings);
-      localStorage.removeItem(`${SETTINGS_STORAGE_PREFIX}${user.id}`);
-      localStorage.removeItem(`settings_${user.id}`); // Also remove legacy storage
+      localStorage.removeItem(`settings_${user.id}`);
       applyTheme(defaultSettings.theme);
       return { success: true };
     } catch (error) {

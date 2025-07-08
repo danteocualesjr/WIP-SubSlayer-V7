@@ -1,14 +1,12 @@
 import { useState } from 'react';
 import { useAuth } from './useAuth';
 import { supabase } from '../lib/supabase';
-import { stripeProducts } from '../stripe-config';
 
 interface CheckoutSessionRequest {
   priceId: string;
   mode: 'payment' | 'subscription';
   successUrl?: string;
   cancelUrl?: string;
-  isTestMode?: boolean;
 }
 
 interface CheckoutSessionResponse {
@@ -25,8 +23,7 @@ export function useStripe() {
     priceId,
     mode,
     successUrl,
-    cancelUrl,
-    isTestMode = false
+    cancelUrl
   }: CheckoutSessionRequest): Promise<CheckoutSessionResponse | null> => {
     if (!user) {
       setError('User must be authenticated');
@@ -52,7 +49,6 @@ export function useStripe() {
         body: JSON.stringify({
           price_id: priceId,
           mode,
-          is_test_mode: isTestMode,
           success_url: successUrl || `${window.location.origin}/success`,
           cancel_url: cancelUrl || `${window.location.origin}/pricing`,
         }),
@@ -107,12 +103,6 @@ export function useStripe() {
   };
 
   const redirectToCheckout = async (checkoutData: CheckoutSessionRequest) => {
-    // Default to test mode for now
-    const updatedCheckoutData = {
-      ...checkoutData,
-      isTestMode: true
-    };
-    
     const session = await createCheckoutSession(checkoutData);
     
     if (session?.url) {

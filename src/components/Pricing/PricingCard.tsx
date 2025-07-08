@@ -57,11 +57,7 @@ const PricingCard: React.FC<PricingCardProps> = ({
     }
 
     // Determine the correct priceId based on the billing cycle
-    // Use test price IDs for now
-    const isTestMode = true;
-    const selectedPriceId = isAnnual 
-      ? (isTestMode ? 'price_1RglaECIxTxdP6phSEknl1IE' : plan.annualPriceId) 
-      : (isTestMode ? 'price_1RglYeCIxTxdP6ph0ajymCf0' : plan.monthlyPriceId);
+    const selectedPriceId = isAnnual ? plan.annualPriceId : plan.monthlyPriceId;
 
     if (!selectedPriceId) {
       console.error('No Stripe Price ID found for the selected plan and billing cycle.');
@@ -72,7 +68,6 @@ const PricingCard: React.FC<PricingCardProps> = ({
       await redirectToCheckout({
         priceId: selectedPriceId,
         mode: 'subscription',
-        isTestMode: true,
         successUrl: `${window.location.origin}/success`,
         cancelUrl: `${window.location.origin}/pricing`,
       });

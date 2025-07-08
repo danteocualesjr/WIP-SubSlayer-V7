@@ -3,8 +3,6 @@ import Stripe from 'npm:stripe@17.7.0';
 import { createClient } from 'npm:@supabase/supabase-js@2.49.1';
 
 const supabase = createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '');
-
-// Get the appropriate Stripe secret key based on mode
 const stripeSecret = Deno.env.get('STRIPE_SECRET_KEY')!;
 const stripe = new Stripe(stripeSecret, {
   appInfo: {
@@ -45,19 +43,15 @@ Deno.serve(async (req) => {
       return corsResponse({ error: 'Method not allowed' }, 405);
     }
 
-    const { price_id, success_url, cancel_url, mode, is_test_mode } = await req.json();
-    
-    console.log(`Creating checkout session with price_id: ${price_id}, mode: ${mode}, is_test_mode: ${is_test_mode}`);
-    console.log(`Using Stripe key: ${stripeSecret.substring(0, 8)}...`);
+    const { price_id, success_url, cancel_url, mode } = await req.json();
 
     const error = validateParameters(
-      { price_id, success_url, cancel_url, mode, is_test_mode },
+      { price_id, success_url, cancel_url, mode },
       {
         cancel_url: 'string',
         price_id: 'string',
         success_url: 'string',
         mode: { values: ['payment', 'subscription'] },
-        is_test_mode: { optional: true },
       },
     );
 
@@ -210,19 +204,11 @@ Deno.serve(async (req) => {
 type ExpectedType = 'string' | { values: string[] };
 type Expectations<T> = { [K in keyof T]: ExpectedType };
 
-function validateParameters<T extends Record<string, any>>(
-  values: T, 
-  expected: Record<string, ExpectedType | { values: string[] } | { optional: boolean }>
-): string | undefined {
+function validateParameters<T extends Record<string, any>>(values: T, expected: Expectations<T>): string | undefined {
   for (const parameter in values) {
     const expectation = expected[parameter];
     const value = values[parameter];
 
-    // Skip validation for optional parameters
-    if (expectation && typeof expectation === 'object' && 'optional' in expectation) {
-      continue;
-    }
-    
     if (expectation === 'string') {
       if (value == null) {
         return `Missing required parameter ${parameter}`;
@@ -230,7 +216,7 @@ function validateParameters<T extends Record<string, any>>(
       if (typeof value !== 'string') {
         return `Expected parameter ${parameter} to be a string got ${JSON.stringify(value)}`;
       }
-    } else if (expectation && typeof expectation === 'object' && 'values' in expectation) {
+    } else {
       if (!expectation.values.includes(value)) {
         return `Expected parameter ${parameter} to be one of ${expectation.values.join(', ')}`;
       }
