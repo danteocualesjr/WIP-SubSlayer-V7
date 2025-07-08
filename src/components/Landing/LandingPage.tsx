@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sword, ArrowRight, Check, Star, Zap, Shield, TrendingUp, Calendar, DollarSign, Users, ChevronDown, Menu, X, Sparkles, Target, Brain, BarChart3, Play, Mail, HelpCircle } from 'lucide-react';
+import { Sword, ArrowRight, Check, Star, Zap, Shield, TrendingUp, Calendar, DollarSign, Users, ChevronDown, Menu, X, Sparkles, Target, Brain, BarChart3, Play, Mail } from 'lucide-react';
 import { SparklesCore } from '../ui/sparkles';
 
 interface LandingPageProps {
@@ -298,13 +298,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                 <a href="#pricing" className="text-white/80 hover:text-white font-medium transition-colors">Pricing</a>
                 <a href="#testimonials" className="text-white/80 hover:text-white font-medium transition-colors">Reviews</a>
                 <button
-                  onClick={handleContactSales}
-                  className="text-white/80 hover:text-white font-medium transition-colors flex items-center space-x-1"
-                >
-                  <HelpCircle className="w-4 h-4" />
-                  <span>Support</span>
-                </button>
-                <button
                   onClick={onGetStarted}
                   className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-6 py-2 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl border border-white/30 hover:border-white/50"
                 >
@@ -330,12 +323,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                 <a href="#demo" className="block text-white/80 hover:text-white font-medium transition-colors">Demo</a>
                 <a href="#pricing" className="block text-white/80 hover:text-white font-medium transition-colors">Pricing</a>
                 <a href="#testimonials" className="block text-white/80 hover:text-white font-medium transition-colors">Reviews</a>
-                <button
-                  onClick={handleContactSales}
-                  className="block text-white/80 hover:text-white font-medium transition-colors text-left"
-                >
-                  Support
-                </button>
                 <button
                   onClick={onGetStarted}
                   className="w-full bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 border border-white/30"
