@@ -3,7 +3,6 @@ import { X, Plus, Sparkles, Search, Star } from 'lucide-react';
 import { Subscription } from '../../types/subscription';
 import { useSettings } from '../../hooks/useSettings';
 import { useSubscription } from '../../hooks/useSubscription';
-import { useSubscription } from '../../hooks/useSubscription';
 
 interface AddSubscriptionModalProps {
   isOpen: boolean;
