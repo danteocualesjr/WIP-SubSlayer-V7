@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, BarChart, Bar } from 'recharts';
-import { TrendingUp, TrendingDown, BarChart3, Activity, Zap } from 'lucide-react';
+import { TrendingUp, TrendingDown, BarChart3, Activity, Zap, DollarSign, Calculator } from 'lucide-react';
 import { SpendingData } from '../../types/subscription';
 
 interface SpendingChartProps {
