@@ -35,9 +35,8 @@ const Analytics: React.FC<AnalyticsProps> = ({
 
   const annualTotal = monthlyTotal * 12;
   
-  const averagePerSubscription = activeSubscriptions.length > 0 
-    ? monthlyTotal / activeSubscriptions.length 
-    : 0;
+  // Get current month spending from the latest data point
+  const currentMonthSpending = spendingData[spendingData.length - 1]?.amount || 0;
 
   const mostExpensiveCategory = categoryData.length > 0 
     ? categoryData.reduce((max, current) => 
@@ -143,8 +142,8 @@ const Analytics: React.FC<AnalyticsProps> = ({
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <StatsCard
-          title="Average per Subscription"
-          value={`$${averagePerSubscription.toFixed(2)}`}
+          title="Current Month"
+          value={`$${currentMonthSpending.toFixed(2)}`}
           icon={DollarSign}
           gradient="bg-gradient-to-br from-purple-500 to-violet-600"
         />
