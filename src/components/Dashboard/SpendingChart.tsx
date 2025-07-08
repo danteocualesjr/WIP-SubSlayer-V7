@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, BarChart, Bar } from 'recharts';
-import { TrendingUp, TrendingDown, BarChart3, Activity, Zap, DollarSign, Calculator } from 'lucide-react';
+import { TrendingUp, TrendingDown, BarChart3, Activity, Zap } from 'lucide-react';
 import { SpendingData } from '../../types/subscription';
 
 interface SpendingChartProps {
@@ -52,41 +52,25 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white/95 backdrop-blur-xl border border-purple-200/50 rounded-2xl shadow-2xl p-6 min-w-[220px]">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 rounded-full bg-gradient-to-r from-purple-600 to-violet-600 shadow-lg"></div>
-              <p className="text-sm font-semibold text-gray-900">{label}</p>
-            </div>
-            <div className="px-2 py-1 bg-purple-100 rounded-full text-xs font-medium text-purple-700">
-              {payload[0].value > averageSpending ? '+' : ''}
-              ${(payload[0].value - averageSpending).toFixed(2)}
-            </div>
+        <div className="bg-white/95 backdrop-blur-xl border border-purple-200/50 rounded-2xl shadow-2xl p-6 min-w-[200px]">
+          <div className="flex items-center space-x-3 mb-3">
+            <div className="w-4 h-4 rounded-full bg-gradient-to-r from-purple-600 to-violet-600 shadow-lg"></div>
+            <p className="text-sm font-semibold text-gray-900">{label}</p>
           </div>
-          <div className="space-y-4">
-            <div className="flex flex-col items-center">
-              <span className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-600">Amount:</span>
+              <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent">
                 ${payload[0].value.toFixed(2)}
               </span>
-              <span className="text-xs text-gray-500 mt-1">Monthly spending</span>
             </div>
-            
-            <div className="h-px bg-gradient-to-r from-purple-200 to-violet-200 my-2"></div>
-            
-            <div className="grid grid-cols-2 gap-2 text-center">
-              <div className="bg-gray-50 rounded-lg p-2">
-                <p className="text-xs text-gray-500 mb-1">vs. Average</p>
-                <p className={`text-sm font-semibold ${payload[0].value > averageSpending ? 'text-red-500' : 'text-green-500'}`}>
-                  {payload[0].value > averageSpending ? '↑' : '↓'} 
-                  {Math.abs(((payload[0].value - averageSpending) / averageSpending) * 100).toFixed(1)}%
-                </p>
-              </div>
-              <div className="bg-gray-50 rounded-lg p-2">
-                <p className="text-xs text-gray-500 mb-1">vs. Peak</p>
-                <p className="text-sm font-semibold text-gray-700">
-                  {((payload[0].value / highestMonth) * 100).toFixed(0)}%
-                </p>
-              </div>
+            <div className="h-px bg-gradient-to-r from-purple-200 to-violet-200"></div>
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-gray-500">vs Average:</span>
+              <span className={`font-medium ${payload[0].value > averageSpending ? 'text-red-500' : 'text-green-500'}`}>
+                {payload[0].value > averageSpending ? '+' : ''}
+                ${(payload[0].value - averageSpending).toFixed(2)}
+              </span>
             </div>
           </div>
         </div>
@@ -98,7 +82,7 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
   const renderChart = () => {
     const commonProps = {
       data,
-      margin: { top: 30, right: 30, left: 20, bottom: 20 }
+      margin: { top: 20, right: 30, left: 20, bottom: 20 }
     };
 
     switch (chartType) {
@@ -107,72 +91,67 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
           <AreaChart {...commonProps}>
             <defs>
               <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#8B5CF6" stopOpacity={0.8}/>
-                <stop offset="45%" stopColor="#6366F1" stopOpacity={0.4}/>
-                <stop offset="95%" stopColor="#06B6D4" stopOpacity={0.1}/>
+                <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.4}/>
+                <stop offset="50%" stopColor="#3B82F6" stopOpacity={0.2}/>
+                <stop offset="95%" stopColor="#06B6D4" stopOpacity={0.05}/>
               </linearGradient>
               <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
                 <stop offset="0%" stopColor="#8B5CF6" />
-                <stop offset="50%" stopColor="#6366F1" />
+                <stop offset="50%" stopColor="#3B82F6" />
                 <stop offset="100%" stopColor="#06B6D4" />
               </linearGradient>
               <filter id="glow">
-                <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
                 <feMerge> 
                   <feMergeNode in="coloredBlur"/>
                   <feMergeNode in="SourceGraphic"/>
                 </feMerge>
               </filter>
-              <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-                <feDropShadow dx="0" dy="4" stdDeviation="6" floodColor="#8B5CF6" floodOpacity="0.2"/>
-              </filter>
             </defs>
             <CartesianGrid 
-              strokeDasharray="5 5" 
+              strokeDasharray="3 3" 
               stroke="#f1f5f9" 
-              strokeOpacity={0.4}
+              strokeOpacity={0.6}
               vertical={false}
             />
             <XAxis 
               dataKey="month" 
               stroke="#64748b"
-              fontSize={13}
+              fontSize={12}
               fontWeight={500}
               tickLine={false}
               axisLine={false}
-              dy={12}
-              tick={{fill: '#64748b'}}
+              dy={10}
             />
             <YAxis 
               stroke="#64748b"
-              fontSize={13}
+              fontSize={12}
               fontWeight={500}
               tickLine={false}
               axisLine={false}
               tickFormatter={(value) => `$${value}`}
-              dx={-8}
-              tick={{fill: '#64748b'}}
+              dx={-10}
             />
             <Tooltip content={<CustomTooltip />} />
             <Area
               type="monotone"
               dataKey="amount"
               stroke="url(#lineGradient)"
-              strokeWidth={3}
+              strokeWidth={4}
               fill="url(#colorGradient)"
               dot={{ 
                 fill: '#8B5CF6', 
-                strokeWidth: 2, 
-                r: 5,
+                strokeWidth: 3, 
+                r: 6,
                 stroke: '#fff',
-                filter: 'url(#shadow)'
+                filter: 'url(#glow)'
               }}
               activeDot={{ 
-                r: 10, 
+                r: 8, 
                 fill: '#8B5CF6', 
                 stroke: '#fff', 
-                strokeWidth: 2,
-                filter: 'url(#shadow)',
+                strokeWidth: 3,
+                filter: 'url(#glow)',
                 style: { cursor: 'pointer' }
               }}
             />
@@ -185,46 +164,40 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
             <defs>
               <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="#8B5CF6" />
-                <stop offset="60%" stopColor="#6366F1" />
+                <stop offset="50%" stopColor="#3B82F6" />
                 <stop offset="100%" stopColor="#06B6D4" />
               </linearGradient>
-              <filter id="barShadow" x="-10%" y="-10%" width="120%" height="130%">
-                <feDropShadow dx="0" dy="4" stdDeviation="3" floodColor="#8B5CF6" floodOpacity="0.15"/>
-              </filter>
             </defs>
             <CartesianGrid 
-              strokeDasharray="5 5" 
+              strokeDasharray="3 3" 
               stroke="#f1f5f9" 
-              strokeOpacity={0.4}
+              strokeOpacity={0.6}
               vertical={false}
             />
             <XAxis 
               dataKey="month" 
               stroke="#64748b"
-              fontSize={13}
+              fontSize={12}
               fontWeight={500}
               tickLine={false}
               axisLine={false}
-              dy={12}
-              tick={{fill: '#64748b'}}
+              dy={10}
             />
             <YAxis 
               stroke="#64748b"
-              fontSize={13}
+              fontSize={12}
               fontWeight={500}
               tickLine={false}
               axisLine={false}
               tickFormatter={(value) => `$${value}`}
-              dx={-8}
-              tick={{fill: '#64748b'}}
+              dx={-10}
             />
             <Tooltip content={<CustomTooltip />} />
             <Bar 
               dataKey="amount" 
               fill="url(#barGradient)"
-              radius={[16, 16, 0, 0]}
-              maxBarSize={50}
-              filter="url(#barShadow)"
+              radius={[12, 12, 0, 0]}
+              maxBarSize={60}
             />
           </BarChart>
         );
@@ -237,24 +210,18 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
   return (
     <div className="bg-white rounded-3xl p-8 shadow-lg border border-purple-100/50 hover:shadow-xl transition-all duration-300 group">
       {/* Enhanced Header with Metrics */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 space-y-4 sm:space-y-0">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
-            <TrendingUp className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <h3 className="text-xl font-bold text-gray-900">Monthly Spending Trend</h3>
-            <p className="text-sm text-gray-500">Track your subscription costs over time</p>
-          </div>
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h3 className="text-xl font-bold text-gray-900">Monthly Spending Trend</h3>
         </div>
         
         {/* Chart Type Selector - Icons Only */}
-        <div className="flex bg-gray-100 rounded-2xl p-1.5 shadow-inner self-end sm:self-auto">
+        <div className="flex bg-gray-100 rounded-2xl p-1.5 shadow-inner">
           <button
             onClick={() => setChartType('area')}
             className={`p-3 rounded-xl transition-all duration-200 ${
               chartType === 'area'
-                ? 'bg-white text-purple-600 shadow-md scale-105'
+                ? 'bg-white text-purple-600 shadow-lg scale-105'
                 : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
             }`}
             title="Area Chart"
@@ -265,7 +232,7 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
             onClick={() => setChartType('bar')}
             className={`p-3 rounded-xl transition-all duration-200 ${
               chartType === 'bar'
-                ? 'bg-white text-purple-600 shadow-md scale-105'
+                ? 'bg-white text-purple-600 shadow-lg scale-105'
                 : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
             }`}
             title="Bar Chart"
@@ -276,9 +243,9 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
       </div>
 
       {/* Chart Container with Enhanced Styling */}
-      <div className="relative mb-6">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-50/40 to-violet-50/40 rounded-2xl"></div>
-        <div className="relative h-80 p-4 pt-6">
+      <div className="relative">
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-50/30 to-violet-50/30 rounded-2xl"></div>
+        <div className="relative h-80 p-4">
           <ResponsiveContainer width="100%" height="100%">
             {renderChart()}
           </ResponsiveContainer>
@@ -286,36 +253,20 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
       </div>
 
       {/* Enhanced Footer with Insights */}
-      <div className="pt-4 border-t border-gray-100">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="bg-gray-50 rounded-xl p-3 flex items-center justify-between">
+      <div className="mt-6 pt-6 border-t border-gray-100">
+        <div className="flex items-center justify-between text-sm">
+          <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-600 to-violet-600 flex items-center justify-center">
-                <DollarSign className="w-4 h-4 text-white" />
-              </div>
-              <span className="text-sm font-medium text-gray-700">Average</span>
+              <div className="w-3 h-3 rounded-full bg-gradient-to-r from-purple-600 to-violet-600"></div>
+              <span className="text-gray-600">Monthly spending</span>
             </div>
-            <span className="text-lg font-bold text-gray-900">${averageSpending.toFixed(2)}</span>
+            <div className="flex items-center space-x-2">
+              <div className="w-3 h-3 rounded-full bg-gray-300"></div>
+              <span className="text-gray-600">Average: ${averageSpending.toFixed(2)}</span>
+            </div>
           </div>
-          
-          <div className="bg-gray-50 rounded-xl p-3 flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-cyan-600 flex items-center justify-center">
-                <TrendingUp className="w-4 h-4 text-white" />
-              </div>
-              <span className="text-sm font-medium text-gray-700">Peak</span>
-            </div>
-            <span className="text-lg font-bold text-gray-900">${highestMonth.toFixed(2)}</span>
-          </div>
-          
-          <div className="bg-gray-50 rounded-xl p-3 flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-green-600 to-emerald-600 flex items-center justify-center">
-                <Calculator className="w-4 h-4 text-white" />
-              </div>
-              <span className="text-sm font-medium text-gray-700">Annual</span>
-            </div>
-            <span className="text-lg font-bold text-gray-900">${(averageSpending * 12).toFixed(2)}</span>
+          <div className="text-gray-500">
+            Peak: ${highestMonth.toFixed(2)}
           </div>
         </div>
       </div>
