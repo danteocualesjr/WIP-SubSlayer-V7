@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BarChart3, CreditCard, Calculator, Home, Bell, User, Settings, Sword, Tag, Sparkles, Menu, X, HelpCircle } from 'lucide-react';
-import SupportModal from '../Support/SupportModal';
+import { BarChart3, CreditCard, Calculator, Home, Bell, User, Settings, Sword, Tag, Sparkles, Menu, X } from 'lucide-react';
 
 interface SidebarProps {
   activeTab: string;
@@ -9,7 +8,6 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
   // Load collapsed state from localStorage, default to false on desktop, true on mobile
-  const [showSupportModal, setShowSupportModal] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(() => {
     const saved = localStorage.getItem('sidebar-collapsed');
     if (saved) return JSON.parse(saved);
@@ -65,8 +63,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
   const bottomItems = [
     { id: 'notifications', label: 'Notifications', icon: Bell },
     { id: 'settings', label: 'Settings', icon: Settings },
-    { id: 'profile', label: 'Profile', icon: User },
-    { id: 'support', label: 'Support', icon: HelpCircle, action: () => setShowSupportModal(true) }
+    { id: 'profile', label: 'Profile', icon: User }
   ];
 
   const toggleSidebar = () => {
@@ -79,17 +76,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
 
   const handleNavClick = (tabId: string) => {
     setActiveTab(tabId);
-    
     if (isMobile) {
       setIsMobileMenuOpen(false);
-    }
-  };
-  
-  const handleItemClick = (item: any) => {
-    if (item.action) {
-      item.action();
-    } else {
-      handleNavClick(item.id);
     }
   };
 
@@ -167,7 +155,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
               return (
                 <button
                   key={item.id}
-                  onClick={() => handleItemClick(item)}
+                  onClick={() => handleNavClick(item.id)}
                   className={`w-full flex items-center space-x-3 px-4 py-4 rounded-2xl font-medium transition-all duration-300 text-left ${
                     activeTab === item.id
                       ? 'bg-gradient-to-r from-purple-600 to-violet-600 text-white shadow-lg shadow-purple-500/25'
@@ -284,7 +272,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
             return (
               <div key={item.id} className="relative group">
                 <button
-                  onClick={() => handleItemClick(item)}
+                  onClick={() => setActiveTab(item.id)}
                   className={`w-full flex items-center rounded-2xl font-medium transition-all duration-300 group relative ${
                     isCollapsed ? 'justify-center p-3' : 'space-x-3 px-4 py-3'
                   } ${
@@ -312,12 +300,6 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
           })}
         </div>
       </div>
-      
-      {/* Support Modal */}
-      <SupportModal 
-        isOpen={showSupportModal}
-        onClose={() => setShowSupportModal(false)}
-      />
     </>
   );
 };

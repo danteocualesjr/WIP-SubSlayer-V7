@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from './useAuth';
 import { supabase } from '../lib/supabase';
-import { PROFILE_STORAGE_PREFIX } from '../lib/constants'; 
+import { PROFILE_STORAGE_PREFIX } from '../lib/constants';
 
-export interface ProfileData {
+interface ProfileData {
   displayName: string;
   email: string;
   bio: string;
@@ -18,7 +18,7 @@ export function useProfile() {
   const [profile, setProfile] = useState<ProfileData>({
     displayName: '',
     email: '',
-    bio: '',
+    bio: 'Subscription management enthusiast',
     location: '',
     website: '',
     avatar: null,
@@ -29,12 +29,7 @@ export function useProfile() {
   // Load profile data on mount and when user changes
   useEffect(() => {
     if (user) {
-      // Add a small delay to ensure auth is fully initialized
-      const timer = setTimeout(() => {
-        loadProfile();
-      }, 100);
-      
-      return () => clearTimeout(timer);
+      loadProfile();
     } else {
       // Reset profile to defaults when user logs out
       setProfile({
@@ -56,7 +51,7 @@ export function useProfile() {
       
       // First try to load from Supabase
       fetchProfileFromSupabase().then(supabaseProfile => {
-        if (supabaseProfile && Object.keys(supabaseProfile).length > 0) {
+        if (supabaseProfile) {
           setProfile(supabaseProfile);
           
           // Also update local storage for backup
@@ -107,7 +102,7 @@ export function useProfile() {
           const displayName = user?.user_metadata?.full_name || 
                              user?.user_metadata?.name || 
                              user?.email?.split('@')[0] || '';
-          
+                             
           const newProfile = {
             displayName: displayName,
             email: user?.email || '',
@@ -122,9 +117,6 @@ export function useProfile() {
           
           // Save the new profile to Supabase
           saveProfileToSupabase(newProfile);
-          
-          // Also save to localStorage
-          localStorage.setItem(`${PROFILE_STORAGE_PREFIX}${user.id}`, JSON.stringify(newProfile));
         }
         
         setLoading(false);
@@ -210,7 +202,7 @@ export function useProfile() {
 
   const saveProfile = (profileData: Partial<ProfileData>) => {
     if (!user) return { success: false, error: 'User not authenticated' };
-    
+
     try {
       const updatedProfile = { ...profile, ...profileData };
       setProfile(updatedProfile);
@@ -221,8 +213,8 @@ export function useProfile() {
       // Also update the old storage key for backward compatibility
       localStorage.setItem(`profile_${user.id}`, JSON.stringify(updatedProfile));
       
-      // Save to Supabase for persistence (async but don't wait)
-      void saveProfileToSupabase(updatedProfile);
+      // Save to Supabase for persistence
+      saveProfileToSupabase(updatedProfile);
       
       return { success: true };
     } catch (error) {
@@ -239,12 +231,8 @@ export function useProfile() {
       setProfile(updatedProfile);
       
       // Save to local storage
-      try {
-        localStorage.setItem(`${PROFILE_STORAGE_PREFIX}${user.id}`, JSON.stringify(updatedProfile));
-        localStorage.setItem(`profile_${user.id}`, JSON.stringify(updatedProfile));
-      } catch (storageError) {
-        console.error('Error saving to localStorage:', storageError);
-      }
+      localStorage.setItem(`${PROFILE_STORAGE_PREFIX}${user.id}`, JSON.stringify(updatedProfile));
+      localStorage.setItem(`profile_${user.id}`, JSON.stringify(updatedProfile));
       
       // Save to Supabase
       saveProfileToSupabase(updatedProfile);
