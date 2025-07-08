@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, BarChart, Bar } from 'recharts';
-import { TrendingUp, TrendingDown, BarChart3, Activity, Zap, DollarSign, Calculator } from 'lucide-react';
+import { TrendingUp, TrendingDown, BarChart3, Activity, Zap } from 'lucide-react';
 import { SpendingData } from '../../types/subscription';
 
 interface SpendingChartProps {
@@ -190,7 +190,7 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
               </linearGradient>
               <filter id="barShadow" x="-10%" y="-10%" width="120%" height="130%">
                 <feDropShadow dx="0" dy="4" stdDeviation="3" floodColor="#8B5CF6" floodOpacity="0.15"/>
-              </filter>
+              </linearGradient>
             </defs>
             <CartesianGrid 
               strokeDasharray="5 5" 

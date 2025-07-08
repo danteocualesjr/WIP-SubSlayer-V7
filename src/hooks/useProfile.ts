@@ -48,7 +48,6 @@ export function useProfile() {
   const loadProfile = () => {
     try {
       setLoading(true);
-      console.log('Loading profile for user:', user?.id);
       
       // First try to load from Supabase
       fetchProfileFromSupabase().then(supabaseProfile => {
@@ -57,7 +56,6 @@ export function useProfile() {
           
           // Also update local storage for backup
           localStorage.setItem(`${PROFILE_STORAGE_PREFIX}${user?.id}`, JSON.stringify(supabaseProfile));
-          setLoading(false);
           return;
         }
       
@@ -120,15 +118,12 @@ export function useProfile() {
           // Save the new profile to Supabase
           saveProfileToSupabase(newProfile);
         }
+        
+        setLoading(false);
       }).catch(error => {
         console.error('Error in profile loading process:', error);
         setLoading(false);
       });
-      
-      // Ensure loading state is eventually set to false even if promises don't resolve
-      setTimeout(() => {
-        setLoading(false);
-      }, 2000);
     } catch (error) {
       console.error('Error loading profile:', error);
       // Fallback to user data
