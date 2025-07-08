@@ -87,11 +87,6 @@ export function useSubscription() {
   const isTrialing = () => {
     return subscription?.status === 'trialing';
   };
-  
-  const canUseProFeatures = () => {
-    // Users can use pro features if they have an active or trialing subscription
-    return isActive() || isTrialing();
-  };
 
   const getCurrentPeriodEnd = () => {
     if (!subscription?.currentPeriodEnd) return null;
@@ -113,7 +108,6 @@ export function useSubscription() {
     isPaused,
     isCanceled,
     isTrialing,
-    canUseProFeatures,
     getCurrentPeriodEnd,
     getCurrentPeriodStart,
   };

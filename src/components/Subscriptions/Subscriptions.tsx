@@ -36,8 +36,8 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
   const [filterCategory, setFilterCategory] = useState<string>('all');
   
   // Get subscription status to check for free tier
-  const { canUseProFeatures } = useSubscription();
-  const isFreeTier = !canUseProFeatures();
+  const { subscription: stripeSubscription } = useSubscription();
+  const isFreeTier = !stripeSubscription || !stripeSubscription.subscriptionId;
   const isAtSubscriptionLimit = isFreeTier && subscriptions.length >= 7;
   
   // Load view mode from localStorage, default to 'grid' if not found
@@ -398,8 +398,8 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
                 onClick={() => {
                   if (isAtSubscriptionLimit && isFreeTier) {
                     // Navigate to pricing page
-                    window.dispatchEvent(new CustomEvent('navigateToTab', {
-                      detail: { tab: 'pricing' }
+                    window.dispatchEvent(new CustomEvent('navigateToTab', { 
+                      detail: { tab: 'pricing' } 
                     }));
                   } else {
                     setShowAddModal(true);

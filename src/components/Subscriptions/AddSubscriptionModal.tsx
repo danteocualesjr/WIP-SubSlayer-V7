@@ -32,10 +32,10 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
   subscriptions = []
 }) => {
   const { settings } = useSettings();
-  const { canUseProFeatures } = useSubscription();
+  const { subscription: stripeSubscription } = useSubscription();
   
   // Check if user is on free tier and at subscription limit
-  const isFreeTier = !canUseProFeatures();
+  const isFreeTier = !stripeSubscription || !stripeSubscription.subscriptionId;
   const [showPopularServices, setShowPopularServices] = useState(!subscription);
   const [searchTerm, setSearchTerm] = useState('');
   const [formData, setFormData] = useState({

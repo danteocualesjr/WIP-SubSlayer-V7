@@ -32,12 +32,11 @@ const Dashboard: React.FC<DashboardProps> = ({
   const { user } = useAuth();
   const { profile } = useProfile();
   const { subscription: stripeSubscription } = useSubscription();
-  const { canUseProFeatures } = useSubscription();
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingSubscription, setEditingSubscription] = useState<Subscription | null>(null);
   
   // Check if user is on free tier and at subscription limit
-  const isFreeTier = !canUseProFeatures();
+  const isFreeTier = !stripeSubscription || !stripeSubscription.subscriptionId;
   const isAtSubscriptionLimit = isFreeTier && subscriptions.length >= 7;
   
   // Memoize calculations to prevent unnecessary re-renders
@@ -136,7 +135,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   const handleAddSubscription = useCallback((subscriptionData: Omit<Subscription, 'id' | 'createdAt'>) => {
     if (onAddSubscription) {
       // Check if at subscription limit
-      if (isAtSubscriptionLimit) {
+      if (isFreeTier && subscriptions.length >= 7) {
         alert('Free tier is limited to 7 subscriptions. Please upgrade to Pro for unlimited subscriptions.');
         // Navigate to pricing page
         window.dispatchEvent(new CustomEvent('navigateToTab', { 
