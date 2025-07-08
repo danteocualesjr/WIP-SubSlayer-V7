@@ -1,6 +1,6 @@
 import React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
-import { PieChart as PieChartIcon } from 'lucide-react';
+import { PieChart as PieChartIcon, Sparkles } from 'lucide-react';
 import { CategoryData } from '../../types/subscription';
 
 interface CategoryChartProps {
@@ -8,6 +8,29 @@ interface CategoryChartProps {
 }
 
 const CategoryChart: React.FC<CategoryChartProps> = ({ data }) => {
+  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
+    if (percent < 0.05) return null; // Don't show labels for slices smaller than 5%
+    
+    const RADIAN = Math.PI / 180;
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+    return (
+      <text 
+        x={x} 
+        y={y} 
+        fill="white" 
+        textAnchor={x > cx ? 'start' : 'end'} 
+        dominantBaseline="central"
+        fontSize={12}
+        fontWeight="600"
+      >
+        {`${(percent * 100).toFixed(0)}%`}
+      </text>
+    );
+  };
+
   if (!data || data.length === 0) {
     return (
       <div className="bg-white rounded-3xl p-8 shadow-lg border border-purple-100/50 hover:shadow-xl transition-all duration-300 group">
@@ -51,49 +74,15 @@ const CategoryChart: React.FC<CategoryChartProps> = ({ data }) => {
         <div className="relative h-80 p-4">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
-              {/* Dark center circle overlay */}
-              <circle cx="50%" cy="50%" r="38%" fill="#1e1b4b" />
-              
               <Pie
                 data={data}
                 cx="50%"
                 cy="50%"
-                labelLine={{ stroke: '#ffffff', strokeWidth: 1, opacity: 0.5 }}
-                label={({ name, x, y }) => {
-                  return (
-                    <g>
-                      <foreignObject
-                        x={x - 60}
-                        y={y - 15}
-                        width={120}
-                        height={30}
-                        style={{ overflow: 'visible' }}
-                      >
-                        <div
-                          style={{
-                            backgroundColor: 'white',
-                            borderRadius: '999px',
-                            padding: '4px 12px',
-                            boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
-                            fontSize: '12px',
-                            fontWeight: 'bold',
-                            textAlign: 'center',
-                            whiteSpace: 'nowrap',
-                            color: '#1e1b4b',
-                            border: '1px solid rgba(0,0,0,0.05)'
-                          }}
-                        >
-                          {name}
-                        </div>
-                      </foreignObject>
-                    </g>
-                  );
-                }}
-                outerRadius={140}
-                innerRadius={80}
+                labelLine={false}
+                label={renderCustomizedLabel}
+                outerRadius={100}
                 fill="#8884d8"
                 dataKey="value"
-                paddingAngle={2}
               >
                 {data.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
@@ -105,10 +94,15 @@ const CategoryChart: React.FC<CategoryChartProps> = ({ data }) => {
                   backgroundColor: 'rgba(255, 255, 255, 0.95)',
                   backdropFilter: 'blur(12px)',
                   border: '1px solid rgba(139, 92, 246, 0.2)',
-                  borderRadius: '999px',
+                  borderRadius: '16px',
                   boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
                   padding: '12px 16px'
                 }}
+              />
+              <Legend 
+                verticalAlign="bottom" 
+                height={36}
+                formatter={(value) => <span className="text-sm text-gray-700 font-medium">{value}</span>}
               />
             </PieChart>
           </ResponsiveContainer>
