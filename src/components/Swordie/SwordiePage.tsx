@@ -115,14 +115,14 @@ const SwordiePage: React.FC = () => {
         allSubscriptions: subscriptions.map(sub => ({
           id: sub.id,
           name: sub.name,
-          description: sub.description,
+          description: sub.description || null,
           cost: sub.cost,
           currency: sub.currency,
           billingCycle: sub.billingCycle,
           nextBilling: sub.nextBilling,
           category: sub.category || 'Uncategorized',
           status: sub.status,
-          color: sub.color,
+          color: sub.color || '#8B5CF6',
           createdAt: sub.createdAt,
           daysUntilRenewal: sub.status === 'active' ? Math.ceil((new Date(sub.nextBilling).getTime() - now.getTime()) / (1000 * 60 * 60 * 24)) : null
         }))
