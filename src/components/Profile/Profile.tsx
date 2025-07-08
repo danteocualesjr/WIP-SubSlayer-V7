@@ -13,14 +13,14 @@ interface ProfileProps {
 const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
   const { user, signOut } = useAuth();
   const { profile, loading: profileLoading, saveProfile } = useProfile();
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [profileLoaded, setProfileLoaded] = useState(false);
+  const [showEditModal, setShowEditModal] = useState<boolean>(false);
+  const [profileLoaded, setProfileLoaded] = useState<boolean>(false);
 
   // Listen for navigation event from header
   useEffect(() => {
     const handleNavigateToProfile = () => {
       setShowEditModal(true);
-    };
+    if (profile?.displayName && profile.displayName.trim()) {
 
     window.addEventListener('navigateToProfile', handleNavigateToProfile);
     
@@ -32,13 +32,7 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
   // Force profile reload when component mounts
   useEffect(() => {
     if (user && !profileLoaded) {
-      // Add a small delay to ensure auth is fully initialized
-      const timer = setTimeout(() => {
-        console.log('Forcing profile reload');
-        setProfileLoaded(true);
-      }, 500);
-      
-      return () => clearTimeout(timer);
+      setProfileLoaded(true);
     }
   }, [user, profileLoaded]);
 
@@ -155,12 +149,12 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
                 <div className="w-24 h-24 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center text-white font-bold text-3xl overflow-hidden">
                   {profile.avatar ? (
                     <img 
-                      src={profile.avatar} 
+                      src={profile.avatar || ''} 
                       alt="Profile" 
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    profile.displayName.charAt(0).toUpperCase() || 'U'
+                    (profile.displayName?.charAt(0) || 'U').toUpperCase()
                   )}
                 </div>
                 <button 

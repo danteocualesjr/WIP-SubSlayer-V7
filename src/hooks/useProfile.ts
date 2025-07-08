@@ -48,6 +48,15 @@ export function useProfile() {
   const loadProfile = () => {
     try {
       setLoading(true);
+      setProfile({
+        displayName: '',
+        email: '',
+        bio: 'Subscription management enthusiast',
+        location: '',
+        website: '',
+        avatar: null,
+        joinDate: new Date().toISOString(),
+      });
       
       // First try to load from Supabase
       fetchProfileFromSupabase().then(supabaseProfile => {
@@ -142,7 +151,7 @@ export function useProfile() {
   
   const fetchProfileFromSupabase = async (): Promise<ProfileData | null> => {
     if (!user) return null;
-    
+
     try {
       const { data, error } = await supabase
         .from('user_profiles')
@@ -153,7 +162,7 @@ export function useProfile() {
       if (error) {
         console.warn('Error fetching profile from Supabase:', error);
         return null;
-      }
+      } 
       
       if (!data) return null;
       
@@ -170,6 +179,7 @@ export function useProfile() {
       console.error('Error fetching profile from Supabase:', error);
       return null;
     }
+    return null;
   };
   
   const saveProfileToSupabase = async (profileData: ProfileData) => {
@@ -196,7 +206,11 @@ export function useProfile() {
       }
       
       return { success: true };
+    } catch (error) {
+      console.error('Error saving profile to Supabase:', error);
+      return { success: false, error: 'Failed to save profile to database' };
     } finally {
+      // Nothing to do in finally block
     }
   };
 

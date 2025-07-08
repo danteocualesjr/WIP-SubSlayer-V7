@@ -120,7 +120,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setUploadError(null);
+    setUploadError(null); 
     
     try {
       let avatarData = profileData.avatarPreview;
@@ -148,7 +148,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       
       const result = await onSave(dataToSave);
       
-      if (result && result.success) {
+      if (result?.success) {
         onClose();
         
         // Show success message
@@ -167,8 +167,10 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
             document.body.removeChild(successMessage);
           }
         }, 3000);
-      } else {
+      } else if (result) {
         setUploadError(result?.error || 'Failed to save profile. Please try again.');
+      } else {
+        setUploadError('Failed to save profile. Please try again.');
       }
     } catch (error) {
       console.error('Error saving profile:', error);
