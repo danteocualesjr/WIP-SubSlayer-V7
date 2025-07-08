@@ -278,19 +278,13 @@ Remember: Start with a simple greeting, then help based on what they ask for.`;
       // Include updated subscription context with each message
       const subscriptionContext = generateSubscriptionContext();
       
-      // Prepend context to user message
-      const messageWithContext = `CURRENT SUBSCRIPTION DATA:
-${JSON.stringify(subscriptionContext, null, 2)}
-
-USER QUESTION: ${message.trim()}`;
-      
       const response = await fetch(`https://agents.toolhouse.ai/60e3c85c-95f3-40bb-b607-ed83d1d07d40/${runId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ 
-          message: messageWithContext
+          message: message.trim()
         }),
         signal: abortControllerRef.current.signal,
       });
