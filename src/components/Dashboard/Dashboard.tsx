@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { DollarSign, TrendingUp, CreditCard, Calendar, Plus, Sparkles, Star } from 'lucide-react';
 import StatsCard from './StatsCard';
 import SpendingChart from './SpendingChart';
