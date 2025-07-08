@@ -78,7 +78,8 @@ const Dashboard: React.FC<DashboardProps> = ({
   }, [subscriptions, spendingData]);
 
   // Get user's display name with improved logic
-  const getUserName = () => {
+  // Get user's display name with improved logic
+  const userName = useMemo(() => {
     // First priority: Check if profile has a valid display name that's not empty or just whitespace
     if (profile?.displayName && profile.displayName.trim() && profile.displayName !== '') {
       // Ensure we're not returning the full email address as a display name
@@ -114,14 +115,6 @@ const Dashboard: React.FC<DashboardProps> = ({
     
     // Final fallback
     return 'User';
-  };
-  
-  // Use state to store the username to prevent flickering
-  const [userName, setUserName] = useState('User');
-  
-  // Update username when profile or user changes
-  useEffect(() => {
-    setUserName(getUserName());
   }, [profile?.displayName, user?.email]);
 
   // Generate category data for pie chart
