@@ -143,6 +143,67 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         bio: profileData.bio,
         location: profileData.location,
         website: profileData.website,
+        avatar: avatarData
+      };
+      
+      const result = await onSave(dataToSave);
+      
+      if (result && result.success) {
+        onClose();
+        
+        // Show success message
+        const successMessage = document.createElement('div');
+        successMessage.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-[10000] flex items-center space-x-2';
+        successMessage.innerHTML = `
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+          <span>Profile updated successfully!</span>
+        `;
+        document.body.appendChild(successMessage);
+        
+        setTimeout(() => {
+          if (document.body.contains(successMessage)) {
+            document.body.removeChild(successMessage);
+          }
+        }, 3000);
+      } else {
+        setUploadError(result?.error || 'Failed to save profile. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error saving profile:', error);
+      setUploadError('Failed to save profile. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmitOld = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setUploadError(null);
+    
+    try {
+      let avatarData = profileData.avatarPreview;
+      
+      // Convert file to base64 if a new file was selected
+      if (profileData.avatar) {
+        try {
+          avatarData = await convertFileToBase64(profileData.avatar);
+        } catch (error) {
+          setUploadError('Failed to process image. Please try again.');
+          setLoading(false);
+          return;
+        }
+      }
+      
+      // Prepare data for saving
+      const dataToSave = {
+        displayName: profileData.displayName,
+        email: profileData.email,
+        bio: profileData.bio,
+        location: profileData.location,
+        website: profileData.website,
         avatarPreview: avatarData
       };
       
