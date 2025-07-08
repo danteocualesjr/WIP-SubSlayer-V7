@@ -15,31 +15,37 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
   const features = [
     {
       icon: Sword,
+      color: "#3B82F6", // Blue
       title: "Slay Subscription Chaos",
       description: "Take complete control of your recurring payments with our intelligent tracking system."
     },
     {
       icon: Brain,
+      color: "#8B5CF6", // Purple
       title: "AI-Powered Insights",
       description: "Get personalized recommendations from Swordie AI to optimize your spending."
     },
     {
       icon: Calendar,
+      color: "#F59E0B", // Amber/Orange
       title: "Never Miss a Renewal",
       description: "Smart notifications ensure you're always aware of upcoming charges."
     },
     {
       icon: BarChart3,
+      color: "#10B981", // Green
       title: "Advanced Analytics",
       description: "Visualize your spending patterns with beautiful charts and detailed breakdowns."
     },
     {
       icon: Target,
+      color: "#EC4899", // Pink
       title: "Cost Simulator",
       description: "Model different scenarios to find the perfect subscription portfolio."
     },
     {
       icon: Shield,
+      color: "#6366F1", // Indigo
       title: "Secure & Private",
       description: "Your financial data is protected with enterprise-grade security."
     }
@@ -415,7 +421,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
               const Icon = feature.icon;
               return (
                 <div key={index} className="bg-gradient-to-br from-white to-purple-50/50 rounded-2xl p-8 border border-purple-100 hover:shadow-xl transition-all duration-300 hover:scale-105 transform group">
-                  <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-violet-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <div 
+                    className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300"
+                    style={{ backgroundColor: feature.color }}
+                  >
                     <Icon className="w-8 h-8 text-white" />
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-4">{feature.title}</h3>
