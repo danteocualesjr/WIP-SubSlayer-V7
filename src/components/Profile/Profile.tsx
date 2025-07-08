@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { User, Mail, Calendar, Shield, Award, TrendingUp, DollarSign, CreditCard, Edit2, Camera, MapPin, Globe } from 'lucide-react';
 import { SparklesCore } from '../ui/sparkles';
-import { useAuth } from '../../hooks/useAuth'; 
-import { useProfile, ProfileData } from '../../hooks/useProfile';
+import { useAuth } from '../../hooks/useAuth';
+import { useProfile } from '../../hooks/useProfile';
 import { Subscription } from '../../types/subscription';
 import ProfileEditModal from './ProfileEditModal';
 
@@ -12,21 +12,13 @@ interface ProfileProps {
 
 const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
   const { user, signOut } = useAuth();
-  const { profile, loading: profileLoading, saveProfile } = useProfile();
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Listen for navigation event from header
   useEffect(() => {
     const handleNavigateToProfile = () => {
-      setShowEditModal(true);
     };
-
-    window.addEventListener('navigateToProfile', handleNavigateToProfile);
-    
-    return () => {
-      window.removeEventListener('navigateToProfile', handleNavigateToProfile);
-    };
-  }, []);
 
   const activeSubscriptions = subscriptions.filter(sub => sub.status === 'active');
   const totalMonthlySpend = activeSubscriptions.reduce((sum, sub) => {
@@ -35,11 +27,10 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
   const totalAnnualSpend = totalMonthlySpend * 12;
   const averagePerSubscription = activeSubscriptions.length > 0 ? totalMonthlySpend / activeSubscriptions.length : 0;
 
-  const memberSince = profile?.joinDate ? new Date(profile.joinDate).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long'
-  }) : 'Unknown';
-
+  // Format member since date with fallback
+  const memberSince = user?.created_at 
+    ? new Date(user.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })
+    : 'Unknown';
   const achievements = [
     {
       id: 1,
@@ -76,12 +67,13 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
   ];
   const earnedAchievements = achievements.filter(a => a.earned);
 
-  const handleSaveProfile = (profileData: Partial<ProfileData>) => {
+  const handleSaveProfile = (profileData: any) => {
     if (!user) return;
     
     const result = saveProfile({ 
       displayName: profileData.displayName,
-      email: profileData.email || user.email || '',
+      email: user?.email || profileData.email,
+      bio: profileData.bio || '',
       bio: profileData.bio || '',
       location: profileData.location,
       website: profileData.website,
@@ -91,7 +83,16 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
     if (result?.success) {
     } else {
       console.error('Failed to save profile:', result?.error);
+      setError('Failed to save profile. Please try again.');
       alert('Failed to save profile. Please try again.');
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+    } catch (error) {
+      console.error('Error signing out:', error);
     }
   };
 
@@ -143,7 +144,7 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
                     />
                   ) : (
                     (profile?.displayName?.charAt(0) || user?.email?.charAt(0) || 'U').toUpperCase()
-                  )} 
+                  )}
                 </div>
                 <button 
                   onClick={() => setShowEditModal(true)}
@@ -155,9 +156,9 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
               
               <div>
                 <h2 className="text-3xl font-bold mb-2">{profile?.displayName || user?.email?.split('@')[0] || 'User'}</h2>
-                <p className="text-white/90 mb-1 flex items-center space-x-2"> 
+                <p className="text-white/90 mb-1 flex items-center space-x-2">
                   <Mail className="w-4 h-4" />
-                  <span>{user?.email || profile?.email || 'No email available'}</span>
+                  <span>{user?.email || 'No email available'}</span>
                 </p>
                 <p className="text-white/80 text-sm flex items-center space-x-2">
                   <Calendar className="w-4 h-4" />
@@ -197,7 +198,7 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
                 <span>Edit Profile</span>
               </button>
               <button
-                onClick={signOut}
+                onClick={handleSignOut}
                 className="px-6 py-3 bg-red-500/20 backdrop-blur-sm text-white rounded-xl hover:bg-red-500/30 transition-all duration-200"
               >
                 Sign Out

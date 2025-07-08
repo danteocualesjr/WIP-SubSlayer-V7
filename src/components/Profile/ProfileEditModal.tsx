@@ -1,18 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { X, Camera, Upload, User, Mail, MapPin, Globe, Save } from 'lucide-react';
+import { ProfileData } from '../../hooks/useProfile';
 
 interface ProfileEditModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (profileData: any) => void;
-  currentProfile: {
-    displayName: string;
-    email: string;
-    bio: string;
-    location: string;
-    website: string;
-    avatar: string | null;
-  };
+  onSave: (profileData: Partial<ProfileData>) => void;
+  currentProfile: ProfileData;
 }
 
 const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
@@ -25,7 +19,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   
   const [profileData, setProfileData] = useState({
     displayName: '',
-    email: '',
+    email: '', 
     bio: '',
     location: '',
     website: '',
@@ -39,7 +33,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   // Initialize form data when modal opens or currentProfile changes
   useEffect(() => {
     if (isOpen && currentProfile) {
-      setProfileData({
+      setProfileData({ 
         displayName: currentProfile.displayName || '',
         email: currentProfile.email || '',
         bio: currentProfile.bio || '',
@@ -51,6 +45,25 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       setUploadError(null);
     }
   }, [isOpen, currentProfile]);
+  
+  // Prevent modal from closing when clicking outside or losing focus
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'hidden';
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen, onClose]);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -138,7 +151,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       
       // Prepare data for saving
       const dataToSave = {
-        displayName: profileData.displayName,
+        displayName: profileData.displayName.trim(),
         email: profileData.email,
         bio: profileData.bio,
         location: profileData.location,
@@ -177,7 +190,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       setLoading(false);
     }
   };
-
+  
   const handleSubmitOld = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -199,7 +212,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       
       // Prepare data for saving
       const dataToSave = {
-        displayName: profileData.displayName,
+        displayName: profileData.displayName.trim(),
         email: profileData.email,
         bio: profileData.bio,
         location: profileData.location,
@@ -207,7 +220,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         avatarPreview: avatarData
       };
       
-      onSave(dataToSave);
+      onSave(dataToSave); 
       onClose();
       
       // Show success message
@@ -233,7 +246,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     } finally {
       setLoading(false);
     }
-  };
+  }; 
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -241,7 +254,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     }
   };
 
-  const handleRemovePhoto = () => {
+  const handleRemovePhoto = () => { 
     // Clean up preview URL if it exists
     if (profileData.avatarPreview && profileData.avatarPreview.startsWith('blob:')) {
       URL.revokeObjectURL(profileData.avatarPreview);
@@ -252,7 +265,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       avatar: null,
       avatarPreview: null
     }));
-    setUploadError(null);
+    setUploadError(null); 
   };
 
   // Clean up object URLs when component unmounts or modal closes
@@ -262,7 +275,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         URL.revokeObjectURL(profileData.avatarPreview);
       }
     };
-  }, [profileData.avatarPreview]);
+  }, [profileData.avatarPreview]); 
 
   if (!isOpen) return null;
 
@@ -270,7 +283,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     <div 
       className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4"
       onClick={handleBackdropClick}
-    >
+    > 
       <div 
         className="bg-white rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl"
         onClick={(e) => e.stopPropagation()}
@@ -278,7 +291,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-gray-900">Edit Profile</h2>
           <button
-            onClick={onClose}
+            onClick={onClose} 
             className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
             type="button"
           >
@@ -286,7 +299,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6"> 
           {/* Avatar Section */}
           <div className="flex flex-col items-center space-y-4">
             <div className="relative">
@@ -294,7 +307,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 {profileData.avatarPreview ? (
                   <img 
                     src={profileData.avatarPreview} 
-                    alt="Profile" 
+                    alt="Profile"  
                     className="w-full h-full object-cover"
                   />
                 ) : (
@@ -302,7 +315,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                     {profileData.displayName.charAt(0).toUpperCase() || 'U'}
                   </span>
                 )}
-              </div>
+              </div> 
               <button
                 type="button"
                 onClick={handleUploadClick}
@@ -310,7 +323,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
               >
                 <Camera className="w-4 h-4" />
               </button>
-            </div>
+            </div> 
             
             {/* Hidden file input */}
             <input
@@ -319,7 +332,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
               accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
               onChange={handleFileSelect}
               className="hidden"
-              multiple={false}
+              multiple={false} 
             />
             
             <div className="text-center space-y-2">
@@ -327,7 +340,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 <button
                   type="button"
                   onClick={handleUploadClick}
-                  className="text-purple-600 hover:text-purple-700 font-medium text-sm flex items-center space-x-1 px-3 py-2 rounded-lg hover:bg-purple-50 transition-colors"
+                  className="text-purple-600 hover:text-purple-700 font-medium text-sm flex items-center space-x-1 px-3 py-2 rounded-lg hover:bg-purple-50 transition-colors" 
                 >
                   <Upload className="w-4 h-4" />
                   <span>Upload new photo</span>
@@ -335,7 +348,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 
                 {profileData.avatarPreview && (
                   <button
-                    type="button"
+                    type="button" 
                     onClick={handleRemovePhoto}
                     className="text-red-600 hover:text-red-700 font-medium text-sm px-3 py-2 rounded-lg hover:bg-red-50 transition-colors"
                   >
@@ -343,7 +356,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                   </button>
                 )}
               </div>
-              
+               
               <p className="text-xs text-gray-500">
                 JPG, PNG, GIF or WebP. Max size 5MB.
               </p>
@@ -351,7 +364,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
               {uploadError && (
                 <p className="text-xs text-red-600 bg-red-50 px-3 py-2 rounded-lg">
                   {uploadError}
-                </p>
+                </p> 
               )}
             </div>
           </div>
@@ -359,7 +372,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
           {/* Form Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2"> 
                 <User className="w-4 h-4 inline mr-2" />
                 Display Name *
               </label>
@@ -367,7 +380,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 type="text"
                 value={profileData.displayName}
                 onChange={(e) => setProfileData(prev => ({ ...prev, displayName: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
                 placeholder="Enter your display name"
                 required
                 maxLength={50}
@@ -375,7 +388,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2"> 
                 <Mail className="w-4 h-4 inline mr-2" />
                 Email Address *
               </label>
@@ -383,7 +396,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 type="email"
                 value={profileData.email}
                 onChange={(e) => setProfileData(prev => ({ ...prev, email: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
                 placeholder="Enter your email"
                 required
               />
@@ -391,7 +404,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                <MapPin className="w-4 h-4 inline mr-2" />
+                <MapPin className="w-4 h-4 inline mr-2" /> 
                 Location
               </label>
               <input
@@ -399,7 +412,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 value={profileData.location}
                 onChange={(e) => setProfileData(prev => ({ ...prev, location: e.target.value }))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                placeholder="City, Country"
+                placeholder="City, Country" 
                 maxLength={100}
               />
             </div>
@@ -407,7 +420,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 <Globe className="w-4 h-4 inline mr-2" />
-                Website
+                Website 
               </label>
               <input
                 type="url"
@@ -415,7 +428,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 onChange={(e) => setProfileData(prev => ({ ...prev, website: e.target.value }))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 placeholder="https://example.com"
-              />
+              /> 
             </div>
           </div>
 
@@ -423,7 +436,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Bio
             </label>
-            <textarea
+            <textarea 
               value={profileData.bio}
               onChange={(e) => setProfileData(prev => ({ ...prev, bio: e.target.value }))}
               rows={3}
@@ -431,7 +444,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
               placeholder="Tell us about yourself..."
               maxLength={500}
             />
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-gray-500 mt-1"> 
               {profileData.bio.length}/500 characters
             </p>
           </div>
@@ -439,7 +452,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
           {/* Action Buttons */}
           <div className="flex space-x-3 pt-6 border-t border-gray-200">
             <button
-              type="button"
+              type="button" 
               onClick={onClose}
               className="flex-1 px-6 py-3 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl font-medium transition-colors"
               disabled={loading}
@@ -447,7 +460,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
               Cancel
             </button>
             <button
-              type="submit"
+              type="submit" 
               disabled={loading || !!uploadError}
               className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-xl font-medium transition-all duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
