@@ -12,6 +12,7 @@ interface ProfileProps {
 
 const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
   const { user, signOut } = useAuth();
+  const { profile, loading: profileLoading, saveProfile } = useProfile();
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -71,22 +72,13 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
   const handleSaveProfile = (profileData: any) => {
     if (!user) return;
     
-    const result = saveProfile({ 
+    saveProfile({ 
       displayName: profileData.displayName,
-      email: user?.email || profileData.email,
-      bio: profileData.bio || '',
       bio: profileData.bio || '',
       location: profileData.location,
       website: profileData.website,
-      avatar: profileData.avatarPreview || profile.avatar,
+      avatarUrl: profileData.avatarPreview || profile?.avatarUrl,
     });
-
-    if (result?.success) {
-    } else {
-      console.error('Failed to save profile:', result?.error);
-      setError('Failed to save profile. Please try again.');
-      alert('Failed to save profile. Please try again.');
-    }
   };
 
   const handleSignOut = async () => {
@@ -137,9 +129,9 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
             <div className="flex items-center space-x-6">
               <div className="relative">
                 <div className="w-24 h-24 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center text-white font-bold text-3xl overflow-hidden">
-                  {profile.avatar ? (
+                  {profile?.avatarUrl ? (
                     <img 
-                      src={profile.avatar} 
+                      src={profile.avatarUrl} 
                       alt="Profile" 
                       className="w-full h-full object-cover"
                     />
@@ -168,7 +160,7 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
                 {profile?.location && (
                   <p className="text-white/80 text-sm flex items-center space-x-2 mt-1">
                     <MapPin className="w-4 h-4" />
-                    <span>{profile?.location}</span>
+                    <span>{profile.location}</span>
                   </p>
                 )}
                 {profile?.website && (
@@ -336,7 +328,7 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
                 <Mail className="w-4 h-4 text-gray-500" />
                 <div>
                   <p className="text-sm font-medium text-gray-900">Email</p>
-                  <p className="text-sm text-gray-600">{profile.email}</p>
+                  <p className="text-sm text-gray-600">{user?.email}</p>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
