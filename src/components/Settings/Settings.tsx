@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Settings as SettingsIcon, User, Bell, Shield, Palette, Download, Trash2, Save, Check, AlertCircle, Upload, Sparkles, Cog } from 'lucide-react';
+import { Settings as SettingsIcon, User, Bell, Shield, Palette, Download, Trash2, Save, Check, AlertCircle, Upload, Sparkles, Cog, Mail } from 'lucide-react';
 import { SparklesCore } from '../ui/sparkles';
 import { useAuth } from '../../hooks/useAuth';
 import { useSettings } from '../../hooks/useSettings';
@@ -24,6 +24,7 @@ const Settings: React.FC = () => {
     { id: 'notifications', label: 'Notifications', icon: Bell },
     { id: 'privacy', label: 'Privacy & Security', icon: Shield },
     { id: 'appearance', label: 'Appearance', icon: Palette },
+    { id: 'support', label: 'Support', icon: Mail },
   ];
 
   const currencies = [
@@ -482,6 +483,77 @@ const Settings: React.FC = () => {
     </div>
   );
 
+  const renderSupportSettings = () => (
+    <div className="space-y-6">
+      <div>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Contact Support</h3>
+        <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+          <div className="flex items-center space-x-4 mb-4">
+            <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-violet-600 rounded-full flex items-center justify-center">
+              <Mail className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h4 className="text-lg font-semibold text-gray-900">Need help?</h4>
+              <p className="text-gray-600">Our support team is here to assist you</p>
+            </div>
+          </div>
+          
+          <p className="text-gray-700 mb-6">
+            If you have any questions, feedback, or need assistance with your subscription management, 
+            please don't hesitate to reach out to our dedicated support team.
+          </p>
+          
+          <div className="bg-gray-50 rounded-lg p-4 mb-6">
+            <p className="text-sm text-gray-600 mb-2">Email us directly at:</p>
+            <a 
+              href="mailto:dante@nativestack.ai"
+              className="text-lg font-semibold text-purple-600 hover:text-purple-700 transition-colors"
+            >
+              dante@nativestack.ai
+            </a>
+          </div>
+          
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent('showContactSupport'))}
+            className="w-full bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white py-3 rounded-lg font-medium transition-all duration-200 flex items-center justify-center space-x-2"
+          >
+            <Mail className="w-5 h-5" />
+            <span>Contact Support</span>
+          </button>
+        </div>
+      </div>
+      
+      <div>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Frequently Asked Questions</h3>
+        <div className="space-y-4">
+          <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+            <h4 className="font-semibold text-gray-900 mb-2">How do I cancel my subscription?</h4>
+            <p className="text-gray-600">
+              You can cancel your subscription at any time from the Profile page. Click on your profile 
+              picture in the top right, select "Profile", and then click on the "Manage Subscription" button.
+            </p>
+          </div>
+          
+          <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+            <h4 className="font-semibold text-gray-900 mb-2">Can I export my subscription data?</h4>
+            <p className="text-gray-600">
+              Yes! You can export all your subscription data from the Settings page. Go to the "Privacy & Security" 
+              tab and click on "Export My Data".
+            </p>
+          </div>
+          
+          <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+            <h4 className="font-semibold text-gray-900 mb-2">How do I update my payment method?</h4>
+            <p className="text-gray-600">
+              To update your payment method, go to your Profile page and click on "Manage Subscription". 
+              From there, you can update your payment details.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
   const renderContent = () => {
     switch (activeSection) {
       case 'general':
@@ -494,6 +566,8 @@ const Settings: React.FC = () => {
         return renderPrivacySettings();
       case 'appearance':
         return renderAppearanceSettings();
+      case 'support':
+        return renderSupportSettings();
       default:
         return renderGeneralSettings();
     }

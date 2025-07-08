@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Bell, User, Search, LogOut, Sparkles, Crown } from 'lucide-react';
+import { Bell, User, Search, LogOut, Sparkles, Crown, HelpCircle } from 'lucide-react';
 import NotificationDetailsModal from '../Notifications/NotificationDetailsModal';
 import { useAuth } from '../../hooks/useAuth';
 import { useProfile } from '../../hooks/useProfile';
@@ -115,6 +115,15 @@ const Header: React.FC = () => {
 
           {/* Right side actions */}
           <div className="flex items-center space-x-2 sm:space-x-4">
+            {/* Help/Support */}
+            <button 
+              onClick={() => window.dispatchEvent(new CustomEvent('showContactSupport'))}
+              className="p-2 sm:p-3 text-purple-600 hover:text-purple-700 hover:bg-purple-50 rounded-xl sm:rounded-2xl transition-all duration-300 relative group"
+              title="Contact Support"
+            >
+              <HelpCircle className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
+            </button>
+            
             {/* Notifications */}
             <div className="relative">
               <button 
