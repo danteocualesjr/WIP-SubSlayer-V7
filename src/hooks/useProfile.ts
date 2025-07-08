@@ -216,7 +216,7 @@ export function useProfile() {
     }
   };
 
-  const saveProfile = (profileData: Partial<ProfileData>) => {
+  const saveProfile = async (profileData: Partial<ProfileData>) => {
     if (!user) return { success: false, error: 'User not authenticated' };
 
     try {
