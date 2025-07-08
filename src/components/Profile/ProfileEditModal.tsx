@@ -39,14 +39,18 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   // Initialize form data when modal opens or currentProfile changes
   useEffect(() => {
     if (isOpen && currentProfile) {
-      setProfileData({
+      const safeProfile = {
         displayName: currentProfile.displayName || '',
         email: currentProfile.email || '',
         bio: currentProfile.bio || '',
         location: currentProfile.location || '',
         website: currentProfile.website || '',
-        avatar: null,
+        avatar: null as File | null,
         avatarPreview: currentProfile.avatar || null,
+      };
+      
+      setProfileData({
+        ...safeProfile
       });
       setUploadError(null);
     }
@@ -125,7 +129,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     try {
       let avatarData = profileData.avatarPreview;
       
-      // Convert file to base64 if a new file was selected
+      // Convert file to base64 if a new file was selected 
       if (profileData.avatar) {
         try {
           avatarData = await convertFileToBase64(profileData.avatar);
@@ -148,7 +152,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       
       const result = await onSave(dataToSave);
       
-      if (result?.success) {
+      if (result && result.success) {
         onClose();
         
         // Show success message
@@ -168,7 +172,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
           }
         }, 3000);
       } else if (result) {
-        setUploadError(result?.error || 'Failed to save profile. Please try again.');
+        setUploadError(result.error || 'Failed to save profile. Please try again.');
       } else {
         setUploadError('Failed to save profile. Please try again.');
       }
@@ -183,7 +187,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   const handleSubmitOld = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setUploadError(null);
+    setUploadError(null); 
     
     try {
       let avatarData = profileData.avatarPreview;
@@ -201,11 +205,11 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       
       // Prepare data for saving
       const dataToSave = {
-        displayName: profileData.displayName,
-        email: profileData.email,
-        bio: profileData.bio,
-        location: profileData.location,
-        website: profileData.website,
+        displayName: profileData.displayName || '',
+        email: profileData.email || '',
+        bio: profileData.bio || '',
+        location: profileData.location || '',
+        website: profileData.website || '',
         avatarPreview: avatarData
       };
       
@@ -296,12 +300,12 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 {profileData.avatarPreview ? (
                   <img 
                     src={profileData.avatarPreview} 
-                    alt="Profile" 
+                    alt={profileData.displayName || "Profile"} 
                     className="w-full h-full object-cover"
                   />
                 ) : (
                   <span className="text-white font-bold text-2xl">
-                    {profileData.displayName.charAt(0).toUpperCase() || 'U'}
+                    {(profileData.displayName?.charAt(0) || 'U').toUpperCase()}
                   </span>
                 )}
               </div>
