@@ -75,8 +75,7 @@ export function useSettings() {
             console.warn('Failed to parse legacy settings:', e);
             setSettings(defaultSettings);
           }
-        } else {
-          setSettings(defaultSettings);
+      } catch (error) {
         }
           } catch (error) {
       console.error('Error loading settings:', error);
@@ -84,8 +83,7 @@ export function useSettings() {
     } finally {
       setLoading(false);
     }
-      };
-  }
+  };
 
   const saveSettings = (newSettings: Partial<AppSettings>) => {
     if (!user) return { success: false, error: 'User not authenticated' };
