@@ -12,7 +12,7 @@ interface ProfileProps {
 
 const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
   const { user, signOut } = useAuth();
-  const { profile, loading: profileLoading, saveProfile } = useProfile();
+  const { profile, loading: profileLoading } = useProfile();
   const [showEditModal, setShowEditModal] = useState(false);
   const [profileLoaded, setProfileLoaded] = useState(false);
 
@@ -41,6 +41,15 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
       return () => clearTimeout(timer);
     }
   }, [user, profileLoaded]);
+
+  // Add a loading state check to prevent rendering with incomplete profile data
+  if (profileLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="w-8 h-8 border-2 border-purple-600/30 border-t-purple-600 rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   const activeSubscriptions = subscriptions.filter(sub => sub.status === 'active');
   const totalMonthlySpend = activeSubscriptions.reduce((sum, sub) => {
@@ -155,12 +164,12 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
                 <div className="w-24 h-24 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center text-white font-bold text-3xl overflow-hidden">
                   {profile.avatar ? (
                     <img 
-                      src={profile.avatar} 
+                      src={profile.avatar || ''} 
                       alt="Profile" 
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    profile.displayName.charAt(0).toUpperCase() || 'U'
+                    (profile.displayName ? profile.displayName.charAt(0).toUpperCase() : 'U')
                   )}
                 </div>
                 <button 
@@ -172,10 +181,10 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
               </div>
               
               <div>
-                <h2 className="text-3xl font-bold mb-2">{profile.displayName || 'User'}</h2>
+                <h2 className="text-3xl font-bold mb-2">{profile.displayName || user?.email?.split('@')[0] || 'User'}</h2>
                 <p className="text-white/90 mb-1 flex items-center space-x-2">
                   <Mail className="w-4 h-4" />
-                  <span>{profile.email}</span>
+                  <span>{profile.email || user?.email || 'No email available'}</span>
                 </p>
                 <p className="text-white/80 text-sm flex items-center space-x-2">
                   <Calendar className="w-4 h-4" />
