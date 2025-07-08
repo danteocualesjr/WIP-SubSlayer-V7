@@ -99,6 +99,8 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
     if (result?.success) {
     } else {
       console.error('Failed to save profile:', result?.error);
+    }
+  };
 
   if (profileLoading) {
     return (
@@ -202,7 +204,7 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
                 <span>Edit Profile</span>
               </button>
               <button
-                onClick={handleSignOut}
+                onClick={signOut}
                 className="px-6 py-3 bg-red-500/20 backdrop-blur-sm text-white rounded-xl hover:bg-red-500/30 transition-all duration-200"
               >
                 Sign Out
