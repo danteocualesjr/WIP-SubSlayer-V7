@@ -75,9 +75,9 @@ export function useSettings() {
             console.warn('Failed to parse legacy settings:', e);
             setSettings(defaultSettings);
           }
-      } catch (error) {
         }
-          } catch (error) {
+      }
+    } catch (error) {
       console.error('Error loading settings:', error);
       setSettings(defaultSettings);
     } finally {
