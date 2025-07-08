@@ -78,13 +78,10 @@ const Dashboard: React.FC<DashboardProps> = ({
   }, [subscriptions, spendingData]);
 
   // Get user's display name with improved logic
-  // Get user's display name with improved logic
   const userName = useMemo(() => {
     // First priority: Check if profile has a valid display name that's not empty or just whitespace
     if (profile?.displayName && profile.displayName.trim() && profile.displayName !== '') {
-      // Ensure we're not returning the full email address as a display name
-      const displayName = profile.displayName.trim();
-      return displayName.includes('@') ? displayName.split('@')[0] : displayName;
+      return profile.displayName.trim();
     }
     
     // Second priority: Try to extract a reasonable name from email
