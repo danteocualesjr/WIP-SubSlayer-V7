@@ -16,8 +16,8 @@ interface ProfileData {
 export function useProfile() {
   const { user } = useAuth();
   const [profile, setProfile] = useState<ProfileData>({
-    displayName: user?.email?.split('@')[0] || '',
-    email: user?.email || '',
+    displayName: '',
+    email: '',
     bio: 'Subscription management enthusiast',
     location: '',
     website: '',
@@ -49,7 +49,6 @@ export function useProfile() {
     try {
       setLoading(true);
       console.log('Loading profile for user:', user?.id);
-      console.log('Loading profile for user:', user?.id);
       
       // First try to load from Supabase
       fetchProfileFromSupabase().then(supabaseProfile => {
@@ -58,7 +57,6 @@ export function useProfile() {
           
           // Also update local storage for backup
           localStorage.setItem(`${PROFILE_STORAGE_PREFIX}${user?.id}`, JSON.stringify(supabaseProfile));
-          setLoading(false);
           setLoading(false);
           return;
         }
@@ -130,12 +128,6 @@ export function useProfile() {
       // Ensure loading state is eventually set to false even if promises don't resolve
       setTimeout(() => {
         setLoading(false);
-        setLoading(false);
-      });
-      
-      // Ensure loading state is eventually set to false even if promises don't resolve
-      setTimeout(() => {
-        setLoading(false);
       }, 2000);
     } catch (error) {
       console.error('Error loading profile:', error);
@@ -149,7 +141,6 @@ export function useProfile() {
         avatar: null,
         joinDate: user?.created_at || new Date().toISOString(),
       });
-      console.error('Fallback to default profile due to error:', error);
       setLoading(false);
     }
   };
@@ -157,7 +148,6 @@ export function useProfile() {
   const fetchProfileFromSupabase = async (): Promise<ProfileData | null> => {
     if (!user) return null;
     
-    console.log('Fetching profile from Supabase for user:', user.id);
     try {
       const { data, error } = await supabase
         .from('user_profiles')
@@ -166,7 +156,7 @@ export function useProfile() {
         .maybeSingle();
       
       if (error) {
-        console.error('Error fetching profile from Supabase:', error.message);
+        console.warn('Error fetching profile from Supabase:', error);
         return null;
       }
       
@@ -182,7 +172,7 @@ export function useProfile() {
         joinDate: data.created_at || user?.created_at || new Date().toISOString(),
       };
     } catch (error) {
-      console.error('Exception fetching profile from Supabase:', error);
+      console.error('Error fetching profile from Supabase:', error);
       return null;
     }
   };
@@ -190,7 +180,6 @@ export function useProfile() {
   const saveProfileToSupabase = async (profileData: ProfileData) => {
     if (!user) return { success: false, error: 'User not authenticated' };
     
-    console.log('Saving profile to Supabase for user:', user.id);
     try {
       const { error } = await supabase
         .from('user_profiles')
@@ -207,7 +196,7 @@ export function useProfile() {
         });
       
       if (error) {
-        console.error('Error saving profile to Supabase:', error.message);
+        console.error('Error saving profile to Supabase:', error);
         return { success: false, error: error.message };
       }
       
@@ -216,11 +205,10 @@ export function useProfile() {
     }
   };
 
-  const saveProfile = async (profileData: Partial<ProfileData>) => {
+  const saveProfile = (profileData: Partial<ProfileData>) => {
     if (!user) return { success: false, error: 'User not authenticated' };
 
     try {
-      console.log('Saving profile for user:', user.id);
       const updatedProfile = { ...profile, ...profileData };
       setProfile(updatedProfile);
       
@@ -231,7 +219,7 @@ export function useProfile() {
       localStorage.setItem(`profile_${user.id}`, JSON.stringify(updatedProfile));
       
       // Save to Supabase for persistence
-      await saveProfileToSupabase(updatedProfile);
+      saveProfileToSupabase(updatedProfile);
       
       return { success: true };
     } catch (error) {
