@@ -148,7 +148,7 @@ export function useProfile() {
         .from('user_profiles')
         .select('*')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
       
       if (error) {
         console.warn('Error fetching profile from Supabase:', error);
