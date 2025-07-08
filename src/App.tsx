@@ -305,8 +305,10 @@ function App() {
       {/* Chatbot Widget - Only show on non-Swordie pages */}
       {activeTab !== 'swordie' && <ChatbotWidget />}
       
-      {/* Support Button - Show on all pages when user is logged in */}
-      {user && <SupportButton />}
+      {/* Support Button - Always show when user is logged in */}
+      {user && (
+        <SupportButton />
+      )}
     </div>
   );
 }
