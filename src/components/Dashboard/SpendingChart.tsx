@@ -218,9 +218,7 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
     <div className="bg-white rounded-3xl p-8 shadow-lg border border-purple-100/50 hover:shadow-xl transition-all duration-300 group">
       {/* Enhanced Header with Metrics */}
       <div className="flex items-center justify-between mb-8">
-        <div>
-          <h3 className="text-xl font-bold text-gray-900">Monthly Spending Trend</h3>
-        </div>
+        <h3 className="text-xl font-bold text-gray-900">Monthly Spending Trend</h3>
         
         {/* Chart Type Selector - Icons Only */}
         <div className="flex bg-gray-100 rounded-2xl p-1.5 shadow-inner">
@@ -249,49 +247,6 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
         </div>
       </div>
 
-      {/* Key Metrics Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-        <div className="bg-gradient-to-br from-purple-50 to-violet-50 rounded-2xl p-4 border border-purple-100">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-violet-500 rounded-xl flex items-center justify-center">
-              <TrendingUp className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-600 font-medium">Current Month</p>
-              <p className="text-xl font-bold text-gray-900">${currentMonth.toFixed(2)}</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-4 border border-blue-100">
-          <div className="flex items-center space-x-3">
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-              isPositive ? 'bg-gradient-to-br from-red-500 to-orange-500' : 'bg-gradient-to-br from-green-500 to-emerald-500'
-            }`}>
-              {isPositive ? <TrendingUp className="w-5 h-5 text-white" /> : <TrendingDown className="w-5 h-5 text-white" />}
-            </div>
-            <div>
-              <p className="text-sm text-gray-600 font-medium">vs Last Month</p>
-              <p className={`text-xl font-bold ${isPositive ? 'text-red-600' : 'text-green-600'}`}>
-                {isPositive ? '+' : ''}{changePercentage.toFixed(1)}%
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-br from-emerald-50 to-green-50 rounded-2xl p-4 border border-emerald-100">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-green-500 rounded-xl flex items-center justify-center">
-              <BarChart3 className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-600 font-medium">Average</p>
-              <p className="text-xl font-bold text-gray-900">${averageSpending.toFixed(2)}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Chart Container with Enhanced Styling */}
       <div className="relative">
         <div className="absolute inset-0 bg-gradient-to-br from-purple-50/30 to-violet-50/30 rounded-2xl"></div>
@@ -308,7 +263,7 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
               <div className="w-3 h-3 rounded-full bg-gradient-to-r from-purple-600 to-violet-600"></div>
-              <span className="text-gray-600">Monthly spending</span>
+              <span className="text-gray-600">Monthly spending: ${currentMonth.toFixed(2)}</span>
             </div>
             <div className="flex items-center space-x-2">
               <div className="w-3 h-3 rounded-full bg-gray-300"></div>
