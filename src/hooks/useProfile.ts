@@ -136,7 +136,8 @@ export function useProfile() {
         avatar: null,
         joinDate: user?.created_at || new Date().toISOString(),
       });
-    setLoading(false);
+      setLoading(false);
+    }
   };
   
   const fetchProfileFromSupabase = async (): Promise<ProfileData | null> => {
