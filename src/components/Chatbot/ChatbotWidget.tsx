@@ -47,7 +47,7 @@ const ChatbotWidget: React.FC = () => {
   const generateSubscriptionContext = () => {
     const activeSubscriptions = subscriptions.filter(sub => sub.status === 'active');
     const pausedSubscriptions = subscriptions.filter(sub => sub.status === 'paused');
-    const cancelledSubscriptions = subscriptions.filter(sub => sub.status === 'cancelled'); 
+    const cancelledSubscriptions = subscriptions.filter(sub => sub.status === 'cancelled');
     
     const totalMonthlySpend = activeSubscriptions.reduce((sum, sub) => {
       return sum + (sub.billingCycle === 'monthly' ? sub.cost : sub.cost / 12);
@@ -101,7 +101,7 @@ const ChatbotWidget: React.FC = () => {
 
     return {
       user: {
-        email: user?.email || '',
+        email: user?.email,
         currency: settings.currency,
         reminderDays: settings.reminderDays,
         dateFormat: settings.dateFormat,

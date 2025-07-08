@@ -15,39 +15,33 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
   const features = [
     {
       icon: Sword,
-      title: "Smart Tracking",
-      description: "Automatically track all your subscriptions in one place with intelligent categorization.",
-      color: "#4A9FFF" // Blue
+      title: "Slay Subscription Chaos",
+      description: "Take complete control of your recurring payments with our intelligent tracking system."
     },
     {
-      icon: TrendingUp,
-      title: "Cost Analysis",
-      description: "Get detailed insights into your spending patterns and identify potential savings.",
-      color: "#4CD4A9" // Green
+      icon: Brain,
+      title: "AI-Powered Insights",
+      description: "Get personalized recommendations from Swordie AI to optimize your spending."
     },
     {
       icon: Calendar,
-      title: "Renewal Alerts",
-      description: "Never get surprised by unexpected charges with smart renewal notifications.",
-      color: "#F5A742" // Orange
-    },
-    {
-      icon: Sword,
-      title: "Easy Cancellation",
-      description: "Cancel unwanted subscriptions using our direct cancellation links.",
-      color: "#E85D75" // Red/Pink
-    },
-    {
-      icon: Shield,
-      title: "Secure & Private",
-      description: "Your financial data is encrypted and never shared with third parties.",
-      color: "#8B5CF6" // Purple
+      title: "Never Miss a Renewal",
+      description: "Smart notifications ensure you're always aware of upcoming charges."
     },
     {
       icon: BarChart3,
       title: "Advanced Analytics",
-      description: "Visualize your spending trends with powerful charts and detailed reports to optimize your budget.",
-      color: "#9F7AEA" // Light Purple
+      description: "Visualize your spending patterns with beautiful charts and detailed breakdowns."
+    },
+    {
+      icon: Target,
+      title: "Cost Simulator",
+      description: "Model different scenarios to find the perfect subscription portfolio."
+    },
+    {
+      icon: Shield,
+      title: "Secure & Private",
+      description: "Your financial data is protected with enterprise-grade security."
     }
   ];
 
@@ -419,16 +413,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => {
               const Icon = feature.icon;
-              const iconColor = feature.color || '#8B5CF6';
               return (
                 <div key={index} className="bg-gradient-to-br from-white to-purple-50/50 rounded-2xl p-8 border border-purple-100 hover:shadow-xl transition-all duration-300 hover:scale-105 transform group">
-                  <div 
-                    className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300"
-                    style={{ backgroundColor: iconColor }}
-                  >
+                  <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-violet-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                     <Icon className="w-8 h-8 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold mb-4" style={{ color: iconColor }}>{feature.title}</h3>
+                  <h3 className="text-xl font-bold text-gray-900 mb-4">{feature.title}</h3>
                   <p className="text-gray-600 leading-relaxed">{feature.description}</p>
                 </div>
               );
