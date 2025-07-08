@@ -12,9 +12,16 @@ interface ProfileProps {
 
 const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
   const { user, signOut } = useAuth();
-  const { profile, loading: profileLoading } = useProfile();
+  const { profile, loading: profileLoading, saveProfile, refetch } = useProfile();
   const [showEditModal, setShowEditModal] = useState(false);
   const [profileLoaded, setProfileLoaded] = useState(false);
+
+  // Force profile reload when component mounts
+  useEffect(() => {
+    if (user) {
+      refetch();
+    }
+  }, [user, refetch]);
 
   // Listen for navigation event from header
   useEffect(() => {
@@ -32,7 +39,7 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
   // Force profile reload when component mounts
   useEffect(() => {
     if (user && !profileLoaded) {
-      // Add a small delay to ensure auth is fully initialized
+      // Add a delay to ensure auth is fully initialized
       const timer = setTimeout(() => {
         console.log('Forcing profile reload');
         setProfileLoaded(true);
@@ -42,7 +49,7 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
     }
   }, [user, profileLoaded]);
 
-  // Add a loading state check to prevent rendering with incomplete profile data
+  // Show loading spinner while checking auth and loading profile
   if (profileLoading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -50,6 +57,14 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
       </div>
     );
   }
+  
+  // Ensure we have a valid profile object with required properties
+  const safeProfile = {
+    displayName: profile?.displayName || user?.email?.split('@')[0] || 'User',
+    email: profile?.email || user?.email || '',
+    bio: profile?.bio || 'Subscription management enthusiast',
+    joinDate: profile?.joinDate || new Date().toISOString()
+  };
 
   const activeSubscriptions = subscriptions.filter(sub => sub.status === 'active');
   const totalMonthlySpend = activeSubscriptions.reduce((sum, sub) => {
@@ -58,7 +73,7 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
   const totalAnnualSpend = totalMonthlySpend * 12;
   const averagePerSubscription = activeSubscriptions.length > 0 ? totalMonthlySpend / activeSubscriptions.length : 0;
 
-  const memberSince = new Date(profile.joinDate).toLocaleDateString('en-US', {
+  const memberSince = new Date(safeProfile.joinDate).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long'
   });
@@ -163,7 +178,7 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
               <div className="relative">
                 <div className="w-24 h-24 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center text-white font-bold text-3xl overflow-hidden">
                   {profile.avatar ? (
-                    <img 
+                    <img
                       src={profile.avatar || ''} 
                       alt="Profile" 
                       className="w-full h-full object-cover"
@@ -181,14 +196,14 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
               </div>
               
               <div>
-                <h2 className="text-3xl font-bold mb-2">{profile.displayName || user?.email?.split('@')[0] || 'User'}</h2>
+                <h2 className="text-3xl font-bold mb-2">{safeProfile.displayName}</h2>
                 <p className="text-white/90 mb-1 flex items-center space-x-2">
                   <Mail className="w-4 h-4" />
-                  <span>{profile.email || user?.email || 'No email available'}</span>
+                  <span>{safeProfile.email}</span>
                 </p>
                 <p className="text-white/80 text-sm flex items-center space-x-2">
                   <Calendar className="w-4 h-4" />
-                  <span>Member since {memberSince}</span>
+                  <span>Member since {memberSince || 'recently'}</span>
                 </p>
                 {profile.location && (
                   <p className="text-white/80 text-sm flex items-center space-x-2 mt-1">
@@ -210,7 +225,7 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
                   </p>
                 )}
                 {profile.bio && (
-                  <p className="text-white/90 text-sm mt-2 max-w-md">{profile.bio}</p>
+                  <p className="text-white/90 text-sm mt-2 max-w-md">{profile.bio || safeProfile.bio}</p>
                 )}
               </div>
             </div>
@@ -360,7 +375,7 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
               <div className="flex items-center space-x-3">
                 <Mail className="w-4 h-4 text-gray-500" />
                 <div>
-                  <p className="text-sm font-medium text-gray-900">Email</p>
+                  <p className="text-sm font-medium text-gray-900">Email Address</p>
                   <p className="text-sm text-gray-600">{profile.email}</p>
                 </div>
               </div>
@@ -374,7 +389,7 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
               <div className="flex items-center space-x-3">
                 <Shield className="w-4 h-4 text-gray-500" />
                 <div>
-                  <p className="text-sm font-medium text-gray-900">Account Type</p>
+                  <p className="text-sm font-medium text-gray-900">Plan Type</p>
                   <p className="text-sm text-gray-600">Pro</p>
                 </div>
               </div>
