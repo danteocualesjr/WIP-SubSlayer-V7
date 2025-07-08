@@ -78,9 +78,6 @@ export function useSettings() {
         } else {
           setSettings(defaultSettings);
         }
-      } else {
-        setSettings(defaultSettings);
-      }
     } catch (error) {
       console.error('Error loading settings:', error);
       setSettings(defaultSettings);
