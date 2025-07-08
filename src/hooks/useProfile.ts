@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from './useAuth';
 import { supabase } from '../lib/supabase';
-import { PROFILE_STORAGE_PREFIX } from '../lib/constants';
+import { PROFILE_STORAGE_PREFIX } from '../lib/constants'; 
 
 interface ProfileData {
   displayName: string;
@@ -15,7 +15,7 @@ interface ProfileData {
 
 export function useProfile() {
   const { user } = useAuth();
-  const [profile, setProfile] = useState<ProfileData>({
+  const [profile, setProfile] = useState<ProfileData>(() => ({
     displayName: '',
     email: '',
     bio: 'Subscription management enthusiast',
@@ -23,7 +23,7 @@ export function useProfile() {
     website: '',
     avatar: null,
     joinDate: new Date().toISOString(),
-  });
+  }));
   const [loading, setLoading] = useState(true);
 
   // Load profile data on mount and when user changes
@@ -48,15 +48,6 @@ export function useProfile() {
   const loadProfile = () => {
     try {
       setLoading(true);
-      setProfile({
-        displayName: '',
-        email: '',
-        bio: 'Subscription management enthusiast',
-        location: '',
-        website: '',
-        avatar: null,
-        joinDate: new Date().toISOString(),
-      });
       
       // First try to load from Supabase
       fetchProfileFromSupabase().then(supabaseProfile => {
@@ -110,7 +101,7 @@ export function useProfile() {
           // Initialize with user data if no saved profile
           const displayName = user?.user_metadata?.full_name || 
                              user?.user_metadata?.name || 
-                             user?.email?.split('@')[0] || '';
+                             (user?.email ? user.email.split('@')[0] : '') || '';
                              
           const newProfile = {
             displayName: displayName,
@@ -153,16 +144,16 @@ export function useProfile() {
     if (!user) return null;
 
     try {
-      const { data, error } = await supabase
-        .from('user_profiles')
-        .select('*')
-        .eq('user_id', user.id)
-        .maybeSingle();
+      let { data, error } = await supabase
+          .from('user_profiles')
+          .select('*')
+          .eq('user_id', user.id)
+          .maybeSingle();
       
       if (error) {
         console.warn('Error fetching profile from Supabase:', error);
         return null;
-      } 
+      }
       
       if (!data) return null;
       
@@ -217,8 +208,19 @@ export function useProfile() {
   const saveProfile = (profileData: Partial<ProfileData>) => {
     if (!user) return { success: false, error: 'User not authenticated' };
 
+    // Create a safe copy of the current profile with defaults for any missing values
+    const safeCurrentProfile = {
+      displayName: profile.displayName || '',
+      email: profile.email || user.email || '',
+      bio: profile.bio || 'Subscription management enthusiast',
+      location: profile.location || '',
+      website: profile.website || '',
+      avatar: profile.avatar,
+      joinDate: profile.joinDate || new Date().toISOString(),
+    };
+
     try {
-      const updatedProfile = { ...profile, ...profileData };
+      const updatedProfile = { ...safeCurrentProfile, ...profileData };
       setProfile(updatedProfile);
       
       // Save to local storage as backup

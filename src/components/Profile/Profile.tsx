@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { User, Mail, Calendar, Shield, Award, TrendingUp, DollarSign, CreditCard, Edit2, Camera, MapPin, Globe, Sparkles } from 'lucide-react';
+import { User, Mail, Calendar, Shield, Award, TrendingUp, DollarSign, CreditCard, Edit2, Camera, MapPin, Globe } from 'lucide-react';
 import { SparklesCore } from '../ui/sparkles';
 import { useAuth } from '../../hooks/useAuth';
 import { useProfile } from '../../hooks/useProfile';
@@ -41,11 +41,12 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
   const activeSubscriptions = subscriptions.filter(sub => sub.status === 'active');
   const totalMonthlySpend = activeSubscriptions.reduce((sum, sub) => {
     return sum + (sub.billingCycle === 'monthly' ? sub.cost : sub.cost / 12);
-  }, 0);
+  }, 0); 
   const totalAnnualSpend = totalMonthlySpend * 12;
   const averagePerSubscription = activeSubscriptions.length > 0 ? totalMonthlySpend / activeSubscriptions.length : 0;
 
-  const memberSince = new Date(profile.joinDate).toLocaleDateString('en-US', {
+  // Safely create member since date with fallback
+  const memberSince = new Date(profile?.joinDate || user?.created_at || new Date()).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long'
   });
@@ -84,30 +85,20 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
       date: subscriptions.length >= 10 ? subscriptions[9]?.createdAt : null,
     },
   ];
-
   const earnedAchievements = achievements.filter(a => a.earned);
 
   const handleSaveProfile = (profileData: any) => {
     const result = saveProfile({
       displayName: profileData.displayName,
-      email: profileData.email,
-      bio: profileData.bio,
+      email: profileData.email || user?.email,
       location: profileData.location,
       website: profileData.website,
       avatar: profileData.avatarPreview || profile.avatar,
     });
 
-    if (result.success) {
-      console.log('Profile saved successfully');
+    if (result?.success) {
     } else {
-      console.error('Failed to save profile:', result.error);
-      alert('Failed to save profile. Please try again.');
-    }
-  };
-
-  const handleSignOut = async () => {
-    await signOut();
-  };
+      console.error('Failed to save profile:', result?.error);
 
   if (profileLoading) {
     return (
@@ -151,12 +142,12 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
                 <div className="w-24 h-24 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center text-white font-bold text-3xl overflow-hidden">
                   {profile.avatar ? (
                     <img 
-                      src={profile.avatar || ''} 
+                      src={profile.avatar} 
                       alt="Profile" 
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    (profile.displayName?.charAt(0) || 'U').toUpperCase()
+                    (profile?.displayName?.charAt(0) || user?.email?.charAt(0) || 'U').toUpperCase()
                   )}
                 </div>
                 <button 
@@ -168,22 +159,22 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
               </div>
               
               <div>
-                <h2 className="text-3xl font-bold mb-2">{profile.displayName || 'User'}</h2>
+                <h2 className="text-3xl font-bold mb-2">{profile?.displayName || user?.email?.split('@')[0] || 'User'}</h2>
                 <p className="text-white/90 mb-1 flex items-center space-x-2">
                   <Mail className="w-4 h-4" />
-                  <span>{profile.email}</span>
+                  <span>{profile?.email || user?.email || 'No email available'}</span>
                 </p>
                 <p className="text-white/80 text-sm flex items-center space-x-2">
                   <Calendar className="w-4 h-4" />
                   <span>Member since {memberSince}</span>
                 </p>
-                {profile.location && (
+                {profile?.location && (
                   <p className="text-white/80 text-sm flex items-center space-x-2 mt-1">
                     <MapPin className="w-4 h-4" />
                     <span>{profile.location}</span>
                   </p>
                 )}
-                {profile.website && (
+                {profile?.website && (
                   <p className="text-white/80 text-sm flex items-center space-x-2 mt-1">
                     <Globe className="w-4 h-4" />
                     <a 
@@ -196,7 +187,7 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
                     </a>
                   </p>
                 )}
-                {profile.bio && (
+                {profile?.bio && (
                   <p className="text-white/90 text-sm mt-2 max-w-md">{profile.bio}</p>
                 )}
               </div>
