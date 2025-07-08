@@ -52,7 +52,6 @@ const Analytics: React.FC<AnalyticsProps> = ({
   }).length;
 
   // Calculate year-over-year growth
-  const currentMonthSpending = spendingData[spendingData.length - 1]?.amount || 0;
   const sixMonthsAgo = spendingData[spendingData.length - 7]?.amount || 0;
   const growthRate = sixMonthsAgo > 0 
     ? ((currentMonthSpending - sixMonthsAgo) / sixMonthsAgo * 100).toFixed(1)
@@ -117,7 +116,7 @@ const Analytics: React.FC<AnalyticsProps> = ({
                 <Target className="w-4 h-4 sm:w-6 sm:h-6 text-blue-300" />
                 <p className="text-white/80 text-xs sm:text-sm font-medium">Average Cost</p>
               </div>
-              <p className="text-lg sm:text-3xl font-bold">${averagePerSubscription.toFixed(2)}</p>
+              <p className="text-lg sm:text-3xl font-bold">${activeSubscriptions.length > 0 ? (monthlyTotal / activeSubscriptions.length).toFixed(2) : '0.00'}</p>
             </div>
             
             <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
