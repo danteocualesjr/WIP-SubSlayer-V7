@@ -235,7 +235,7 @@ const Header: React.FC = () => {
             <div className="flex items-center space-x-2 sm:space-x-4 pl-2 sm:pl-4 border-l border-purple-200/50">
               <div className="text-right hidden sm:block">
                 <p className="text-sm font-medium text-gray-900">
-                  {profile.displayName || user?.email?.split('@')[0] || 'User'}
+                  {profile?.displayName || user?.email?.split('@')[0] || 'User'}
                 </p>
                 <div className={`flex items-center space-x-1 ${planDisplay.bgColor} px-2 py-1 rounded-full`}>
                   <PlanIcon className={`w-3 h-3 ${planDisplay.color}`} />
@@ -263,9 +263,9 @@ const Header: React.FC = () => {
                   <div className="absolute right-0 top-10 sm:top-12 bg-white/95 backdrop-blur-xl border border-purple-200/50 rounded-2xl shadow-2xl py-3 z-50 min-w-[180px]">
                     <div className="px-4 sm:px-6 py-3 border-b border-purple-100">
                       <p className="text-sm font-medium text-gray-900">
-                        {profile.displayName || user?.email?.split('@')[0] || 'User'}
+                        {profile?.displayName || user?.email?.split('@')[0] || 'User'}
                       </p>
-                      <p className="text-xs text-gray-600">{profile.email || user?.email}</p>
+                      <p className="text-xs text-gray-600">{profile?.email || user?.email || ''}</p>
                       <div className={`flex items-center space-x-1 mt-2 ${planDisplay.bgColor} px-2 py-1 rounded-full w-fit`}>
                         <PlanIcon className={`w-3 h-3 ${planDisplay.color}`} />
                         <span className={`text-xs ${planDisplay.color} font-medium`}>{planDisplay.name}</span>
