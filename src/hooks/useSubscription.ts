@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from './useAuth';
-import { getProductByPriceId } from '../stripe-config';
+import { getProductByPriceId, stripeProducts } from '../stripe-config';
 
 interface SubscriptionData {
   customerId: string;
@@ -68,12 +68,20 @@ export function useSubscription() {
   };
 
   const getSubscriptionProduct = () => {
-    if (!subscription?.priceId) return null;
-    return getProductByPriceId(subscription.priceId);
+    if (!subscription?.priceId) {
+      // If no subscription, return the first product as a fallback
+      return stripeProducts[0] || null;
+    }
+    
+    // Try to find the product using both live and test mode
+    const product = getProductByPriceId(subscription.priceId, false) || 
+                    getProductByPriceId(subscription.priceId, true);
+                    
+    return product || stripeProducts[0] || null;
   };
 
   const isActive = () => {
-    return subscription?.status === 'active';
+    return subscription?.status === 'active' || subscription?.status === 'trialing';
   };
 
   const isPaused = () => {
