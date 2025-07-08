@@ -3,6 +3,7 @@ import { X, Plus, Sparkles, Search, Star } from 'lucide-react';
 import { Subscription } from '../../types/subscription';
 import { useSettings } from '../../hooks/useSettings';
 import { useSubscription } from '../../hooks/useSubscription';
+import { useSubscription } from '../../hooks/useSubscription';
 
 interface AddSubscriptionModalProps {
   isOpen: boolean;
@@ -32,10 +33,10 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
   subscriptions = []
 }) => {
   const { settings } = useSettings();
-  const { subscription: stripeSubscription } = useSubscription();
+  const { canUseProFeatures } = useSubscription();
   
   // Check if user is on free tier and at subscription limit
-  const isFreeTier = !stripeSubscription || !stripeSubscription.subscriptionId;
+  const isFreeTier = !canUseProFeatures();
   const [showPopularServices, setShowPopularServices] = useState(!subscription);
   const [searchTerm, setSearchTerm] = useState('');
   const [formData, setFormData] = useState({

@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { CheckCircle, ArrowRight, Sparkles, Gift, Star } from 'lucide-react';
 import { SparklesCore } from '../ui/sparkles';
 import { useSubscription } from '../../hooks/useSubscription';
+import { useAuth } from '../../hooks/useAuth';
 
 const SuccessPage: React.FC = () => {
+  const { user } = useAuth();
   const { subscription, loading, refetch } = useSubscription();
   const [showConfetti, setShowConfetti] = useState(true);
 
@@ -19,8 +21,9 @@ const SuccessPage: React.FC = () => {
     return () => clearTimeout(timer);
   }, [refetch]);
 
-  const handleContinue = () => {
-    window.location.href = '/';
+  const handleContinue = async () => {
+    // Redirect to dashboard
+    window.location.href = window.location.origin;
   };
 
   if (loading) {
@@ -105,9 +108,14 @@ const SuccessPage: React.FC = () => {
           {/* Subscription Status */}
           {subscription && (
             <div className="bg-green-500/20 backdrop-blur-sm rounded-2xl p-4 mb-8 border border-green-400/30">
-              <p className="text-green-200 text-sm">
-                ✅ Your SubSlayer access is now active
-              </p>
+              <div className="space-y-2">
+                <p className="text-green-200 text-sm">
+                  ✅ Your SubSlayer Pro access is now active
+                </p>
+                <p className="text-green-200/80 text-xs">
+                  You now have unlimited subscriptions and access to all premium features
+                </p>
+              </div>
             </div>
           )}
 
@@ -120,10 +128,11 @@ const SuccessPage: React.FC = () => {
               <span>Start Managing Subscriptions</span>
               <ArrowRight className="w-5 h-5" />
             </button>
-            
-            <p className="text-white/70 text-sm">
-              Need help getting started? Check out our quick start guide or contact support.
-            </p>
+
+            <div className="text-white/70 text-sm space-y-1">
+              <p>Need help getting started? Check out our quick start guide or contact support.</p>
+              <p>Your account: {user?.email}</p>
+            </div>
           </div>
 
           {/* Thank You Note */}
