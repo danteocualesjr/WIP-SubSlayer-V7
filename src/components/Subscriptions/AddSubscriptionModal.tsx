@@ -358,6 +358,16 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
     e.preventDefault();
     if (!formData.name || !formData.cost || !formData.nextBilling) return;
     
+    // Check if at subscription limit for new subscriptions only
+    if (isFreeTier && subscriptions.length >= 7 && !subscription) {
+      alert('Free tier is limited to 7 subscriptions. Please upgrade to Pro for unlimited subscriptions.');
+      // Navigate to pricing page
+      window.dispatchEvent(new CustomEvent('navigateToTab', { 
+        detail: { tab: 'pricing' } 
+      }));
+      return;
+    }
+    
     onAdd({
       ...formData,
       cost: parseFloat(formData.cost),
