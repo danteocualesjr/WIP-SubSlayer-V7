@@ -163,7 +163,7 @@ const Analytics: React.FC<AnalyticsProps> = ({
           <div className="flex items-center justify-between">
             <div className="flex-1 min-w-0 pr-4">
               <p className="text-sm font-medium text-gray-600 mb-3">Top Category</p>
-              <p className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 break-words leading-tight" title={mostExpensiveCategory.name}>
+              <p className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 truncate" title={mostExpensiveCategory.name}>
                 {mostExpensiveCategory.name}
               </p>
             </div>
