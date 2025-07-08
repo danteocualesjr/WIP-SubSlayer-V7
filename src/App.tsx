@@ -11,7 +11,6 @@ import Profile from './components/Profile/Profile';
 import Pricing from './components/Pricing/Pricing';
 import SwordiePage from './components/Swordie/SwordiePage';
 import AuthForm from './components/Auth/AuthForm';
-import SupportButton from './components/Support/SupportButton';
 import LandingPage from './components/Landing/LandingPage';
 import SuccessPage from './components/Success/SuccessPage';
 import ChatbotWidget from './components/Chatbot/ChatbotWidget';
@@ -304,11 +303,6 @@ function App() {
       
       {/* Chatbot Widget - Only show on non-Swordie pages */}
       {activeTab !== 'swordie' && <ChatbotWidget />}
-      
-      {/* Support Button - Show when user is logged in and not on Swordie page */}
-      {user && activeTab !== 'swordie' && (
-        <SupportButton />
-      )}
     </div>
   );
 }
