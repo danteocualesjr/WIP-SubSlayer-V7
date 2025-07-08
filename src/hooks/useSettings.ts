@@ -78,13 +78,14 @@ export function useSettings() {
         } else {
           setSettings(defaultSettings);
         }
-    } catch (error) {
+          } catch (error) {
       console.error('Error loading settings:', error);
       setSettings(defaultSettings);
     } finally {
       setLoading(false);
     }
-  };
+      };
+  }
 
   const saveSettings = (newSettings: Partial<AppSettings>) => {
     if (!user) return { success: false, error: 'User not authenticated' };
