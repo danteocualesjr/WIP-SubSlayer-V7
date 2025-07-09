@@ -48,6 +48,15 @@ export function useProfile() {
   const loadProfile = () => {
     try {
       setLoading(true);
+      setProfile({
+        displayName: user?.email?.split('@')[0] || '',
+        email: user?.email || '',
+        bio: 'Subscription management enthusiast',
+        location: '',
+        website: '',
+        avatar: null,
+        joinDate: user?.created_at || new Date().toISOString(),
+      });
       
       // First try to load from Supabase
       fetchProfileFromSupabase().then(supabaseProfile => {
@@ -119,11 +128,14 @@ export function useProfile() {
           saveProfileToSupabase(newProfile);
         }
         
-        setLoading(false);
       }).catch(error => {
         console.error('Error in profile loading process:', error);
-        setLoading(false);
       });
+      
+      // Always set loading to false after a short delay to ensure UI updates
+      setTimeout(() => {
+        setLoading(false);
+      }, 500);
     } catch (error) {
       console.error('Error loading profile:', error);
       // Fallback to user data

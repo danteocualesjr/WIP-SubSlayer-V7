@@ -20,7 +20,7 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
   useEffect(() => {
     const handleNavigateToProfile = () => {
       setShowEditModal(true);
-    };
+    if (profile?.displayName && profile.displayName.trim() !== '') {
 
     window.addEventListener('navigateToProfile', handleNavigateToProfile);
     
@@ -156,11 +156,11 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
                   {profile.avatar ? (
                     <img 
                       src={profile.avatar} 
-                      alt="Profile" 
+                      alt={profile.displayName || "Profile"} 
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    profile.displayName.charAt(0).toUpperCase() || 'U'
+                    (profile.displayName?.charAt(0) || 'U').toUpperCase()
                   )}
                 </div>
                 <button 

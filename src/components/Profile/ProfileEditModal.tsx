@@ -294,12 +294,12 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 {profileData.avatarPreview ? (
                   <img 
                     src={profileData.avatarPreview} 
-                    alt="Profile" 
+                    alt="Profile Preview" 
                     className="w-full h-full object-cover"
                   />
                 ) : (
                   <span className="text-white font-bold text-2xl">
-                    {profileData.displayName.charAt(0).toUpperCase() || 'U'}
+                    {(profileData.displayName?.charAt(0) || 'U').toUpperCase()}
                   </span>
                 )}
               </div>
