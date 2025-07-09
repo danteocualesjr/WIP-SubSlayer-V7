@@ -20,6 +20,7 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
   useEffect(() => {
     const handleNavigateToProfile = () => {
       setShowEditModal(true);
+    };
     if (profile?.displayName && profile.displayName.trim() !== '') {
 
     window.addEventListener('navigateToProfile', handleNavigateToProfile);
@@ -27,6 +28,7 @@ const Profile: React.FC<ProfileProps> = ({ subscriptions }) => {
     return () => {
       window.removeEventListener('navigateToProfile', handleNavigateToProfile);
     };
+    }
   }, []);
 
   // Force profile reload when component mounts
