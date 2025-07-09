@@ -398,20 +398,12 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
     <div 
       className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4"
       onClick={handleBackdropClick}
-      style={{ 
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        zIndex: 9999
-      }}
     >
       <div 
-        className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-purple-100"
+        className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-purple-100"
         onClick={handleModalContentClick}
       >
-        <div className="flex items-center justify-between mb-6 sm:mb-8">
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-purple-600 to-violet-600 rounded-xl sm:rounded-2xl flex items-center justify-center">
               <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
@@ -436,7 +428,7 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
 
         {/* Popular Services Section */}
         {showPopularServices && !subscription && (
-          <div className="mb-8">
+          <div className="mb-6 sm:mb-8">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-2">
                 <Star className="w-5 h-5 text-yellow-500" />
@@ -463,13 +455,13 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
             </div>
 
             {/* Services Grid */}
-            <div className="max-h-96 overflow-y-auto space-y-6">
+            <div className="max-h-72 sm:max-h-96 overflow-y-auto space-y-4 sm:space-y-6">
               {Object.entries(servicesByCategory).map(([category, services]) => (
                 <div key={category}>
                   <h4 className="text-sm font-semibold text-gray-700 mb-3 sticky top-0 bg-white py-1">
                     {category}
                   </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                     {services.map((service) => (
                       <button
                         key={service.name}

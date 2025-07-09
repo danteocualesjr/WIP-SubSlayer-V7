@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Bell, User, Search, LogOut, Sparkles, Crown } from 'lucide-react';
 import NotificationDetailsModal from '../Notifications/NotificationDetailsModal';
 import { useAuth } from '../../hooks/useAuth';
+import { useEffect, useState } from 'react';
 import { useProfile } from '../../hooks/useProfile';
 import { useNotifications } from '../../hooks/useNotifications';
 import { useSubscription } from '../../hooks/useSubscription';
@@ -11,13 +12,13 @@ const Header: React.FC = () => {
   const { profile } = useProfile();
   const { notifications, markAsRead, markAllAsRead, deleteNotification, getUnreadCount } = useNotifications();
   const { subscription, getSubscriptionProduct, isActive } = useSubscription();
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [showProfileMenu, setShowProfileMenu] = useState(false);
-  const [showNotificationDetails, setShowNotificationDetails] = useState(false);
+  const [showNotifications, setShowNotifications] = useState<boolean>(false);
+  const [showProfileMenu, setShowProfileMenu] = useState<boolean>(false);
+  const [showNotificationDetails, setShowNotificationDetails] = useState<boolean>(false);
   const [selectedNotification, setSelectedNotification] = useState<any>(null);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
   // Listen for sidebar toggle events
   useEffect(() => {
@@ -99,10 +100,10 @@ const Header: React.FC = () => {
     <header className={`bg-white/80 backdrop-blur-2xl border-b border-purple-200/50 sticky top-0 z-30 shadow-sm transition-all duration-300 ${
       isMobile ? 'ml-0' : (sidebarCollapsed ? 'ml-20' : 'ml-64')
     }`}>
-      <div className={`px-4 sm:px-6 lg:px-8 ${isMobile ? 'pl-20' : ''}`}>
+      <div className={`px-3 sm:px-6 lg:px-8 ${isMobile ? 'pl-16' : ''}`}>
         <div className="flex justify-between items-center h-16">
           {/* Search Bar */}
-          <div className="flex-1 max-w-lg">
+          <div className="flex-1 max-w-lg hidden sm:block">
             <div className="relative">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-purple-400 w-5 h-5" />
               <input
@@ -114,12 +115,12 @@ const Header: React.FC = () => {
           </div>
 
           {/* Right side actions */}
-          <div className="flex items-center space-x-2 sm:space-x-4">
+          <div className="flex items-center space-x-1 sm:space-x-4 ml-auto">
             {/* Notifications */}
             <div className="relative">
               <button 
                 onClick={() => setShowNotifications(!showNotifications)}
-                className="p-2 sm:p-3 text-purple-600 hover:text-purple-700 hover:bg-purple-50 rounded-xl sm:rounded-2xl transition-all duration-300 relative group"
+                className="p-1.5 sm:p-3 text-purple-600 hover:text-purple-700 hover:bg-purple-50 rounded-xl sm:rounded-2xl transition-all duration-300 relative group"
               >
                 <Bell className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
                 {unreadCount > 0 && (
@@ -131,7 +132,7 @@ const Header: React.FC = () => {
 
               {/* Notifications Dropdown */}
               {showNotifications && (
-                <div className="absolute right-0 top-12 sm:top-14 bg-white/95 backdrop-blur-xl border border-purple-200/50 rounded-2xl shadow-2xl py-3 z-50 w-72 sm:w-80 max-h-96 overflow-hidden">
+                <div className="absolute right-0 top-12 sm:top-14 bg-white/95 backdrop-blur-xl border border-purple-200/50 rounded-2xl shadow-2xl py-3 z-50 w-[calc(100vw-2rem)] sm:w-80 max-h-96 overflow-hidden">
                   <div className="px-4 sm:px-6 py-4 border-b border-purple-100">
                     <div className="flex items-center justify-between">
                       <h3 className="font-semibold text-gray-900 flex items-center space-x-2">
@@ -232,7 +233,7 @@ const Header: React.FC = () => {
             </div>
 
             {/* Profile Menu */}
-            <div className="flex items-center space-x-2 sm:space-x-4 pl-2 sm:pl-4 border-l border-purple-200/50">
+            <div className="flex items-center space-x-1 sm:space-x-4 pl-1 sm:pl-4 border-l border-purple-200/50">
               <div className="text-right hidden sm:block">
                 <p className="text-sm font-medium text-gray-900">
                   {profile.displayName || user?.email?.split('@')[0] || 'User'}
@@ -260,7 +261,7 @@ const Header: React.FC = () => {
                 
                 {/* Profile Dropdown */}
                 {showProfileMenu && (
-                  <div className="absolute right-0 top-10 sm:top-12 bg-white/95 backdrop-blur-xl border border-purple-200/50 rounded-2xl shadow-2xl py-3 z-50 min-w-[180px]">
+                  <div className="absolute right-0 top-10 sm:top-12 bg-white/95 backdrop-blur-xl border border-purple-200/50 rounded-2xl shadow-2xl py-3 z-50 min-w-[180px] w-[calc(100vw-2rem)] sm:w-auto">
                     <div className="px-4 sm:px-6 py-3 border-b border-purple-100">
                       <p className="text-sm font-medium text-gray-900">
                         {profile.displayName || user?.email?.split('@')[0] || 'User'}

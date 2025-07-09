@@ -245,7 +245,7 @@ const SpendingChart: React.FC<SpendingChartProps> = ({ data, loading = false }) 
       {/* Chart Container with Enhanced Styling */}
       <div className="relative">
         <div className="absolute inset-0 bg-gradient-to-br from-purple-50/30 to-violet-50/30 rounded-2xl"></div>
-        <div className="relative h-80 p-4">
+        <div className="relative h-60 sm:h-80 p-4 overflow-hidden">
           <ResponsiveContainer width="100%" height="100%">
             {renderChart()}
           </ResponsiveContainer>

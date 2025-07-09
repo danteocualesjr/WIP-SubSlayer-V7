@@ -532,7 +532,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
       </div>
 
       {/* Filters, Sort, and View Toggle */}
-      <div className="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4">
+      <div className="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4 overflow-x-auto">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
           <input
@@ -543,11 +543,11 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
             className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
           />
         </div>
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-nowrap lg:flex-wrap gap-3 pb-2 lg:pb-0 overflow-x-auto">
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value as any)}
-            className="px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            className="px-3 sm:px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent whitespace-nowrap flex-shrink-0"
           >
             <option value="all">All Status</option>
             <option value="active">Active</option>
@@ -557,7 +557,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
           <select
             value={filterCategory}
             onChange={(e) => setFilterCategory(e.target.value)}
-            className="px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            className="px-3 sm:px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent whitespace-nowrap flex-shrink-0"
           >
             <option value="all">All Categories</option>
             {categories.map((category) => (
@@ -573,7 +573,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
               setSortField(field);
               setSortDirection(direction);
             }}
-            className="px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            className="px-3 sm:px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent whitespace-nowrap flex-shrink-0"
           >
             <option value="createdAt-desc">Newest First</option>
             <option value="createdAt-asc">Oldest First</option>
@@ -590,7 +590,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
           </select>
           
           {/* View Toggle */}
-          <div className="flex bg-gray-100 rounded-xl p-1">
+          <div className="flex bg-gray-100 rounded-xl p-1 flex-shrink-0">
             <button
               onClick={() => setViewMode('list')}
               className={`p-2 rounded-lg transition-all duration-200 ${
@@ -628,9 +628,9 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
           
           {/* Select Mode Button */}
           {!isSelectionMode && (
-            <button
+            <button 
               onClick={() => setIsSelectionMode(true)}
-              className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-3 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2"
+              className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 sm:px-4 py-3 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2 whitespace-nowrap flex-shrink-0"
             >
               <CheckSquare className="w-4 h-4" />
               <span>Select</span>

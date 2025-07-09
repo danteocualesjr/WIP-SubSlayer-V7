@@ -343,13 +343,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
         {/* Hero Content */}
         <div className="relative z-20 flex-1 flex flex-col items-center justify-center text-center px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
           {/* Badge */}
-          <div className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-sm text-white/90 px-6 py-3 rounded-full text-sm font-medium mb-8 border border-white/20 hover:bg-white/20 transition-all duration-300">
+          <div className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-sm text-white/90 px-4 sm:px-6 py-2 sm:py-3 rounded-full text-xs sm:text-sm font-medium mb-6 sm:mb-8 border border-white/20 hover:bg-white/20 transition-all duration-300">
             <Sparkles className="w-4 h-4 text-yellow-300" />
             <span>Introducing SubSlayer - Now in Beta</span>
           </div>
 
           {/* Main Heading */}
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white relative z-20 mb-8 leading-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-white relative z-20 mb-6 sm:mb-8 leading-tight">
             Slay Your
             <br />
             <span className="text-white">
@@ -360,16 +360,16 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
           </h1>
 
           {/* Subtitle */}
-          <p className="text-white/90 text-xl md:text-2xl max-w-3xl mx-auto mb-12 leading-relaxed">
+          <p className="text-white/90 text-lg sm:text-xl md:text-2xl max-w-3xl mx-auto mb-8 sm:mb-12 leading-relaxed">
             Take complete control of your recurring payments with intelligent tracking, 
             AI-powered insights, and beautiful analytics. Never overpay again.
           </p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-16">
+          <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-10 sm:mb-16">
             <button
               onClick={onGetStarted}
-              className="bg-white text-purple-600 hover:bg-gray-100 px-8 py-4 rounded-2xl font-semibold text-lg transition-all duration-200 shadow-xl hover:shadow-2xl hover:scale-105 transform flex items-center space-x-2"
+              className="bg-white text-purple-600 hover:bg-gray-100 px-6 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-semibold text-base sm:text-lg transition-all duration-200 shadow-xl hover:shadow-2xl hover:scale-105 transform flex items-center space-x-2 w-full sm:w-auto justify-center"
             >
               <span>Start Free Today</span>
               <ArrowRight className="w-5 h-5" />
@@ -381,20 +381,20 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                   demoSection.scrollIntoView({ behavior: 'smooth' });
                 }
               }}
-              className="text-white/90 hover:text-white font-semibold text-lg flex items-center space-x-2 transition-colors group"
+              className="text-white/90 hover:text-white font-semibold text-base sm:text-lg flex items-center space-x-2 transition-colors group w-full sm:w-auto justify-center"
             >
               <span>Watch Demo</span>
-              <div className="w-12 h-12 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 border border-white/20 group-hover:scale-110">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 border border-white/20 group-hover:scale-110">
                 <ArrowRight className="w-5 h-5" />
               </div>
             </button>
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-8 max-w-4xl mx-auto">
             {stats.map((stat, index) => (
-              <div key={index} className="text-center bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
-                <div className="text-3xl md:text-4xl font-bold text-white mb-2">{stat.number}</div>
+              <div key={index} className="text-center bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
+                <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-1 sm:mb-2">{stat.number}</div>
                 <div className="text-white/80 font-medium">{stat.label}</div>
               </div>
             ))}
@@ -405,29 +405,29 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
       {/* Features Section */}
       <section id="features" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          <div className="text-center mb-10 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
               Everything You Need to
               <span className="bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent"> Master </span>
               Your Subscriptions
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
               From intelligent tracking to AI-powered insights, SubSlayer gives you the tools to optimize your subscription spending.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {features.map((feature, index) => {
               const Icon = feature.icon;
               return (
-                <div key={index} className="bg-gradient-to-br from-white to-purple-50/50 rounded-2xl p-8 border border-purple-100 hover:shadow-xl transition-all duration-300 hover:scale-105 transform group">
+                <div key={index} className="bg-gradient-to-br from-white to-purple-50/50 rounded-xl sm:rounded-2xl p-6 sm:p-8 border border-purple-100 hover:shadow-xl transition-all duration-300 hover:scale-105 transform group">
                   <div 
-                    className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300"
+                    className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform duration-300"
                     style={{ backgroundColor: feature.color }}
                   >
-                    <Icon className="w-8 h-8 text-white" />
+                    <Icon className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-4">{feature.title}</h3>
+                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-4">{feature.title}</h3>
                   <p className="text-gray-600 leading-relaxed">{feature.description}</p>
                 </div>
               );

@@ -283,58 +283,58 @@ const CalendarView: React.FC<CalendarViewProps> = ({ subscriptions }) => {
             <span className="font-semibold">Past Date</span>
           </div>
         </div>
-      </div>
-
-      {/* Tooltip for subscription details */}
-      {tooltipInfo.visible && tooltipInfo.date && (
-        <div 
-          className="fixed z-50 bg-white/95 backdrop-blur-md rounded-xl shadow-2xl border border-purple-200 p-5 w-80 max-h-96 overflow-y-auto"
-          style={{ 
-            left: tooltipInfo.x,
-            top: tooltipInfo.y - 10,
-            transform: 'translate(-50%, -100%)'
-          }}
-        >
-          <div className="flex items-center justify-between mb-4">
-            <h4 className="text-base font-bold text-gray-900">
-              {tooltipInfo.date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
-            </h4>
-            <span className="text-xs font-semibold px-3 py-1 bg-purple-100 text-purple-700 rounded-full">
-              {tooltipInfo.subscriptions.length} renewals
-            </span>
-          </div>
-          
-          <div className="max-h-64 overflow-y-auto space-y-3 pr-1">
-            {tooltipInfo.subscriptions.map((subscription) => (
-              <div 
-                key={subscription.id} 
-                className="flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors border border-gray-100 shadow-sm"
-              >
-                <div className="flex items-center space-x-2">
-                  <div 
-                    className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-semibold text-xs shadow-md"
-                    style={{ backgroundColor: subscription.color || '#8B5CF6' }}
-                  >
-                    {subscription.name.substring(0, 2).toUpperCase()}
+        {/* Tooltip for subscription details */}
+        {tooltipInfo.visible && tooltipInfo.date && (
+          <div 
+            className="fixed z-50 bg-white/95 backdrop-blur-md rounded-xl shadow-2xl border border-purple-200 p-5 w-80 max-h-96 overflow-y-auto"
+            style={{ 
+              left: window.innerWidth <= 640 ? '50%' : tooltipInfo.x,
+              top: window.innerWidth <= 640 ? '50%' : tooltipInfo.y - 10,
+              transform: window.innerWidth <= 640 ? 'translate(-50%, -50%)' : 'translate(-50%, -100%)',
+              maxWidth: window.innerWidth <= 640 ? 'calc(100vw - 2rem)' : '320px'
+            }}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="text-base font-bold text-gray-900">
+                {tooltipInfo.date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+              </h4>
+              <span className="text-xs font-semibold px-3 py-1 bg-purple-100 text-purple-700 rounded-full">
+                {tooltipInfo.subscriptions.length} renewals
+              </span>
+            </div>
+            
+            <div className="max-h-64 overflow-y-auto space-y-3 pr-1">
+              {tooltipInfo.subscriptions.map((subscription) => (
+                <div 
+                  key={subscription.id} 
+                  className="flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors border border-gray-100 shadow-sm"
+                >
+                  <div className="flex items-center space-x-2">
+                    <div 
+                      className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-semibold text-xs shadow-md"
+                      style={{ backgroundColor: subscription.color || '#8B5CF6' }}
+                    >
+                      {subscription.name.substring(0, 2).toUpperCase()}
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-gray-900">{subscription.name}</p>
+                      <p className="text-xs text-gray-500 font-medium">{subscription.category || 'Uncategorized'}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm font-semibold text-gray-900">{subscription.name}</p>
-                    <p className="text-xs text-gray-500 font-medium">{subscription.category || 'Uncategorized'}</p>
-                  </div>
+                  <span className="text-sm font-bold bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent">${subscription.cost.toFixed(2)}</span>
                 </div>
-                <span className="text-sm font-bold bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent">${subscription.cost.toFixed(2)}</span>
-              </div>
-            ))}
+              ))}
+            </div>
+            
+            <div className="mt-4 pt-3 border-t border-gray-200 flex justify-between items-center">
+              <span className="text-sm font-medium text-gray-600">Total</span>
+              <span className="text-base font-bold text-purple-700">
+                ${tooltipInfo.subscriptions.reduce((sum, sub) => sum + sub.cost, 0).toFixed(2)}
+              </span>
+            </div>
           </div>
-          
-          <div className="mt-4 pt-3 border-t border-gray-200 flex justify-between items-center">
-            <span className="text-sm font-medium text-gray-600">Total</span>
-            <span className="text-base font-bold text-purple-700">
-              ${tooltipInfo.subscriptions.reduce((sum, sub) => sum + sub.cost, 0).toFixed(2)}
-            </span>
-          </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Upcoming Renewals List for Current Month */}
       {totalRenewalsThisMonth > 0 && (

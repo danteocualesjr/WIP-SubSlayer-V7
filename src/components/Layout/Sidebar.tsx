@@ -12,7 +12,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
   const [showSupportModal, setShowSupportModal] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(() => {
     const saved = localStorage.getItem('sidebar-collapsed');
-    if (saved) return JSON.parse(saved);
+    const mobile = window.innerWidth < 1024;
     // Default to collapsed on mobile
     return window.innerWidth < 768;
   });
@@ -24,7 +24,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
   // Handle window resize
   useEffect(() => {
     const handleResize = () => {
-      const mobile = window.innerWidth < 768;
+      const mobile = window.innerWidth < 1024;
       setIsMobile(mobile);
       
       // Auto-collapse on mobile, restore saved state on desktop
@@ -190,15 +190,15 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
       {/* Mobile Menu Button */}
       {isMobile && (
         <button
-          onClick={toggleSidebar}
-          className="fixed top-4 left-4 z-50 p-3 bg-white border border-purple-200 rounded-2xl shadow-lg text-purple-600 hover:text-purple-700 hover:bg-purple-50 transition-all duration-200 md:hidden"
+          onClick={() => setIsMobileMenuOpen(true)}
+          className="fixed top-3 left-3 z-50 p-2 bg-white border border-purple-200 rounded-xl shadow-lg text-purple-600 hover:text-purple-700 hover:bg-purple-50 transition-all duration-200 lg:hidden"
         >
-          <Menu className="w-6 h-6" />
+          <Menu className="w-5 h-5" />
         </button>
       )}
 
       {/* Desktop Sidebar */}
-      <div className={`fixed left-0 top-0 h-full bg-gradient-to-b from-white via-purple-50/30 to-violet-50/30 backdrop-blur-xl border-r border-purple-200/50 z-40 flex-col shadow-xl transition-all duration-300 ease-in-out hidden md:flex ${
+      <div className={`fixed left-0 top-0 h-full bg-gradient-to-b from-white via-purple-50/30 to-violet-50/30 backdrop-blur-xl border-r border-purple-200/50 z-40 flex-col shadow-xl transition-all duration-300 ease-in-out hidden lg:flex ${
         isCollapsed ? 'w-20' : 'w-64'
       }`}>
         {/* Logo */}

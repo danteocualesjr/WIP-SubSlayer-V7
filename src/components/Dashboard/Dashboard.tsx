@@ -320,13 +320,13 @@ const Dashboard: React.FC<DashboardProps> = ({
       )}
 
       {/* Charts Grid - Monthly Spending Trend and Spending by Category */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 overflow-hidden">
         <SpendingChart data={spendingData} loading={spendingLoading} />
         <CategoryChart data={categoryData} />
       </div>
 
       {/* Upcoming Renewals and Calendar View */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 overflow-hidden">
         <UpcomingRenewals 
           subscriptions={subscriptions} 
           onSwitchToCalendar={handleSwitchToCalendar}

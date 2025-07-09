@@ -92,7 +92,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   return (
     <>
       <div 
-        className={`bg-white rounded-2xl p-6 shadow-sm border transition-all duration-300 relative ${
+        className={`bg-white rounded-2xl p-4 sm:p-6 shadow-sm border transition-all duration-300 relative ${
           isSelectionMode 
             ? `cursor-pointer ${isSelected ? 'border-purple-300 bg-purple-50 shadow-md' : 'border-gray-100 hover:border-gray-300'}`
             : 'border-gray-100 hover:shadow-md hover:border-purple-200 cursor-pointer'
@@ -101,7 +101,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
       >
         {/* Selection Checkbox */}
         {isSelectionMode && (
-          <div className="absolute top-4 left-4" onClick={handleSelectClick}>
+          <div className="absolute top-3 sm:top-4 left-3 sm:left-4" onClick={handleSelectClick}>
             <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
               isSelected ? 'bg-purple-600 border-purple-600' : 'border-gray-300'
             }`}>
@@ -112,7 +112,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
 
         {/* Action Icons */}
         {!isSelectionMode && (
-          <div className="absolute top-4 right-4 actions-menu">
+          <div className="absolute top-3 sm:top-4 right-3 sm:right-4 actions-menu">
             <div className="flex items-center space-x-1">
               <button
                 onClick={handleEditClick}
@@ -140,21 +140,21 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
         )}
 
         {/* Subscription Info */}
-        <div className={`flex items-start space-x-4 mb-4 ${isSelectionMode ? 'ml-8' : ''}`}>
+        <div className={`flex items-start space-x-3 sm:space-x-4 mb-3 sm:mb-4 ${isSelectionMode ? 'ml-8' : ''}`}>
           <div
-            className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-lg flex-shrink-0"
+            className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl flex items-center justify-center text-white font-bold text-base sm:text-lg flex-shrink-0"
             style={{ backgroundColor: subscription.color || '#8B5CF6' }}
           >
             {subscription.name.substring(0, 2).toUpperCase()}
           </div>
           <div className="flex-1">
-            <h3 className="text-lg font-semibold text-gray-900 mb-1">{subscription.name}</h3>
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1">{subscription.name}</h3>
             {subscription.description && (
               <p className="text-sm text-gray-600 mb-2">{subscription.description}</p>
             )}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3 sm:space-x-4">
               <div className="flex items-center space-x-1">
-                <span className="text-lg font-bold text-gray-900">
+                <span className="text-base sm:text-lg font-bold text-gray-900">
                   ${subscription.cost.toFixed(2)}
                 </span>
                 <span className="text-sm text-gray-500">/{subscription.billingCycle}</span>

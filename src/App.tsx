@@ -294,9 +294,9 @@ function App() {
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
       <Header />
       <main className={`px-4 sm:px-6 lg:px-8 py-4 sm:py-8 transition-all duration-300 ${
-        isMobile ? 'ml-0' : (sidebarCollapsed ? 'ml-20' : 'ml-64')
+        isMobile ? 'ml-0 pt-16' : (sidebarCollapsed ? 'ml-20' : 'ml-64')
       }`}>
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto pb-16 sm:pb-0">
           {renderActiveTab()}
         </div>
       </main>

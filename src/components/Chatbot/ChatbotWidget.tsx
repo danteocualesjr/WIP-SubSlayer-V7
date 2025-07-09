@@ -405,7 +405,7 @@ Remember: Start with a simple greeting, then help based on what they ask for.`;
       {/* Chat Widget */}
       {isOpen && (
         <div className={`fixed bottom-4 right-4 bg-white rounded-3xl shadow-2xl border border-gray-100 z-50 transition-all duration-300 ${
-          isMinimized ? 'w-80 h-16' : 'w-96 h-[600px]'
+          isMinimized ? 'w-64 sm:w-80 h-16' : 'w-[calc(100vw-2rem)] sm:w-96 h-[500px] sm:h-[600px]'
         }`}>
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-gray-100 bg-white rounded-t-3xl">
@@ -537,11 +537,11 @@ Remember: Start with a simple greeting, then help based on what they ask for.`;
       {/* Floating Action Button - Simple purple circle with sword */}
       {!isOpen && (
         <div className="fixed bottom-6 right-6 z-50">
-          <button
+          <button 
             onClick={toggleWidget}
-            className="w-16 h-16 bg-gradient-to-r from-purple-600 to-violet-600 rounded-full flex items-center justify-center shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-110 border-4 border-white"
+            className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-r from-purple-600 to-violet-600 rounded-full flex items-center justify-center shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-110 border-4 border-white"
           >
-            <Sword className="w-8 h-8 text-white" />
+            <Sword className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
           </button>
         </div>
       )}
