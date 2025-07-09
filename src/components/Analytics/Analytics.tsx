@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { TrendingUp, DollarSign, Calendar, PieChart, Sparkles, Star, BarChart3, Target } from 'lucide-react';
 import StatsCard from '../Dashboard/StatsCard';
 import SpendingChart from '../Dashboard/SpendingChart';
-import AdvancedAnalytics from './AdvancedAnalytics';
+import AdvancedAnalytics from './AdvancedAnalytics'; 
 import CategoryChart from './CategoryChart';
-import { SparklesCore } from '../ui/sparkles';
+import { SparklesCore } from '../ui/sparkles'; 
 import { Subscription, SpendingData, CategoryData } from '../../types/subscription';
 import { useSubscription } from '../../hooks/useSubscription';
 
@@ -89,55 +89,45 @@ const Analytics: React.FC<AnalyticsProps> = ({
         <div className="relative z-10">
           <div className="flex items-center space-x-3 mb-4 sm:mb-6">
             <BarChart3 className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" />
-            <h1 className="text-2xl sm:text-4xl font-bold">{showAdvanced ? "Advanced Analytics" : "Analytics"}</h1>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
+              <h1 className="text-2xl sm:text-4xl font-bold">{showAdvanced ? "Advanced Analytics" : "Analytics"}</h1>
+              {hasProSubscription && (
+                <button
+                  onClick={() => setShowAdvanced(!showAdvanced)}
+                  className="mt-2 sm:mt-0 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-4 py-1.5 rounded-lg font-medium transition-all duration-200 text-sm flex items-center space-x-2 w-fit"
+                >
+                  {showAdvanced ? (
+                    <>
+                      <span>Basic Analytics</span>
+                    </>
+                  ) : (
+                    <>
+                      <Star className="w-4 h-4" />
+                      <span>Advanced Analytics</span>
+                    </>
+                  )}
+                </button>
+              )}
+              {!hasProSubscription && (
+                <button
+                  onClick={() => {
+                    window.dispatchEvent(new CustomEvent('navigateToTab', { 
+                      detail: { tab: 'pricing' } 
+                    }));
+                  }}
+                  className="mt-2 sm:mt-0 bg-yellow-500/80 hover:bg-yellow-500 text-white px-4 py-1.5 rounded-lg font-medium transition-all duration-200 text-sm flex items-center space-x-2 w-fit"
+                >
+                  <Star className="w-4 h-4" />
+                  <span>Upgrade to Pro</span>
+                </button>
+              )}
+            </div>
           </div>
           <p className="text-lg sm:text-xl text-white/90 mb-6 sm:mb-8 max-w-2xl"> 
             {showAdvanced 
               ? "Unlock deeper insights with advanced analytics and AI-powered recommendations" 
               : "Deep dive into your subscription spending patterns and discover optimization opportunities"}
           </p>
-          
-          <div className="flex items-center space-x-4 mb-6">
-            {hasProSubscription && (
-              <div className="bg-white/10 backdrop-blur-sm rounded-full p-1 flex items-center">
-                <button
-                  onClick={() => setShowAdvanced(false)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                    !showAdvanced 
-                      ? 'bg-white text-purple-700 shadow-md' 
-                      : 'text-white/90 hover:text-white'
-                  }`}
-                >
-                  Basic
-                </button>
-                <button
-                  onClick={() => setShowAdvanced(true)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 flex items-center space-x-1 ${
-                    showAdvanced 
-                      ? 'bg-white text-purple-700 shadow-md' 
-                      : 'text-white/90 hover:text-white'
-                  }`}
-                >
-                  <Star className="w-3.5 h-3.5" />
-                  <span>Advanced</span>
-                </button>
-              </div>
-            )}
-            
-            {!hasProSubscription && (
-              <button
-                onClick={() => {
-                  window.dispatchEvent(new CustomEvent('navigateToTab', { 
-                    detail: { tab: 'pricing' } 
-                  }));
-                }}
-                className="bg-yellow-500/80 hover:bg-yellow-500 text-white px-4 py-2 rounded-full font-medium transition-all duration-200 text-sm flex items-center space-x-2 shadow-md"
-              >
-                <Star className="w-4 h-4" />
-                <span>Upgrade to Pro</span>
-              </button>
-            )}
-          </div>
           
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-6">
             <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
