@@ -2,9 +2,11 @@ import React from 'react';
 import { TrendingUp, DollarSign, Calendar, PieChart, Sparkles, Star, BarChart3, Target } from 'lucide-react';
 import StatsCard from '../Dashboard/StatsCard';
 import SpendingChart from '../Dashboard/SpendingChart';
+import AdvancedAnalytics from './AdvancedAnalytics';
 import CategoryChart from './CategoryChart';
 import { SparklesCore } from '../ui/sparkles';
 import { Subscription, SpendingData, CategoryData } from '../../types/subscription';
+import { useSubscription } from '../../hooks/useSubscription';
 
 interface AnalyticsProps {
   
@@ -23,6 +25,8 @@ const Analytics: React.FC<AnalyticsProps> = ({
   spendingLoading = false 
   
 }) => {
+  const { isActive } = useSubscription();
+  const hasProSubscription = isActive();
   const activeSubscriptions = subscriptions.filter(sub => sub.status === 'active');
   
   const monthlyTotal = activeSubscriptions.reduce((sum, sub) => {
@@ -222,6 +226,38 @@ const Analytics: React.FC<AnalyticsProps> = ({
           </div>
         </div>
       )}
+      
+      {/* Advanced Analytics Section */}
+      <div className="relative">
+        {!hasProSubscription && (
+          <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center rounded-2xl sm:rounded-3xl">
+            <div className="bg-white p-6 sm:p-8 rounded-xl sm:rounded-2xl shadow-xl border border-purple-100 max-w-md text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-violet-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <Star className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Advanced Analytics</h3>
+              <p className="text-gray-600 mb-6">
+                Unlock powerful insights with advanced analytics. Upgrade to Pro to access detailed spending trends, category breakdowns, and personalized recommendations.
+              </p>
+              <button 
+                onClick={() => {
+                  window.dispatchEvent(new CustomEvent('navigateToTab', { 
+                    detail: { tab: 'pricing' } 
+                  }));
+                }}
+                className="w-full bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white py-3 rounded-xl font-semibold transition-all duration-200 flex items-center justify-center space-x-2"
+              >
+                <Star className="w-5 h-5" />
+                <span>Upgrade to Pro</span>
+              </button>
+            </div>
+          </div>
+        )}
+        <AdvancedAnalytics 
+          subscriptions={subscriptions} 
+          categoryData={categoryData}
+        />
+      </div>
 
       {/* Empty State */}
       {activeSubscriptions.length === 0 && (
