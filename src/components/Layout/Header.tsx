@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Bell, User, Search, LogOut, Sparkles, Crown } from 'lucide-react';
 import NotificationDetailsModal from '../Notifications/NotificationDetailsModal';
 import { useAuth } from '../../hooks/useAuth';
-import { useEffect, useState } from 'react';
 import { useProfile } from '../../hooks/useProfile';
 import { useNotifications } from '../../hooks/useNotifications';
 import { useSubscription } from '../../hooks/useSubscription';
