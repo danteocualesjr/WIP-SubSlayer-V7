@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, Sword, User, Sparkles, MessageCircle, Zap, Brain, TrendingUp, Calendar, DollarSign } from 'lucide-react';
+import { Send, Sword, User, Sparkles, MessageCircle, Zap, Brain, TrendingUp, Calendar, DollarSign, Star } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { SparklesCore } from '../ui/sparkles';
 import { useSubscriptions } from '../../hooks/useSubscriptions';
 import { useSettings } from '../../hooks/useSettings';
-import { useAuth } from '../../hooks/useAuth';
+import { useAuth } from '../../hooks/useAuth'; 
+import { useSubscription } from '../../hooks/useSubscription';
 
 interface Message {
   id: string;
@@ -16,6 +17,8 @@ interface Message {
 
 const SwordiePage: React.FC = () => {
   const { user } = useAuth();
+  const { isActive } = useSubscription();
+  const hasProSubscription = isActive();
   const { subscriptions } = useSubscriptions();
   const { settings, formatCurrency } = useSettings();
   const [messages, setMessages] = useState<Message[]>([]);
@@ -37,11 +40,11 @@ const SwordiePage: React.FC = () => {
   }, [messages]);
 
   // Focus input on mount
-  useEffect(() => {
-    if (inputRef.current) {
-      setTimeout(() => inputRef.current?.focus(), 100);
-    }
-  }, []);
+  useEffect(() => { 
+    if (hasProSubscription && inputRef.current) {
+      setTimeout(() => inputRef.current?.focus(), 100); 
+    } 
+  }, [hasProSubscription]);
 
   // Generate comprehensive subscription context for the AI
   const generateSubscriptionContext = () => {
@@ -431,7 +434,53 @@ Remember: Start with a simple greeting, then help based on what they ask for.`;
   }).length;
 
   return (
-    <div className="space-y-8 h-full flex flex-col">
+    <div className="space-y-8 h-full flex flex-col relative">
+      {/* Pro Upgrade Overlay */}
+      {!hasProSubscription && (
+        <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-20 flex flex-col items-center justify-center rounded-2xl sm:rounded-3xl">
+          <div className="bg-white p-6 sm:p-8 rounded-xl sm:rounded-2xl shadow-xl border border-purple-100 max-w-md text-center">
+            <div className="w-20 h-20 bg-gradient-to-r from-purple-600 to-violet-600 rounded-xl flex items-center justify-center mx-auto mb-6">
+              <Sword className="w-10 h-10 text-white" />
+            </div>
+            <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">Meet Swordie AI</h3>
+            <p className="text-gray-600 mb-6">
+              Swordie is your AI subscription assistant, ready to help you optimize spending, find savings, and manage your subscriptions more effectively.
+            </p>
+            <div className="space-y-4 mb-8">
+              <div className="flex items-start space-x-3">
+                <div className="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center mt-0.5 flex-shrink-0">
+                  <div className="w-2 h-2 rounded-full bg-purple-600"></div>
+                </div>
+                <span className="text-gray-700">Get personalized subscription recommendations</span>
+              </div>
+              <div className="flex items-start space-x-3">
+                <div className="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center mt-0.5 flex-shrink-0">
+                  <div className="w-2 h-2 rounded-full bg-purple-600"></div>
+                </div>
+                <span className="text-gray-700">Analyze spending patterns and identify savings</span>
+              </div>
+              <div className="flex items-start space-x-3">
+                <div className="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center mt-0.5 flex-shrink-0">
+                  <div className="w-2 h-2 rounded-full bg-purple-600"></div>
+                </div>
+                <span className="text-gray-700">Get help with cancellation and renewal decisions</span>
+              </div>
+            </div>
+            <button 
+              onClick={() => {
+                window.dispatchEvent(new CustomEvent('navigateToTab', { 
+                  detail: { tab: 'pricing' } 
+                }));
+              }}
+              className="w-full bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white py-4 rounded-xl font-semibold transition-all duration-200 flex items-center justify-center space-x-2"
+            >
+              <Star className="w-5 h-5" />
+              <span>Upgrade to Pro</span>
+            </button>
+          </div>
+        </div>
+      )}
+      
       {/* Enhanced Hero Section with Sparkles */}
       <div className="relative bg-gradient-to-br from-purple-900 via-violet-800 to-purple-700 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white overflow-hidden">
         {/* Sparkles Background */}
