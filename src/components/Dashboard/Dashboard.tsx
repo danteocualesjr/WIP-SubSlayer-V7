@@ -216,7 +216,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                   <span>{subscriptions.length}/7 subscriptions used</span>
                   {isAtSubscriptionLimit && (
                     <span className="ml-2 bg-yellow-400/20 text-yellow-100 px-2 py-0.5 rounded-full text-xs">
-                    <p className="font-bold text-gray-900 text-base sm:text-lg">${monthlyCost.toFixed(2)} monthly</p>
+                      Limit reached
                     </span>
                   )}
                 </div>
