@@ -33,15 +33,15 @@ const CategoryChart: React.FC<CategoryChartProps> = ({ data }) => {
 
   if (!data || data.length === 0) {
     return (
-      <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-lg border border-purple-100/50 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group">
+      <div className="bg-white rounded-3xl p-8 shadow-lg border border-purple-100/50 hover:shadow-xl transition-all duration-300 group">
         <div className="mb-8">
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">Spending by Category</h3>
+          <h3 className="text-xl font-bold text-gray-900 mb-3">Spending by Category</h3>
         </div>
         <div className="h-80 flex items-center justify-center">
           <div className="text-center">
-            <PieChartIcon className="w-20 h-20 text-gray-300 dark:text-gray-600 mx-auto mb-6" />
-            <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">No category data available</h4>
-            <p className="text-gray-500 dark:text-gray-400">Add subscriptions with categories to see the breakdown</p>
+            <PieChartIcon className="w-20 h-20 text-gray-300 mx-auto mb-6" />
+            <h4 className="text-lg font-semibold text-gray-900 mb-2">No category data available</h4>
+            <p className="text-gray-500">Add subscriptions with categories to see the breakdown</p>
           </div>
         </div>
       </div>

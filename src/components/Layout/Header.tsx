@@ -80,15 +80,7 @@ const Header: React.FC = () => {
   };
 
   const toggleTheme = () => {
-    // Cycle through themes: light -> dark -> auto -> light
-    let newTheme;
-    if (settings.theme === 'light') {
-      newTheme = 'dark';
-    } else if (settings.theme === 'dark') {
-      newTheme = 'auto';
-    } else {
-      newTheme = 'light';
-    }
+    const newTheme = settings.theme === 'dark' ? 'light' : 'dark';
     saveSettings({ theme: newTheme });
   };
 
@@ -133,22 +125,13 @@ const Header: React.FC = () => {
             {/* Theme Toggle */}
             <button 
               onClick={toggleTheme}
-              className="p-1.5 sm:p-3 text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-purple-50 dark:hover:bg-gray-700 rounded-xl sm:rounded-2xl transition-all duration-300 relative group"
-              title={
-                settings.theme === 'dark' ? 'Switch to auto theme' : 
-                settings.theme === 'light' ? 'Switch to dark mode' : 
-                'Switch to light mode'
-              }
+              className="p-1.5 sm:p-3 text-purple-600 hover:text-purple-700 hover:bg-purple-50 rounded-xl sm:rounded-2xl transition-all duration-300 relative group"
+              title={settings.theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
             >
               {settings.theme === 'dark' ? (
-                <Moon className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
-              ) : settings.theme === 'light' ? (
                 <Sun className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
               ) : (
-                <div className="relative w-5 h-5">
-                  <Sun className="w-5 h-5 absolute top-0 left-0 opacity-50" />
-                  <Moon className="w-5 h-5 absolute top-0 left-0 opacity-50" />
-                </div>
+                <Moon className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
               )}
             </button>
             

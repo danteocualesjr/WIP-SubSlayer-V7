@@ -174,7 +174,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   }, [onSwitchToCalendar]);
 
   return (
-    <div className="space-y-6 sm:space-y-8 dark:text-gray-100">
+    <div className="space-y-6 sm:space-y-8">
       {/* Enhanced Hero Section with Sparkles */}
       <div className="relative bg-gradient-to-br from-purple-900 via-violet-800 to-purple-700 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white overflow-hidden">
         {/* Sparkles Background - Use stable key to prevent re-initialization */}
