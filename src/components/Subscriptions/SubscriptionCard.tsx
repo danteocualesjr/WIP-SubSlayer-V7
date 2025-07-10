@@ -92,10 +92,10 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   return (
     <>
       <div 
-        className={`bg-white rounded-2xl p-4 sm:p-6 shadow-sm border transition-all duration-300 relative hover:shadow-xl hover:-translate-y-1 ${
+        className={`bg-white rounded-2xl p-4 sm:p-6 shadow-sm border transition-all duration-300 relative hover:shadow-xl hover:-translate-y-1 transform group ${
           isSelectionMode 
             ? `cursor-pointer ${isSelected ? 'border-purple-300 bg-purple-50 shadow-md' : 'border-gray-100 hover:border-gray-300'}`
-            : 'border-gray-100 hover:shadow-md hover:border-purple-200 cursor-pointer'
+            : 'border-gray-100 hover:border-purple-200 cursor-pointer'
         }`}
         onClick={handleCardClick}
       >
@@ -142,7 +142,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
         {/* Subscription Info */}
         <div className={`flex items-start space-x-3 sm:space-x-4 mb-3 sm:mb-4 ${isSelectionMode ? 'ml-8' : ''}`}>
           <div
-            className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl flex items-center justify-center text-white font-bold text-base sm:text-lg flex-shrink-0"
+            className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl flex items-center justify-center text-white font-bold text-base sm:text-lg flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
             style={{ backgroundColor: subscription.color || '#8B5CF6' }}
           >
             {subscription.name.substring(0, 2).toUpperCase()}
@@ -173,11 +173,11 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
         </div>
 
         {/* Next Billing and Reminder */}
-        <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+        <div className="flex items-center justify-between pt-4 border-t border-gray-100 transition-colors duration-300 group-hover:border-purple-100">
           <div className="flex items-center space-x-2">
-            <Calendar className="w-4 h-4 text-gray-500" />
-            <span className="text-sm text-gray-600">Next billing:</span>
-            <span className="text-sm font-medium text-gray-900">
+            <Calendar className="w-4 h-4 text-gray-500 group-hover:text-purple-500 transition-colors duration-300" />
+            <span className="text-sm text-gray-600 group-hover:text-gray-700 transition-colors duration-300">Next billing:</span>
+            <span className="text-sm font-medium text-gray-900 group-hover:text-purple-700 transition-colors duration-300">
               {formatDate(subscription.nextBilling)}
             </span>
           </div>
@@ -200,7 +200,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
 
         {/* Click to edit hint (only show when not in selection mode) */}
         {!isSelectionMode && (
-          <div className="absolute inset-0 rounded-2xl bg-purple-500/0 hover:bg-purple-500/5 transition-all duration-300 pointer-events-none" />
+          <div className="absolute inset-0 rounded-2xl bg-purple-500/0 group-hover:bg-purple-500/5 transition-all duration-300 pointer-events-none" />
         )}
       </div>
 
