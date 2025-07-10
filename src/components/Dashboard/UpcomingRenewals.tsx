@@ -96,7 +96,7 @@ const UpcomingRenewals: React.FC<UpcomingRenewalsProps> = ({
                 
                 <div className="flex items-center space-x-3">
                   <span className="font-bold text-gray-900 group-hover/item:text-purple-700 transition-colors">
-                    ${subscription.cost.toFixed(2)}
+                    ${subscription.cost.toFixed(2)}{subscription.billingCycle === 'monthly' ? ' monthly' : ' annually'}
                   </span>
                   <div className={`flex items-center space-x-1 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${
                     isUrgent 

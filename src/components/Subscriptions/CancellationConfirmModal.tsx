@@ -245,7 +245,7 @@ const CancellationConfirmModal: React.FC<CancellationConfirmModalProps> = ({
                     <span className="text-sm font-medium text-yellow-800">No automatic link found</span>
                   </div>
                   <p className="text-xs text-yellow-700">
-                    Please enter the cancellation URL for {subscription.name} below
+                    ${subscription.cost.toFixed(2)}{subscription.billingCycle === 'monthly' ? ' monthly' : ' annually'}
                   </p>
                 </div>
                 

@@ -217,7 +217,7 @@ const Analytics: React.FC<AnalyticsProps> = ({
                       </div>
                     </div>
                     <div className="text-right flex-shrink-0 ml-4">
-                      <p className="font-bold text-gray-900 text-base sm:text-lg">${monthlyCost.toFixed(2)}/mo</p>
+                      <p className="font-bold text-gray-900 text-base sm:text-lg">${monthlyCost.toFixed(2)} monthly</p>
                       <p className="text-sm text-purple-600 font-medium">{percentage}% of total</p>
                     </div>
                   </div>
