@@ -12,6 +12,7 @@ interface Message {
   content: string;
   timestamp: Date;
   isStreaming?: boolean;
+  
 }
 
 const ChatbotWidget: React.FC = () => {
