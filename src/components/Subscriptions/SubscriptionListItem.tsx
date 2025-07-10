@@ -91,7 +91,7 @@ const SubscriptionListItem: React.FC<SubscriptionListItemProps> = ({
   return (
     <>
       <div 
-        className={`px-6 py-4 transition-all duration-300 hover:bg-purple-50/50 hover:shadow-md group ${
+        className={`px-6 py-4 transition-colors ${
           isSelectionMode 
             ? `cursor-pointer ${isSelected ? 'bg-purple-50' : 'hover:bg-gray-50'}`
             : 'hover:bg-gray-50 cursor-pointer'
@@ -114,13 +114,13 @@ const SubscriptionListItem: React.FC<SubscriptionListItemProps> = ({
           <div className={isSelectionMode ? "col-span-3" : "col-span-3"}>
             <div className="flex items-center space-x-3">
               <div
-                className="w-12 h-12 rounded-lg flex items-center justify-center text-white font-semibold text-sm flex-shrink-0 transition-transform duration-300 group-hover:scale-110 shadow-sm group-hover:shadow-md"
+                className="w-12 h-12 rounded-lg flex items-center justify-center text-white font-semibold text-sm flex-shrink-0"
                 style={{ backgroundColor: subscription.color || '#8B5CF6' }}
               >
                 {subscription.name.substring(0, 2).toUpperCase()}
               </div>
               <div>
-                <h4 className="font-medium text-gray-900 group-hover:text-purple-700 transition-colors duration-300">{subscription.name}</h4>
+                <h4 className="font-medium text-gray-900">{subscription.name}</h4>
                 {subscription.description && (
                   <p className="text-sm text-gray-600 truncate">{subscription.description}</p>
                 )}
@@ -136,17 +136,17 @@ const SubscriptionListItem: React.FC<SubscriptionListItemProps> = ({
           {/* Cost */}
           <div className="col-span-2">
             <div className="flex items-center space-x-1">
-              <span className="font-semibold text-gray-900 group-hover:text-purple-700 transition-colors duration-300">
+              <span className="font-semibold text-gray-900">
                 ${subscription.cost.toFixed(2)}
               </span>
-              <span className="text-sm text-gray-500"> {subscription.billingCycle}</span>
+              <span className="text-sm text-gray-500">/{subscription.billingCycle}</span>
             </div>
           </div>
 
           {/* Next Billing */}
           <div className="col-span-2">
             <div className="flex flex-col">
-              <span className="text-sm text-gray-900 group-hover:text-purple-700 transition-colors duration-300">
+              <span className="text-sm text-gray-900">
                 {formatDate(subscription.nextBilling)}
               </span>
               <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium w-fit ${
