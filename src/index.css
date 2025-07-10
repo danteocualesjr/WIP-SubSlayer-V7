@@ -4,11 +4,92 @@
 
 /* Dark mode styles */
 .dark {
-  color-scheme: dark;
+  color-scheme: dark; 
 }
 
 .dark body {
-  @apply bg-gray-900 text-gray-100;
+  @apply bg-gray-900 text-gray-100; 
+}
+
+/* Dark mode component styles */
+.dark .bg-white {
+  @apply bg-gray-800;
+}
+
+.dark .text-gray-900 {
+  @apply text-gray-100;
+}
+
+.dark .text-gray-800 {
+  @apply text-gray-200;
+}
+
+.dark .text-gray-700 {
+  @apply text-gray-300;
+}
+
+.dark .text-gray-600 {
+  @apply text-gray-400;
+}
+
+.dark .text-gray-500 {
+  @apply text-gray-500;
+}
+
+.dark .text-gray-400 {
+  @apply text-gray-500;
+}
+
+.dark .border-gray-100, 
+.dark .border-gray-200, 
+.dark .border-purple-100 {
+  @apply border-gray-700;
+}
+
+.dark .bg-gray-50 {
+  @apply bg-gray-700;
+}
+
+.dark .bg-gray-100 {
+  @apply bg-gray-700;
+}
+
+.dark .shadow-lg, 
+.dark .shadow-md, 
+.dark .shadow-sm {
+  @apply shadow-gray-900;
+}
+
+/* Gradient background adjustments for dark mode */
+.dark .bg-gradient-to-br.from-purple-50,
+.dark .bg-gradient-to-r.from-purple-50 {
+  @apply from-gray-800 to-gray-700;
+}
+
+.dark .bg-gradient-to-br.from-gray-50 {
+  @apply from-gray-800 to-gray-700;
+}
+
+/* Chart backgrounds in dark mode */
+.dark .recharts-cartesian-grid-bg {
+  @apply fill-gray-800;
+}
+
+.dark .recharts-tooltip-wrapper {
+  @apply bg-gray-800 text-gray-200;
+}
+
+/* Hover states in dark mode */
+.dark .hover\:bg-gray-50:hover {
+  @apply hover:bg-gray-700;
+}
+
+.dark .hover\:bg-gray-100:hover {
+  @apply hover:bg-gray-700;
+}
+
+.dark .hover\:text-gray-900:hover {
+  @apply hover:text-white;
 }
 
 /* Mobile optimizations */

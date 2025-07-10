@@ -461,18 +461,18 @@ const Settings: React.FC = () => {
                 <button
                   key={theme}
                   onClick={() => updateSetting('theme', theme)}
-                  className={`p-4 border-2 rounded-lg transition-all duration-200 ${
+                  className={`p-4 border-2 rounded-lg transition-all duration-200 dark:bg-gray-800 ${
                     settings.theme === theme
-                      ? 'border-purple-600 bg-purple-50'
-                      : 'border-gray-200 hover:border-gray-300'
+                      ? 'border-purple-600 bg-purple-50 dark:bg-gray-700'
+                      : 'border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600'
                   }`}
                 >
                   <div className={`w-full h-8 rounded mb-2 ${
                     theme === 'light' ? 'bg-white border border-gray-200' :
                     theme === 'dark' ? 'bg-gray-800' :
-                    'bg-gradient-to-r from-white to-gray-800'
+                    'bg-gradient-to-r from-white to-gray-800 dark:from-gray-700 dark:to-gray-900'
                   }`}></div>
-                  <p className="text-sm font-medium text-gray-900 capitalize">{theme}</p>
+                  <p className="text-sm font-medium text-gray-900 dark:text-gray-200 capitalize">{theme}</p>
                 </button>
               ))}
             </div>
