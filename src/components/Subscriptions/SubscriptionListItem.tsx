@@ -120,9 +120,9 @@ const SubscriptionListItem: React.FC<SubscriptionListItemProps> = ({
                 {subscription.name.substring(0, 2).toUpperCase()}
               </div>
               <div>
-                <h4 className="font-medium text-gray-900">{subscription.name}</h4>
+                <h4 className="font-medium text-gray-900 mb-0.5">{subscription.name}</h4>
                 {subscription.description && (
-                  <p className="text-sm text-gray-600 truncate">{subscription.description}</p>
+                  <p className="text-sm text-gray-600 line-clamp-1 mb-1">{subscription.description}</p>
                 )}
               </div>
             </div>

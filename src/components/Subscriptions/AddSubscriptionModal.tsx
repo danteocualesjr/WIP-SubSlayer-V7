@@ -478,7 +478,7 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
                           <h5 className="font-medium text-gray-900 group-hover:text-purple-700 transition-colors truncate">
                             {service.name}
                           </h5>
-                          <p className="text-xs text-gray-600 line-clamp-1">{service.description}</p>
+                          <p className="text-xs text-gray-600 line-clamp-1 mb-1">{service.description}</p>
                           <div className="flex items-center space-x-2 mt-1">
                             {service.commonPrices.monthly && (
                               <span className="text-xs font-medium text-green-600">

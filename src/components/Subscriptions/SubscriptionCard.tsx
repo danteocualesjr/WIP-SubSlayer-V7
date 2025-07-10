@@ -150,7 +150,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
           <div className="flex-1">
             <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1">{subscription.name}</h3>
             {subscription.description && (
-              <p className="text-sm text-gray-600 mb-2">{subscription.description}</p>
+              <p className="text-sm text-gray-600 mb-2 line-clamp-1">{subscription.description}</p>
             )}
             <div className="flex items-center space-x-3 sm:space-x-4">
               <div className="flex items-center space-x-1">
