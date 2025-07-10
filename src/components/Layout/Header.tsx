@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Bell, User, Search, LogOut, Sparkles, Crown, Sun, Moon } from 'lucide-react';
+import { Bell, User, Search, LogOut, Sparkles, Crown } from 'lucide-react';
 import NotificationDetailsModal from '../Notifications/NotificationDetailsModal';
 import { useAuth } from '../../hooks/useAuth';
 import { useProfile } from '../../hooks/useProfile';
 import { useNotifications } from '../../hooks/useNotifications';
 import { useSubscription } from '../../hooks/useSubscription';
-import { useSettings } from '../../hooks/useSettings';
 
 const Header: React.FC = () => {
   const { user, signOut } = useAuth();
   const { profile } = useProfile();
   const { notifications, markAsRead, markAllAsRead, deleteNotification, getUnreadCount } = useNotifications();
   const { subscription, getSubscriptionProduct, isActive } = useSubscription();
-  const { settings, saveSettings } = useSettings();
   const [showNotifications, setShowNotifications] = useState<boolean>(false);
   const [showProfileMenu, setShowProfileMenu] = useState<boolean>(false);
   const [showNotificationDetails, setShowNotificationDetails] = useState<boolean>(false);
@@ -79,11 +77,6 @@ const Header: React.FC = () => {
     };
   };
 
-  const toggleTheme = () => {
-    const newTheme = settings.theme === 'dark' ? 'light' : 'dark';
-    saveSettings({ theme: newTheme });
-  };
-
   const handleNotificationClick = (notification: any) => {
     setSelectedNotification(notification);
     setShowNotificationDetails(true);
@@ -122,19 +115,6 @@ const Header: React.FC = () => {
 
           {/* Right side actions */}
           <div className="flex items-center space-x-1 sm:space-x-4 ml-auto">
-            {/* Theme Toggle */}
-            <button 
-              onClick={toggleTheme}
-              className="p-1.5 sm:p-3 text-purple-600 hover:text-purple-700 hover:bg-purple-50 rounded-xl sm:rounded-2xl transition-all duration-300 relative group"
-              title={settings.theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-            >
-              {settings.theme === 'dark' ? (
-                <Sun className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
-              ) : (
-                <Moon className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
-              )}
-            </button>
-            
             {/* Notifications */}
             <div className="relative">
               <button 
