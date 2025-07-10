@@ -49,6 +49,18 @@ export function useSettings() {
   // Apply theme changes to document
   useEffect(() => {
     applyTheme(settings.theme);
+    
+    // Add event listener for system theme changes if in auto mode
+    if (settings.theme === 'auto') {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      const handleChange = (e: MediaQueryListEvent) => {
+        const root = document.documentElement;
+        root.classList.toggle('dark', e.matches);
+      };
+      
+      mediaQuery.addEventListener('change', handleChange);
+      return () => mediaQuery.removeEventListener('change', handleChange);
+    }
   }, [settings.theme]);
 
   const loadSettings = () => {
@@ -93,11 +105,14 @@ export function useSettings() {
   const applyTheme = (theme: 'light' | 'dark' | 'auto') => {
     const root = document.documentElement;
     
+    // Remove any existing theme classes first
+    root.classList.remove('light', 'dark');
+    
     if (theme === 'auto') {
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      root.classList.toggle('dark', prefersDark);
+      root.classList.add(prefersDark ? 'dark' : 'light');
     } else {
-      root.classList.toggle('dark', theme === 'dark');
+      root.classList.add(theme);
     }
   };
 

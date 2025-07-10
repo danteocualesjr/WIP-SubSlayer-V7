@@ -2,12 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Dark mode styles */
+.dark {
+  color-scheme: dark;
+}
+
+.dark body {
+  @apply bg-gray-900 text-gray-100;
+}
+
 /* Mobile optimizations */
 html, body {
   overflow-x: hidden;
   position: relative;
   width: 100%;
   -webkit-tap-highlight-color: transparent;
+  @apply transition-colors duration-300;
 }
 
 /* Improve touch targets on mobile */
