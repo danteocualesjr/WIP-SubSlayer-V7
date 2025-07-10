@@ -5,6 +5,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { useProfile } from '../../hooks/useProfile';
 import { useNotifications } from '../../hooks/useNotifications';
 import { useSubscription } from '../../hooks/useSubscription';
+import { useSettings } from '../../hooks/useSettings';
 
 const Header: React.FC = () => {
   const { user, signOut } = useAuth();
