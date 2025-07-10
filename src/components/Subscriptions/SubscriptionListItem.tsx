@@ -91,10 +91,10 @@ const SubscriptionListItem: React.FC<SubscriptionListItemProps> = ({
   return (
     <>
       <div 
-        className={`px-6 py-4 transition-colors ${
+        className={`px-6 py-4 transition-all duration-300 ${
           isSelectionMode 
-            ? `cursor-pointer ${isSelected ? 'bg-purple-50' : 'hover:bg-gray-50'}`
-            : 'hover:bg-gray-50 cursor-pointer'
+            ? `cursor-pointer ${isSelected ? 'bg-purple-50' : 'hover:bg-purple-50/50'}`
+            : 'hover:bg-purple-50/50 cursor-pointer hover:shadow-md'
         }`}
         onClick={handleRowClick}
       >
@@ -114,7 +114,7 @@ const SubscriptionListItem: React.FC<SubscriptionListItemProps> = ({
           <div className={isSelectionMode ? "col-span-3" : "col-span-3"}>
             <div className="flex items-center space-x-3">
               <div
-                className="w-12 h-12 rounded-lg flex items-center justify-center text-white font-semibold text-sm flex-shrink-0"
+                className="w-12 h-12 rounded-lg flex items-center justify-center text-white font-semibold text-sm flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
                 style={{ backgroundColor: subscription.color || '#8B5CF6' }}
               >
                 {subscription.name.substring(0, 2).toUpperCase()}

@@ -92,7 +92,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   return (
     <>
       <div 
-        className={`bg-white rounded-2xl p-4 sm:p-6 shadow-sm border transition-all duration-300 relative ${
+        className={`bg-white rounded-2xl p-4 sm:p-6 shadow-sm border transition-all duration-300 relative hover:shadow-lg hover:border-purple-300 ${
           isSelectionMode 
             ? `cursor-pointer ${isSelected ? 'border-purple-300 bg-purple-50 shadow-md' : 'border-gray-100 hover:border-gray-300'}`
             : 'border-gray-100 hover:shadow-md hover:border-purple-200 cursor-pointer'
@@ -142,7 +142,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
         {/* Subscription Info */}
         <div className={`flex items-start space-x-3 sm:space-x-4 mb-3 sm:mb-4 ${isSelectionMode ? 'ml-8' : ''}`}>
           <div
-            className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl flex items-center justify-center text-white font-bold text-base sm:text-lg flex-shrink-0"
+            className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl flex items-center justify-center text-white font-bold text-base sm:text-lg flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
             style={{ backgroundColor: subscription.color || '#8B5CF6' }}
           >
             {subscription.name.substring(0, 2).toUpperCase()}
@@ -200,7 +200,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
 
         {/* Click to edit hint (only show when not in selection mode) */}
         {!isSelectionMode && (
-          <div className="absolute inset-0 rounded-2xl bg-purple-500/0 hover:bg-purple-500/5 transition-colors pointer-events-none" />
+          <div className="absolute inset-0 rounded-2xl bg-purple-500/0 hover:bg-purple-500/5 transition-all duration-300 pointer-events-none group-hover:bg-purple-500/5" />
         )}
       </div>
 

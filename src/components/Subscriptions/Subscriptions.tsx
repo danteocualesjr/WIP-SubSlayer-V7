@@ -665,21 +665,22 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
       ) : viewMode === 'grid' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {sortedSubscriptions.map((subscription) => (
-            <SubscriptionCard
-              key={subscription.id}
-              subscription={subscription}
-              onEdit={handleEdit}
-              onDelete={onDeleteSubscription}
-              onToggleStatus={onToggleSubscriptionStatus}
-              isSelectionMode={isSelectionMode}
-              isSelected={selectedSubscriptions.includes(subscription.id)}
-              onSelect={handleSelectSubscription}
-              onDeleteClick={handleDeleteClick}
-            />
+            <div key={subscription.id} className="group transition-all duration-300 hover:transform hover:translate-y-[-4px]">
+              <SubscriptionCard
+                subscription={subscription}
+                onEdit={handleEdit}
+                onDelete={onDeleteSubscription}
+                onToggleStatus={onToggleSubscriptionStatus}
+                isSelectionMode={isSelectionMode}
+                isSelected={selectedSubscriptions.includes(subscription.id)}
+                onSelect={handleSelectSubscription}
+                onDeleteClick={handleDeleteClick}
+              />
+            </div>
           ))}
         </div>
       ) : (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300">
           <div className="px-6 py-4 bg-gray-50 border-b border-gray-100">
             <div className="grid grid-cols-12 gap-4 text-sm font-medium text-gray-600">
               {isSelectionMode && (
@@ -752,17 +753,18 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
           </div>
           <div className="divide-y divide-gray-100">
             {sortedSubscriptions.map((subscription) => (
-              <SubscriptionListItem
-                key={subscription.id}
-                subscription={subscription}
-                onEdit={handleEdit}
-                onDelete={onDeleteSubscription}
-                onToggleStatus={onToggleSubscriptionStatus}
-                isSelectionMode={isSelectionMode}
-                isSelected={selectedSubscriptions.includes(subscription.id)}
-                onSelect={handleSelectSubscription}
-                onDeleteClick={handleDeleteClick}
-              />
+              <div key={subscription.id} className="group">
+                <SubscriptionListItem
+                  subscription={subscription}
+                  onEdit={handleEdit}
+                  onDelete={onDeleteSubscription}
+                  onToggleStatus={onToggleSubscriptionStatus}
+                  isSelectionMode={isSelectionMode}
+                  isSelected={selectedSubscriptions.includes(subscription.id)}
+                  onSelect={handleSelectSubscription}
+                  onDeleteClick={handleDeleteClick}
+                />
+              </div>
             ))}
           </div>
         </div>
