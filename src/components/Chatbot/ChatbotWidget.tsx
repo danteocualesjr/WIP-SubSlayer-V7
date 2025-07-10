@@ -6,6 +6,7 @@ import { useSettings } from '../../hooks/useSettings';
 import { useAuth } from '../../hooks/useAuth';
 
 interface Message {
+  
   id: string;
   type: 'user' | 'assistant';
   content: string;
