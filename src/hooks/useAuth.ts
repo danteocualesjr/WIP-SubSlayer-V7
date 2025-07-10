@@ -130,17 +130,11 @@ export function useAuth() {
   const signOut = async () => {
     try {
       const { error } = await supabase.auth.signOut();
-      
-      // Set a flag to show the auth form instead of landing page after sign out
-      localStorage.setItem('show_auth_form', 'true');
-      
-      // Clear auth data
-      clearAuthData(); 
-      
+      // Always clear auth data regardless of error to ensure clean state
+      clearAuthData();
       return { error };
     } catch (error) {
       console.error('Sign out error:', error);
-      localStorage.setItem('show_auth_form', 'true');
       clearAuthData();
       return { error };
     }
