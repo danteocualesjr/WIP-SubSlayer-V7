@@ -189,7 +189,7 @@ const CancellationConfirmModal: React.FC<CancellationConfirmModalProps> = ({
               <div>
                 <h4 className="font-semibold text-gray-900">{subscription.name}</h4>
                 <p className="text-sm text-gray-600">
-                  ${subscription.cost.toFixed(2)}/{subscription.billingCycle}
+                  ${subscription.cost.toFixed(2)} {subscription.billingCycle}
                 </p>
               </div>
             </div>

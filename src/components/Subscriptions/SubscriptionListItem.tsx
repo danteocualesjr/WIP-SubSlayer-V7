@@ -139,7 +139,7 @@ const SubscriptionListItem: React.FC<SubscriptionListItemProps> = ({
               <span className="font-semibold text-gray-900 group-hover:text-purple-700 transition-colors duration-300">
                 ${subscription.cost.toFixed(2)}
               </span>
-              <span className="text-sm text-gray-500">/{subscription.billingCycle}</span>
+              <span className="text-sm text-gray-500"> {subscription.billingCycle}</span>
             </div>
           </div>
 

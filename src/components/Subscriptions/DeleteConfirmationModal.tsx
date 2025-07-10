@@ -89,7 +89,7 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
                   <div>
                     <h4 className="font-medium text-gray-900">{subscription.name}</h4>
                     <p className="text-sm text-gray-600">
-                      ${subscription.cost.toFixed(2)}/{subscription.billingCycle}
+                      ${subscription.cost.toFixed(2)} {subscription.billingCycle}
                     </p>
                   </div>
                 </div>
