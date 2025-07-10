@@ -21,6 +21,7 @@ import { useSettings } from './hooks/useSettings';
 import { useNotifications } from './hooks/useNotifications';
 
 function App() {
+  
   const { user, loading: authLoading } = useAuth();
   const { settings } = useSettings();
   const { generateRenewalNotifications } = useNotifications();
