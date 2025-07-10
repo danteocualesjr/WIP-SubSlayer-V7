@@ -42,6 +42,16 @@ function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showAuthForm, setShowAuthForm] = useState(false);
   const [showSuccessPage, setShowSuccessPage] = useState(false);
+  
+  // Check for auth form flag on mount
+  useEffect(() => {
+    const showAuth = localStorage.getItem('show_auth_form') === 'true';
+    if (showAuth) {
+      setShowAuthForm(true);
+      // Clear the flag after using it
+      localStorage.removeItem('show_auth_form');
+    }
+  }, []);
 
   // Check for success page on mount
   useEffect(() => {
