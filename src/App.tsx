@@ -26,6 +26,7 @@ function App() {
   const { settings } = useSettings();
   const { generateRenewalNotifications } = useNotifications();
   const {
+    
     subscriptions,
     loading: subscriptionsLoading,
     addSubscription,
