@@ -8,6 +8,8 @@ import { SparklesCore } from '../ui/sparkles';
 import { Subscription, SpendingData, CategoryData } from '../../types/subscription';
 import { useSubscription } from '../../hooks/useSubscription';
 
+interface SortedSubscriptions extends Array<Subscription> {}
+
 interface AnalyticsProps {
   
   subscriptions: Subscription[];
@@ -27,7 +29,24 @@ const Analytics: React.FC<AnalyticsProps> = ({
 }) => {
   const { isActive } = useSubscription();
   const hasProSubscription = isActive();
-  const activeSubscriptions = subscriptions.filter(sub => sub.status === 'active');
+  const [activeSubscriptions, setActiveSubscriptions] = React.useState<SortedSubscriptions>(
+    subscriptions.filter(sub => sub.status === 'active').sort((a, b) => {
+      const aCost = a.billingCycle === 'monthly' ? a.cost : a.cost / 12;
+      const bCost = b.billingCycle === 'monthly' ? b.cost : b.cost / 12;
+      return bCost - aCost;
+    })
+  );
+  
+  // Update activeSubscriptions when subscriptions prop changes
+  React.useEffect(() => {
+    setActiveSubscriptions(
+      subscriptions.filter(sub => sub.status === 'active').sort((a, b) => {
+        const aCost = a.billingCycle === 'monthly' ? a.cost : a.cost / 12;
+        const bCost = b.billingCycle === 'monthly' ? b.cost : b.cost / 12;
+        return bCost - aCost;
+      })
+    );
+  }, [subscriptions]);
   
   const monthlyTotal = activeSubscriptions.reduce((sum, sub) => {
     if (sub.billingCycle === 'monthly') {
@@ -189,15 +208,51 @@ const Analytics: React.FC<AnalyticsProps> = ({
         <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-lg border border-purple-100/50">
           <div className="flex items-center space-x-3 mb-6 sm:mb-8">
             <Star className="w-5 h-5 sm:w-6 sm:h-6 text-purple-500" />
-            <h3 className="text-lg sm:text-xl font-bold text-gray-900">Subscription Breakdown</h3>
+            <div className="flex items-center justify-between w-full">
+              <h3 className="text-lg sm:text-xl font-bold text-gray-900">Subscription Breakdown</h3>
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-gray-600">Sort by:</span>
+                <select 
+                  className="text-sm border border-gray-200 rounded-lg p-1 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    let sortedSubscriptions = [...activeSubscriptions];
+                    
+                    if (value === 'name-asc') {
+                      sortedSubscriptions.sort((a, b) => a.name.localeCompare(b.name));
+                    } else if (value === 'name-desc') {
+                      sortedSubscriptions.sort((a, b) => b.name.localeCompare(a.name));
+                    } else if (value === 'cost-asc') {
+                      sortedSubscriptions.sort((a, b) => {
+                        const aCost = a.billingCycle === 'monthly' ? a.cost : a.cost / 12;
+                        const bCost = b.billingCycle === 'monthly' ? b.cost : b.cost / 12;
+                        return aCost - bCost;
+                      });
+                    } else if (value === 'cost-desc') {
+                      sortedSubscriptions.sort((a, b) => {
+                        const aCost = a.billingCycle === 'monthly' ? a.cost : a.cost / 12;
+                        const bCost = b.billingCycle === 'monthly' ? b.cost : b.cost / 12;
+                        return bCost - aCost;
+                      });
+                    } else if (value === 'category') {
+                      sortedSubscriptions.sort((a, b) => (a.category || 'Uncategorized').localeCompare(b.category || 'Uncategorized'));
+                    }
+                    
+                    // Update the component state with sorted subscriptions
+                    setActiveSubscriptions(sortedSubscriptions);
+                  }}
+                >
+                  <option value="cost-desc">Highest Cost</option>
+                  <option value="cost-asc">Lowest Cost</option>
+                  <option value="name-asc">Name A-Z</option>
+                  <option value="name-desc">Name Z-A</option>
+                  <option value="category">Category</option>
+                </select>
+              </div>
+            </div>
           </div>
           <div className="space-y-3 sm:space-y-4">
             {activeSubscriptions
-              .sort((a, b) => {
-                const aCost = a.billingCycle === 'monthly' ? a.cost : a.cost / 12;
-                const bCost = b.billingCycle === 'monthly' ? b.cost : b.cost / 12;
-                return bCost - aCost;
-              })
               .map((subscription) => {
                 const monthlyCost = subscription.billingCycle === 'monthly' ? subscription.cost : subscription.cost / 12;
                 const percentage = monthlyTotal > 0 ? (monthlyCost / monthlyTotal * 100).toFixed(1) : '0';
