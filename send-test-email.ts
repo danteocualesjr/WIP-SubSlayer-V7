@@ -75,7 +75,7 @@ const sendTestEmails = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       
       if (session?.access_token) {
-        const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-renewal-email`, {
+        const response = await fetch(`${supabaseUrl}/functions/v1/send-renewal-email`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -104,8 +104,19 @@ const sendTestEmails = async () => {
   }
 };
 
-// Import Supabase client
-import { supabase } from './src/lib/supabase.ts';
+// Import Supabase client creation function
+import { createClient } from '@supabase/supabase-js';
+
+// Initialize Supabase client for Node.js environment
+const supabaseUrl = process.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error('Missing required environment variables: VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY');
+  process.exit(1);
+}
+
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // Execute the function
 sendTestEmails();
