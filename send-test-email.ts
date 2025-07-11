@@ -106,8 +106,6 @@ const sendTestEmails = async () => {
 
 // Import Supabase client creation function
 import { createClient } from '@supabase/supabase-js';
-
-// Initialize Supabase client for Node.js environment
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY;
 
