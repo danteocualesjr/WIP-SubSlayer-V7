@@ -190,6 +190,16 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
               <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                 subscription.status === 'active' 
                   ? 'bg-green-100 text-green-700'
+                  : 'bg-gray-100 text-gray-700'
+              }`}>
+                {subscription.status === 'active' ? 'Active' : 'Cancelled'}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Progress Bar */}
+        <div className="mt-4">
           <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
             <div 
               className={`h-full rounded-full ${
