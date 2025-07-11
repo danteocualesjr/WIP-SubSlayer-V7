@@ -105,7 +105,7 @@ const sendTestEmails = async () => {
 };
 
 // Import Supabase client
-import { supabase } from './src/lib/supabase';
+import { supabase } from './src/lib/supabase.ts';
 
 // Execute the function
 sendTestEmails();
