@@ -133,7 +133,7 @@ const UpcomingRenewals: React.FC<UpcomingRenewalsProps> = ({
                           : 'bg-green-100 text-green-700 group-hover/item:bg-green-200'
                     }`}>
                       {isUrgent && <AlertCircle className="w-3 h-3" />}
-                      <span>{daysUntil} days</span>
+                      <span>{daysUntil} days left</span>
                     </div>
                   </div>
                 
