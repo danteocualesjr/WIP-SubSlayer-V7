@@ -46,7 +46,7 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const modalRef = useRef<HTMLDivElement>(null);
   const { settings } = useSettings();
-  const { subscription: userSubscription } = useSubscription();
+  const { subscription: userSubscription, isFreeTier } = useSubscription();
   
   // Ensure modal is visible
   useEffect(() => {
