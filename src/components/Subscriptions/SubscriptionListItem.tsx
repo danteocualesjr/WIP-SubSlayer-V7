@@ -67,6 +67,45 @@ const SubscriptionListItem: React.FC<SubscriptionListItemProps> = ({
   };
   
   const progressPercentage = calculateProgress();
+  const getDaysUntilRenewal = () => {
+    const now = new Date();
+    const renewalDate = new Date(subscription.nextBilling);
+    const diffTime = renewalDate.getTime() - now.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
+  const daysUntil = getDaysUntilRenewal();
+  const isUrgent = daysUntil <= 3;
+  const isWarning = daysUntil <= 7 && daysUntil > 3;
+  
+  // Calculate progress for billing cycle
+  const calculateProgress = () => {
+    const now = new Date();
+    const renewalDate = new Date(subscription.nextBilling);
+    
+    if (subscription.billingCycle === 'monthly') {
+      // For monthly subscriptions, calculate days since last billing
+      const lastBillingDate = new Date(renewalDate);
+      lastBillingDate.setMonth(lastBillingDate.getMonth() - 1);
+      
+      const totalDays = Math.round((renewalDate.getTime() - lastBillingDate.getTime()) / (1000 * 60 * 60 * 24));
+      const daysElapsed = Math.round((now.getTime() - lastBillingDate.getTime()) / (1000 * 60 * 60 * 24));
+      
+      return Math.min(Math.max(0, (daysElapsed / totalDays) * 100), 100);
+    } else {
+      // For annual subscriptions
+      const lastBillingDate = new Date(renewalDate);
+      lastBillingDate.setFullYear(lastBillingDate.getFullYear() - 1);
+      
+      const totalDays = Math.round((renewalDate.getTime() - lastBillingDate.getTime()) / (1000 * 60 * 60 * 24));
+      const daysElapsed = Math.round((now.getTime() - lastBillingDate.getTime()) / (1000 * 60 * 60 * 24));
+      
+      return Math.min(Math.max(0, (daysElapsed / totalDays) * 100), 100);
+    }
+  };
+  
+  const progressPercentage = calculateProgress();
 
   const handleRowClick = (e: React.MouseEvent) => {
     // Prevent row click when clicking on action buttons
@@ -148,10 +187,19 @@ const SubscriptionListItem: React.FC<SubscriptionListItemProps> = ({
                 {subscription.name.substring(0, 2).toUpperCase()}
               </div>
               <div>
-                <h4 className="font-medium text-gray-900 mb-0.5">{subscription.name}</h4>
+                <h4 className="font-medium text-gray-900 mb-1">{subscription.name}</h4>
                 {subscription.description && (
                   <p className="text-sm text-gray-600 line-clamp-1 mb-1">{subscription.description}</p>
                 )}
+                <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden mt-1">
+                  <div 
+                    className={`h-full rounded-full ${
+                      isUrgent ? 'bg-red-500' : isWarning ? 'bg-yellow-500' : 'bg-green-500'
+                    }`}
+                    style={{ width: `${progressPercentage}%` }}
+                  ></div>
+                </div>
+                <div className="text-xs text-gray-500 mt-1">Progress</div>
               </div>
             </div>
             
