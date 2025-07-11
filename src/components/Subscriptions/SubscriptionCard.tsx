@@ -190,22 +190,6 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
               <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                 subscription.status === 'active' 
                   ? 'bg-green-100 text-green-700'
-                  : subscription.status === 'paused'
-                    ? 'bg-yellow-100 text-yellow-700'
-                    : 'bg-red-100 text-red-700'
-              }`}>
-                {subscription.status.charAt(0).toUpperCase() + subscription.status.slice(1)}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Progress Bar */}
-        <div className="mt-3 mb-2">
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-xs text-gray-500">Billing cycle progress</span>
-            <span className="text-xs font-medium text-purple-700">{daysUntil > 0 ? `${daysUntil} days left` : 'Due today'}</span>
-          </div>
           <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
             <div 
               className={`h-full rounded-full ${
