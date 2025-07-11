@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from './useAuth';
 import { useSettings } from './useSettings';
 import { Subscription } from '../types/subscription';
+import { supabase } from '../lib/supabase';
 
 export interface NotificationItem {
   id: string;
@@ -156,6 +157,47 @@ export function useNotifications() {
               icon: '/vite.svg',
               badge: '/vite.svg',
               tag: notification.id,
+
+              // Send email notification if enabled
+              if (settings.emailNotifications && user?.email) {
+                const emailSubject = notificationItem.title;
+                const emailHtmlContent = `
+                  <p>Hello,</p>
+                  <p>${notificationItem.message}.</p>
+                  <p>Subscription: <strong>${subscription.name}</strong></p>
+                  <p>Cost: <strong>${settings.formatCurrency(subscription.cost)}</strong></p>
+                  <p>Next Billing Date: <strong>${settings.formatDate(subscription.nextBilling)}</strong></p>
+                  <p>Manage your subscriptions in SubSlayer: <a href="${window.location.origin}">Go to SubSlayer</a></p>
+                  <p>Thank you,<br>The SubSlayer Team</p>
+                `;
+                
+                // Get the current session for authentication
+                supabase.auth.getSession().then(({ data: { session } }) => {
+                  if (session?.access_token) {
+                    fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-renewal-email`, {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${session.access_token}`
+                      },
+                      body: JSON.stringify({
+                        to: user.email,
+                        subject: emailSubject,
+                        htmlContent: emailHtmlContent,
+                      }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                      if (data.error) {
+                        console.error('Error sending email:', data.error);
+                      } else {
+                        console.log('Email sent successfully:', data.message);
+                      }
+                    })
+                    .catch(error => console.error('Network error sending email:', error));
+                  }
+                });
+              }
             });
           }
         });
