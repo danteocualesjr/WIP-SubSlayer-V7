@@ -153,7 +153,10 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
   const handleEdit = (subscription: Subscription) => {
     setEditingSubscription(subscription);
     setShowAddModal(true);
-    console.log('Edit subscription triggered for:', subscription.name);
+    // Force the modal to appear by ensuring state is updated
+    setTimeout(() => {
+      console.log('Edit subscription triggered for:', subscription.name);
+    }, 0);
   };
 
   const handleAddOrEdit = (subscriptionData: Omit<Subscription, 'id' | 'createdAt'>) => {
@@ -170,7 +173,9 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
   const handleModalClose = () => {
     setShowAddModal(false);
     setEditingSubscription(null);
-    console.log('Subscription modal closed');
+    setTimeout(() => {
+      console.log('Subscription modal closed');
+    }, 0);
   };
 
   const handleDeleteClick = (subscription: Subscription) => {
