@@ -157,9 +157,8 @@ const SubscriptionListItem: React.FC<SubscriptionListItemProps> = ({
             
             {/* Progress Bar */}
             <div className="mt-1 w-full">
-              <div className="flex items-center justify-between mb-1">
+              <div className="flex items-center mb-1">
                 <span className="text-xs text-gray-500">Progress</span>
-                <span className="text-xs font-medium text-purple-700">{daysUntil > 0 ? `${daysUntil} days left` : 'Due today'}</span>
               </div>
               <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
                 <div 
