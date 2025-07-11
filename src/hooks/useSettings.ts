@@ -58,6 +58,18 @@ export function useSettings() {
       
       if (savedSettings) {
         const parsedSettings = JSON.parse(savedSettings);
+        
+        // Ensure reminderDays is always an array
+        if (parsedSettings.reminderDays !== undefined) {
+          if (!Array.isArray(parsedSettings.reminderDays)) {
+            // Convert single number to array
+            parsedSettings.reminderDays = [parsedSettings.reminderDays];
+          }
+        } else {
+          // Use default if missing
+          parsedSettings.reminderDays = defaultSettings.reminderDays;
+        }
+        
         setSettings({ ...defaultSettings, ...parsedSettings });
       } else {
         setSettings(defaultSettings);
