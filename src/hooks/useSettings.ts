@@ -13,7 +13,7 @@ export interface AppSettings {
   monthlyReport: boolean;
   dataSharing: boolean;
   analytics: boolean;
-  reminderDays: number;
+  reminderDays: number[];
 }
 
 const defaultSettings: AppSettings = {
@@ -28,7 +28,7 @@ const defaultSettings: AppSettings = {
   monthlyReport: true,
   dataSharing: false,
   analytics: true,
-  reminderDays: 7,
+  reminderDays: [7],
 };
 
 export function useSettings() {
