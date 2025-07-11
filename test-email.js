@@ -1,10 +1,10 @@
 // Test script to send a renewal notification email
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
+import { createClient } from '@supabase/supabase-js';
 
 async function sendTestEmail() {
   try {
     // Get the current session for authentication
-    const { createClient } = require('@supabase/supabase-js');
     const supabase = createClient(
       process.env.VITE_SUPABASE_URL,
       process.env.VITE_SUPABASE_ANON_KEY
