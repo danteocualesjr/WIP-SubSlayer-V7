@@ -8,6 +8,7 @@ const corsHeaders = {
 };
 
 Deno.serve(async (req) => {
+  
   try {
     // Handle OPTIONS request for CORS preflight
     if (req.method === 'OPTIONS') {
