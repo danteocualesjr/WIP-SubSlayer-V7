@@ -45,6 +45,40 @@ const UpcomingRenewals: React.FC<UpcomingRenewalsProps> = ({
     }
   };
 
+  // Calculate progress for billing cycle
+  const calculateProgress = (subscription: Subscription) => {
+    const now = new Date();
+    const renewalDate = new Date(subscription.nextBilling);
+    
+    if (subscription.billingCycle === 'monthly') {
+      // For monthly subscriptions, calculate days since last billing
+      const lastBillingDate = new Date(renewalDate);
+      lastBillingDate.setMonth(lastBillingDate.getMonth() - 1);
+      
+      const totalDays = Math.round((renewalDate.getTime() - lastBillingDate.getTime()) / (1000 * 60 * 60 * 24));
+      const daysElapsed = Math.round((now.getTime() - lastBillingDate.getTime()) / (1000 * 60 * 60 * 24));
+      
+      return Math.min(Math.max(0, (daysElapsed / totalDays) * 100), 100);
+    } else {
+      // For annual subscriptions
+      const lastBillingDate = new Date(renewalDate);
+      lastBillingDate.setFullYear(lastBillingDate.getFullYear() - 1);
+      
+      const totalDays = Math.round((renewalDate.getTime() - lastBillingDate.getTime()) / (1000 * 60 * 60 * 24));
+      const daysElapsed = Math.round((now.getTime() - lastBillingDate.getTime()) / (1000 * 60 * 60 * 24));
+      
+      return Math.min(Math.max(0, (daysElapsed / totalDays) * 100), 100);
+    }
+  };
+
+  const getDaysUntilRenewal = (date: string) => {
+    const now = new Date();
+    const renewalDate = new Date(date);
+    const diffTime = renewalDate.getTime() - now.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
   const handleViewAllSubscriptions = () => {
     // Navigate to subscriptions tab
     window.dispatchEvent(new CustomEvent('navigateToTab', { 
@@ -107,6 +141,19 @@ const UpcomingRenewals: React.FC<UpcomingRenewalsProps> = ({
                   }`}>
                     {isUrgent && <AlertCircle className="w-3 h-3" />}
                     <span>{daysUntil} days</span>
+                  </div>
+                  
+                  {/* Progress Bar */}
+                  <div className="mt-2 mb-1 w-full">
+                    <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                  const daysUntil = getDaysUntilRenewal(subscription.nextBilling);
+                      <div 
+                        className={`h-full rounded-full ${
+                          daysUntil <= 3 ? 'bg-red-500' : daysUntil <= 7 ? 'bg-yellow-500' : 'bg-green-500'
+                        }`}
+                        style={{ width: `${calculateProgress(subscription)}%` }}
+                      ></div>
+                    </div>
                   </div>
                 </div>
               </div>
