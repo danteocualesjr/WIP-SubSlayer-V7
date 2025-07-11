@@ -225,11 +225,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
               {formatDate(subscription.nextBilling)}
             </span>
           </div>
-          <div className="flex items-center space-x-3">
-            <div className="flex items-center space-x-1">
-              <Bell className="w-3 h-3 text-gray-400" />
-              <span className="text-xs text-gray-500">{settings.reminderDays}d reminder</span>
-            </div>
+          <div>
             <div className={`flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium ${
               isUrgent 
                 ? 'bg-red-100 text-red-700' 
@@ -237,7 +233,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
                   ? 'bg-yellow-100 text-yellow-700'
                   : 'bg-green-100 text-green-700'
             }`}>
-              <span>{daysUntil} days</span>
+              <span>{daysUntil} days left</span>
             </div>
           </div>
         </div>
