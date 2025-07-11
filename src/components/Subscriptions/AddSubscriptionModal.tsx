@@ -493,7 +493,7 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
                           </div>
                         </div>
                       </button>
-                    ))}
+                    <span className="text-sm font-medium text-yellow-800">Free tier is limited to 7 subscriptions. Please upgrade to Premium for unlimited subscriptions.</span>
                   </div>
                 </div>
               ))}

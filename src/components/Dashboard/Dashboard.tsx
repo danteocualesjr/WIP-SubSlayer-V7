@@ -244,7 +244,7 @@ const Dashboard: React.FC<DashboardProps> = ({
               >
                 {isAtSubscriptionLimit && isFreeTier ? (
                   <>
-                    <span>Upgrade to Pro</span>
+                    <span>Upgrade to Premium</span>
                   </>
                 ) : (
                   <>

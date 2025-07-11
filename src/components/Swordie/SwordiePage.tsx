@@ -540,7 +540,7 @@ Remember: Start with a simple greeting, then help based on what they ask for.`;
               <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
                 <Calendar className="w-4 h-4 sm:w-6 sm:h-6 text-blue-300" />
                 <p className="text-white/80 text-xs sm:text-sm font-medium">Upcoming</p>
-              </div>
+                <span>Upgrade to Premium</span>
               <p className="text-lg sm:text-3xl font-bold">{upcomingRenewalsCount}</p>
             </div>
           </div>

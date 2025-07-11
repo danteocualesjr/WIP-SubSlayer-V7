@@ -270,7 +270,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
                   <h1 className="text-2xl sm:text-4xl font-bold">Subscription Calendar</h1>
                 </div>
                 <p className="text-lg sm:text-xl text-white/90 mb-6 sm:mb-8 max-w-2xl">
-                  Visualize your renewal dates and never miss a payment again
+                  Start tracking your subscriptions and take control of your recurring expenses. Add your first subscription to see insights and analytics.
                 </p>
               </div>
               
@@ -413,7 +413,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
               >
                 {isAtSubscriptionLimit && isFreeTier ? (
                   <>
-                    <span>Upgrade to Pro</span>
+                    <span>Upgrade to Premium</span>
                   </>
                 ) : (
                   <>
