@@ -452,6 +452,11 @@ const Settings: React.FC = () => {
     <div className="space-y-6">
       <div>
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Appearance</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Reminder Days Before Renewal
+            </label>
             <select
               value={settings.reminderDays[0] || 7}
               onChange={(e) => updateSetting('reminderDays', [parseInt(e.target.value)])}
