@@ -1,6 +1,9 @@
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts';
 import sgMail from 'npm:@sendgrid/mail';
 
+// For debugging
+const DEBUG = true;
+
 const corsHeaders = {
   
   "Access-Control-Allow-Origin": "*",
@@ -20,11 +23,11 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Special debug endpoint to check environment variables
-    if (req.method === 'GET' || (req.method === 'POST' && req.url.includes('debug'))) {
+    // Debug endpoint to check environment variables
+    if (DEBUG || req.method === 'GET' || (req.method === 'POST' && req.url.includes('debug'))) {
       const params = new URL(req.url).searchParams;
       const body = req.method === 'POST' ? await req.json() : {};
-      const isDebug = params.get('debug') === 'true' || body.debug === true;
+      const isDebug = DEBUG || params.get('debug') === 'true' || body.debug === true;
       
       if (isDebug) {
         
@@ -33,6 +36,7 @@ Deno.serve(async (req) => {
           hasSenderEmail: !!Deno.env.get('SENDER_EMAIL'),
           sendgridKeyLength: Deno.env.get('SENDGRID_API_KEY')?.length || 0,
           senderEmailDomain: Deno.env.get('SENDER_EMAIL')?.split('@')[1] || 'not-set',
+          senderEmail: Deno.env.get('SENDER_EMAIL') || 'not-set',
         };
         
         return new Response(JSON.stringify({
@@ -71,6 +75,10 @@ Deno.serve(async (req) => {
     const sendgridApiKey = Deno.env.get('SENDGRID_API_KEY');
     const senderEmail = Deno.env.get('SENDER_EMAIL');
 
+    // Log for debugging
+    console.log(`SendGrid API Key exists: ${!!sendgridApiKey}`);
+    console.log(`Sender Email: ${senderEmail}`);
+
     if (!sendgridApiKey || !senderEmail) {
       return new Response(JSON.stringify({ 
         error: 'SendGrid API key or sender email not configured in Supabase secrets.',
@@ -88,16 +96,21 @@ Deno.serve(async (req) => {
     }
 
     sgMail.setApiKey(sendgridApiKey);
+    
+    // Use a fallback email if needed for testing
+    const toEmail = to || 'test@example.com';
 
     const msg = {
-      to: to,
+      to: toEmail,
       from: senderEmail, // Use the email address verified in SendGrid
       subject: subject,
       html: htmlContent,
     };
 
     try {
+      console.log(`Attempting to send email to: ${toEmail}`);
       await sgMail.send(msg);
+      console.log('Email sent successfully');
       return new Response(JSON.stringify({ message: 'Email sent successfully' }), {
         status: 200,
         headers: { 
@@ -107,6 +120,12 @@ Deno.serve(async (req) => {
       });
     } catch (sendError) {
       console.error('SendGrid error:', sendError);
+      
+      // More detailed error logging
+      if (sendError.response) {
+        console.error('SendGrid response body:', sendError.response.body);
+      }
+      
       return new Response(JSON.stringify({ 
         error: 'Failed to send email via SendGrid',
         details: sendError.message,
@@ -121,8 +140,17 @@ Deno.serve(async (req) => {
     }
   } catch (error) {
     console.error('Error sending email:', error);
+    
+    // More detailed error logging
+    const errorDetails = {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    };
+    
     return new Response(JSON.stringify({ 
       error: error.message,
+      details: errorDetails,
       stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     }), {
       status: 500,
