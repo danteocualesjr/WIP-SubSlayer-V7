@@ -539,7 +539,7 @@ Remember: Start with a simple greeting, then help based on what they ask for.`;
             <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 hover:bg-white/20 transition-all duration-300 col-span-2 sm:col-span-1">
               <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
                 <Calendar className="w-4 h-4 sm:w-6 sm:h-6 text-blue-300" />
-                <p className="text-white/80 text-xs sm:text-sm font-medium">Renewals</p>
+                <p className="text-white/80 text-xs sm:text-sm font-medium">Upcoming</p>
               </div>
               <p className="text-lg sm:text-3xl font-bold">{upcomingRenewalsCount}</p>
             </div>

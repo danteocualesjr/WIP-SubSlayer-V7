@@ -95,7 +95,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
       borderColor: "border-gray-200"
     },
     {
-      name: 'Premium',
+      name: "Pro",
       monthlyPriceId: "price_1RglYeCIxTxdP6ph0ajymCf0",
       annualPriceId: "price_1RglaECIxTxdP6phSEknl1IE",
       monthlyPrice: 9.99,
@@ -111,7 +111,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
         "CSV export of history",
         "Priority support"
       ],
-      cta: 'Start Premium Trial',
+      cta: "Start Pro Trial",
       popular: true,
       gradient: "from-purple-600 to-violet-600",
       bgGradient: "from-purple-50 to-violet-50",

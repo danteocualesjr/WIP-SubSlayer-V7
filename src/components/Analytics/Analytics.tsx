@@ -247,7 +247,7 @@ const Analytics: React.FC<AnalyticsProps> = ({
                 }}
                 className="w-full bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white py-3 rounded-xl font-semibold transition-all duration-200 flex items-center justify-center space-x-2"
               >
-                  <span>Upgrade to Premium</span>
+                <Star className="w-5 h-5" />
                 <span>Upgrade to Pro</span>
               </button>
             </div>

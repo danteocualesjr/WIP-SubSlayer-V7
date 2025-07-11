@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { X, Plus, Calendar, DollarSign, Search, Star, Check } from 'lucide-react';
+import { X, Plus, Sparkles, Search, Star } from 'lucide-react';
 import { Subscription } from '../../types/subscription';
 import { useSettings } from '../../hooks/useSettings';
 import { useSubscription } from '../../hooks/useSubscription';
@@ -31,31 +31,360 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
   subscription,
   subscriptions = []
 }) => {
-  const [formData, setFormData] = useState({
-    name: subscription?.name || '',
-    description: subscription?.description || undefined,
-    cost: subscription?.cost ? subscription?.cost.toString() : '',
-    currency: subscription?.currency || 'USD',
-    billingCycle: subscription?.billingCycle || 'monthly',
-    nextBilling: subscription?.nextBilling || '',
-    category: subscription?.category || '',
-    color: subscription?.color || '#8B5CF6'
-  });
-  
-  const [searchTerm, setSearchTerm] = useState('');
-  const [showPopularServices, setShowPopularServices] = useState(true);
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const modalRef = useRef<HTMLDivElement>(null);
   const { settings } = useSettings();
-  const { subscription: userSubscription, isActive } = useSubscription();
-  const isFreeTier = !isActive();
+  const { subscription: stripeSubscription } = useSubscription();
   
-  // Ensure modal is visible
+  // Check if user is on free tier and at subscription limit
+  const isFreeTier = !stripeSubscription || !stripeSubscription.subscriptionId;
+  const [showPopularServices, setShowPopularServices] = useState(!subscription);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+    cost: '',
+    currency: settings.currency || 'USD',
+    billingCycle: 'monthly' as 'monthly' | 'annual',
+    nextBilling: '',
+    categories: [] as string[],
+    status: 'active' as 'active' | 'cancelled' | 'paused',
+    color: '#8B5CF6'
+  });
+
+  const categories = [
+    'AI', 'Business', 'Entertainment', 'Productivity', 'Development', 'Design', 'Education', 
+    'Health & Fitness', 'News & Media', 'Music', 'Storage', 'Social Media', 'Other'
+  ];
+
+  const currencies = [
+    { code: 'USD', name: 'US Dollar', symbol: '$' },
+    { code: 'EUR', name: 'Euro', symbol: '€' },
+    { code: 'GBP', name: 'British Pound', symbol: '£' },
+    { code: 'CAD', name: 'Canadian Dollar', symbol: 'C$' },
+    { code: 'AUD', name: 'Australian Dollar', symbol: 'A$' },
+    { code: 'JPY', name: 'Japanese Yen', symbol: '¥' },
+    { code: 'PHP', name: 'Philippine Peso', symbol: '₱' },
+    { code: 'SGD', name: 'Singapore Dollar', symbol: 'S$' },
+    { code: 'HKD', name: 'Hong Kong Dollar', symbol: 'HK$' },
+    { code: 'CNY', name: 'Chinese Yuan', symbol: '¥' },
+    { code: 'INR', name: 'Indian Rupee', symbol: '₹' },
+    { code: 'KRW', name: 'South Korean Won', symbol: '₩' },
+    { code: 'THB', name: 'Thai Baht', symbol: '฿' },
+    { code: 'MYR', name: 'Malaysian Ringgit', symbol: 'RM' },
+    { code: 'IDR', name: 'Indonesian Rupiah', symbol: 'Rp' },
+    { code: 'VND', name: 'Vietnamese Dong', symbol: '₫' },
+    { code: 'CHF', name: 'Swiss Franc', symbol: 'CHF' },
+    { code: 'SEK', name: 'Swedish Krona', symbol: 'kr' },
+    { code: 'NOK', name: 'Norwegian Krone', symbol: 'kr' },
+    { code: 'DKK', name: 'Danish Krone', symbol: 'kr' },
+    { code: 'PLN', name: 'Polish Zloty', symbol: 'zł' },
+    { code: 'CZK', name: 'Czech Koruna', symbol: 'Kč' },
+    { code: 'HUF', name: 'Hungarian Forint', symbol: 'Ft' },
+    { code: 'RUB', name: 'Russian Ruble', symbol: '₽' },
+    { code: 'BRL', name: 'Brazilian Real', symbol: 'R$' },
+    { code: 'MXN', name: 'Mexican Peso', symbol: '$' },
+    { code: 'ARS', name: 'Argentine Peso', symbol: '$' },
+    { code: 'CLP', name: 'Chilean Peso', symbol: '$' },
+    { code: 'COP', name: 'Colombian Peso', symbol: '$' },
+    { code: 'PEN', name: 'Peruvian Sol', symbol: 'S/' },
+    { code: 'ZAR', name: 'South African Rand', symbol: 'R' },
+    { code: 'EGP', name: 'Egyptian Pound', symbol: '£' },
+    { code: 'NGN', name: 'Nigerian Naira', symbol: '₦' },
+    { code: 'KES', name: 'Kenyan Shilling', symbol: 'KSh' },
+    { code: 'GHS', name: 'Ghanaian Cedi', symbol: '₵' },
+    { code: 'TRY', name: 'Turkish Lira', symbol: '₺' },
+    { code: 'AED', name: 'UAE Dirham', symbol: 'د.إ' },
+    { code: 'SAR', name: 'Saudi Riyal', symbol: '﷼' },
+    { code: 'QAR', name: 'Qatari Riyal', symbol: '﷼' },
+    { code: 'KWD', name: 'Kuwaiti Dinar', symbol: 'د.ك' },
+    { code: 'BHD', name: 'Bahraini Dinar', symbol: '.د.ب' },
+    { code: 'OMR', name: 'Omani Rial', symbol: '﷼' },
+    { code: 'ILS', name: 'Israeli Shekel', symbol: '₪' },
+    { code: 'JOD', name: 'Jordanian Dinar', symbol: 'د.ا' },
+    { code: 'LBP', name: 'Lebanese Pound', symbol: '£' },
+    { code: 'PKR', name: 'Pakistani Rupee', symbol: '₨' },
+    { code: 'BDT', name: 'Bangladeshi Taka', symbol: '৳' },
+    { code: 'LKR', name: 'Sri Lankan Rupee', symbol: '₨' },
+    { code: 'NPR', name: 'Nepalese Rupee', symbol: '₨' },
+    { code: 'AFN', name: 'Afghan Afghani', symbol: '؋' },
+    { code: 'MMK', name: 'Myanmar Kyat', symbol: 'K' },
+    { code: 'LAK', name: 'Lao Kip', symbol: '₭' },
+    { code: 'KHR', name: 'Cambodian Riel', symbol: '៛' },
+    { code: 'BND', name: 'Brunei Dollar', symbol: 'B$' },
+    { code: 'TWD', name: 'Taiwan Dollar', symbol: 'NT$' },
+    { code: 'MOP', name: 'Macanese Pataca', symbol: 'MOP$' },
+    { code: 'NZD', name: 'New Zealand Dollar', symbol: 'NZ$' },
+    { code: 'FJD', name: 'Fijian Dollar', symbol: 'FJ$' },
+    { code: 'PGK', name: 'Papua New Guinea Kina', symbol: 'K' },
+    { code: 'WST', name: 'Samoan Tala', symbol: 'T' },
+    { code: 'TOP', name: 'Tongan Paʻanga', symbol: 'T$' },
+    { code: 'VUV', name: 'Vanuatu Vatu', symbol: 'VT' },
+    { code: 'SBD', name: 'Solomon Islands Dollar', symbol: 'SI$' },
+    { code: 'NCL', name: 'CFP Franc', symbol: '₣' },
+  ];
+
+  // Updated colors with black as the last color
+  const colors = [
+    '#8B5CF6', // Purple
+    '#3B82F6', // Blue
+    '#10B981', // Green
+    '#F59E0B', // Orange
+    '#EF4444', // Red
+    '#F97316', // Orange-Red
+    '#000000'  // Black (changed from lime green)
+  ];
+
+  // Popular services database
+  const popularServices: PopularService[] = [
+    // AI & Productivity
+    { name: 'OpenAI', category: 'AI', color: '#10A37F', description: 'AI assistant for writing, coding, and analysis', commonPrices: { monthly: 20 }, billingCycle: 'monthly' },
+    { name: 'Claude Pro', category: 'AI', color: '#D97706', description: 'Advanced AI assistant by Anthropic', commonPrices: { monthly: 20 }, billingCycle: 'monthly' },
+    { name: 'Cursor Windsurf', category: 'AI', color: '#000000', description: 'AI-powered code editor with advanced features', commonPrices: { monthly: 20 }, billingCycle: 'monthly' },
+    { name: 'Claude Code', category: 'AI', color: '#D97706', description: 'AI coding assistant by Anthropic', commonPrices: { monthly: 20 }, billingCycle: 'monthly' },
+    { name: 'Replit', category: 'AI', color: '#F26207', description: 'AI-powered collaborative coding platform', commonPrices: { monthly: 25 }, billingCycle: 'monthly' },
+    { name: 'Bolt.new', category: 'AI', color: '#8B5CF6', description: 'AI web development platform', commonPrices: { monthly: 20 }, billingCycle: 'monthly' },
+    { name: 'Lovable', category: 'AI', color: '#EC4899', description: 'AI-powered app development platform', commonPrices: { monthly: 25 }, billingCycle: 'monthly' },
+    { name: 'v0', category: 'AI', color: '#000000', description: 'AI UI generator by Vercel', commonPrices: { monthly: 20 }, billingCycle: 'monthly' },
+    { name: 'Google AI Pro', category: 'AI', color: '#4285F4', description: 'Advanced AI models and tools by Google', commonPrices: { monthly: 20 }, billingCycle: 'monthly' },
+    { name: 'X/Twitter', category: 'AI', color: '#000000', description: 'Social media platform with AI features', commonPrices: { monthly: 8 }, billingCycle: 'monthly' },
+    { name: 'GitHub Copilot', category: 'Development', color: '#000000', description: 'AI-powered code completion', commonPrices: { monthly: 10 }, billingCycle: 'monthly' },
+    { name: 'Notion', category: 'Productivity', color: '#000000', description: 'All-in-one workspace for notes and docs', commonPrices: { monthly: 8, annual: 96 }, billingCycle: 'monthly' },
+    { name: 'Obsidian', category: 'Productivity', color: '#7C3AED', description: 'Knowledge management and note-taking', commonPrices: { monthly: 8 }, billingCycle: 'monthly' },
+    
+    // Business
+    { name: 'Doola', category: 'Business', color: '#4F46E5', description: 'Business formation and compliance platform', commonPrices: { monthly: 99 }, billingCycle: 'monthly' },
+    { name: 'Domain.com', category: 'Business', color: '#FF6B35', description: 'Domain registration and web hosting services', commonPrices: { monthly: 12.99 }, billingCycle: 'monthly' },
+    
+    // Entertainment
+    { name: 'Netflix', category: 'Entertainment', color: '#E50914', description: 'Streaming movies and TV shows', commonPrices: { monthly: 15.49 }, billingCycle: 'monthly' },
+    { name: 'Disney+', category: 'Entertainment', color: '#113CCF', description: 'Disney, Marvel, Star Wars content', commonPrices: { monthly: 7.99, annual: 79.99 }, billingCycle: 'monthly' },
+    { name: 'Hulu', category: 'Entertainment', color: '#1CE783', description: 'TV shows and movies streaming', commonPrices: { monthly: 7.99 }, billingCycle: 'monthly' },
+    { name: 'Amazon Prime Video', category: 'Entertainment', color: '#00A8E1', description: 'Prime video streaming service', commonPrices: { monthly: 8.99, annual: 139 }, billingCycle: 'annual' },
+    { name: 'HBO Max', category: 'Entertainment', color: '#8B5CF6', description: 'Premium HBO content and movies', commonPrices: { monthly: 15.99 }, billingCycle: 'monthly' },
+    { name: 'Paramount+', category: 'Entertainment', color: '#0064FF', description: 'CBS and Paramount content', commonPrices: { monthly: 5.99 }, billingCycle: 'monthly' },
+    { name: 'Apple TV+', category: 'Entertainment', color: '#000000', description: 'Apple original shows and movies', commonPrices: { monthly: 6.99 }, billingCycle: 'monthly' },
+    { name: 'Peacock', category: 'Entertainment', color: '#000000', description: 'NBCUniversal streaming service', commonPrices: { monthly: 5.99 }, billingCycle: 'monthly' },
+    { name: 'Discovery+', category: 'Entertainment', color: '#0077C8', description: 'Discovery Channel content', commonPrices: { monthly: 4.99 }, billingCycle: 'monthly' },
+    
+    // Music
+    { name: 'Spotify Premium', category: 'Music', color: '#1DB954', description: 'Music streaming service', commonPrices: { monthly: 10.99 }, billingCycle: 'monthly' },
+    { name: 'Apple Music', category: 'Music', color: '#FA243C', description: 'Apple music streaming service', commonPrices: { monthly: 10.99 }, billingCycle: 'monthly' },
+    { name: 'YouTube Music', category: 'Music', color: '#FF0000', description: 'Google music streaming service', commonPrices: { monthly: 10.99 }, billingCycle: 'monthly' },
+    { name: 'Amazon Music Unlimited', category: 'Music', color: '#FF9900', description: 'Amazon music streaming', commonPrices: { monthly: 10.99 }, billingCycle: 'monthly' },
+    { name: 'Tidal', category: 'Music', color: '#000000', description: 'High-fidelity music streaming', commonPrices: { monthly: 10.99 }, billingCycle: 'monthly' },
+    { name: 'Distrokid', category: 'Music', color: '#1DB954', description: 'Music distribution platform for artists', commonPrices: { monthly: 19.99 }, billingCycle: 'monthly' },
+    
+    // Development & Design
+    { name: 'Adobe Creative Cloud', category: 'Design', color: '#FF0000', description: 'Creative suite for designers', commonPrices: { monthly: 52.99, annual: 599.88 }, billingCycle: 'monthly' },
+    { name: 'Figma', category: 'Design', color: '#F24E1E', description: 'Collaborative design tool', commonPrices: { monthly: 12, annual: 144 }, billingCycle: 'monthly' },
+    { name: 'Canva Pro', category: 'Design', color: '#00C4CC', description: 'Design tool for non-designers', commonPrices: { monthly: 12.99, annual: 119.99 }, billingCycle: 'annual' },
+    { name: 'GitHub Pro', category: 'Development', color: '#000000', description: 'Advanced GitHub features', commonPrices: { monthly: 4 }, billingCycle: 'monthly' },
+    { name: 'Supabase', category: 'Development', color: '#3ECF8E', description: 'Open source Firebase alternative', commonPrices: { monthly: 25 }, billingCycle: 'monthly' },
+    { name: 'Vercel Pro', category: 'Development', color: '#000000', description: 'Frontend deployment platform', commonPrices: { monthly: 20 }, billingCycle: 'monthly' },
+    { name: 'Netlify Pro', category: 'Development', color: '#00C7B7', description: 'Web development platform', commonPrices: { monthly: 19 }, billingCycle: 'monthly' },
+    
+    // Cloud Storage
+    { name: 'Google Drive', category: 'Storage', color: '#4285F4', description: 'Cloud storage by Google', commonPrices: { monthly: 1.99 }, billingCycle: 'monthly' },
+    { name: 'Dropbox Plus', category: 'Storage', color: '#0061FF', description: 'Cloud storage and file sync', commonPrices: { monthly: 9.99, annual: 119.88 }, billingCycle: 'annual' },
+    { name: 'iCloud+', category: 'Storage', color: '#007AFF', description: 'Apple cloud storage service', commonPrices: { monthly: 0.99 }, billingCycle: 'monthly' },
+    { name: 'OneDrive', category: 'Storage', color: '#0078D4', description: 'Microsoft cloud storage', commonPrices: { monthly: 1.99 }, billingCycle: 'monthly' },
+    
+    // Business & Productivity
+    { name: 'Microsoft 365', category: 'Productivity', color: '#D83B01', description: 'Office suite and productivity tools', commonPrices: { monthly: 6.99, annual: 69.99 }, billingCycle: 'annual' },
+    { name: 'Slack Pro', category: 'Productivity', color: '#4A154B', description: 'Team communication platform', commonPrices: { monthly: 7.25 }, billingCycle: 'monthly' },
+    { name: 'Zoom Pro', category: 'Productivity', color: '#2D8CFF', description: 'Video conferencing platform', commonPrices: { monthly: 14.99, annual: 149.90 }, billingCycle: 'annual' },
+    { name: 'Asana Premium', category: 'Productivity', color: '#F06A6A', description: 'Project management tool', commonPrices: { monthly: 10.99, annual: 119.88 }, billingCycle: 'annual' },
+    { name: 'Trello Power-Ups', category: 'Productivity', color: '#0079BF', description: 'Enhanced project boards', commonPrices: { monthly: 5, annual: 60 }, billingCycle: 'annual' },
+    
+    // Security
+    { name: '1Password', category: 'Productivity', color: '#0094F0', description: 'Password manager', commonPrices: { monthly: 2.99, annual: 35.88 }, billingCycle: 'annual' },
+    { name: 'LastPass Premium', category: 'Productivity', color: '#D32D27', description: 'Password management service', commonPrices: { monthly: 3, annual: 36 }, billingCycle: 'annual' },
+    { name: 'Dashlane Premium', category: 'Productivity', color: '#00B388', description: 'Password manager and VPN', commonPrices: { monthly: 4.99, annual: 59.88 }, billingCycle: 'annual' },
+    { name: 'NordVPN', category: 'Productivity', color: '#4687FF', description: 'VPN service for privacy', commonPrices: { monthly: 11.95, annual: 59.88 }, billingCycle: 'annual' },
+    { name: 'ExpressVPN', category: 'Productivity', color: '#DA020E', description: 'Premium VPN service', commonPrices: { monthly: 12.95, annual: 99.95 }, billingCycle: 'annual' },
+    
+    // Education & Learning
+    { name: 'MasterClass', category: 'Education', color: '#000000', description: 'Online classes by experts', commonPrices: { annual: 180 }, billingCycle: 'annual' },
+    { name: 'Skillshare Premium', category: 'Education', color: '#00FF88', description: 'Creative online courses', commonPrices: { monthly: 13.75, annual: 99 }, billingCycle: 'annual' },
+    { name: 'Coursera Plus', category: 'Education', color: '#0056D3', description: 'University courses online', commonPrices: { monthly: 39, annual: 399 }, billingCycle: 'annual' },
+    { name: 'Udemy Pro', category: 'Education', color: '#A435F0', description: 'Professional development courses', commonPrices: { monthly: 29.99, annual: 360 }, billingCycle: 'annual' },
+    { name: 'LinkedIn Learning', category: 'Education', color: '#0077B5', description: 'Professional skill development', commonPrices: { monthly: 29.99, annual: 239.88 }, billingCycle: 'annual' },
+    { name: 'Duolingo Plus', category: 'Education', color: '#58CC02', description: 'Language learning app', commonPrices: { monthly: 6.99, annual: 83.88 }, billingCycle: 'annual' },
+    { name: 'The Rundown University', category: 'Education', color: '#FF6B35', description: 'AI and business education platform', commonPrices: { monthly: 49 }, billingCycle: 'monthly' },
+    { name: 'Innovating With AI', category: 'Education', color: '#8B5CF6', description: 'AI innovation and implementation courses', commonPrices: { monthly: 39 }, billingCycle: 'monthly' },
+    
+    // Health & Fitness
+    { name: 'Peloton App', category: 'Health & Fitness', color: '#000000', description: 'Fitness classes and workouts', commonPrices: { monthly: 12.99 }, billingCycle: 'monthly' },
+    { name: 'MyFitnessPal Premium', category: 'Health & Fitness', color: '#0072CE', description: 'Nutrition and fitness tracking', commonPrices: { monthly: 9.99, annual: 49.99 }, billingCycle: 'annual' },
+    { name: 'Headspace', category: 'Health & Fitness', color: '#FF6B35', description: 'Meditation and mindfulness', commonPrices: { monthly: 12.99, annual: 69.99 }, billingCycle: 'annual' },
+    { name: 'Calm', category: 'Health & Fitness', color: '#2F80ED', description: 'Sleep and meditation app', commonPrices: { monthly: 14.99, annual: 69.99 }, billingCycle: 'annual' },
+    { name: 'Strava Premium', category: 'Health & Fitness', color: '#FC4C02', description: 'Advanced fitness tracking', commonPrices: { monthly: 5, annual: 60 }, billingCycle: 'annual' },
+    
+    // News & Media
+    { name: 'The New York Times', category: 'News & Media', color: '#000000', description: 'Digital news subscription', commonPrices: { monthly: 17, annual: 204 }, billingCycle: 'annual' },
+    { name: 'The Wall Street Journal', category: 'News & Media', color: '#000000', description: 'Business news subscription', commonPrices: { monthly: 38.99, annual: 467.88 }, billingCycle: 'annual' },
+    { name: 'Medium', category: 'News & Media', color: '#000000', description: 'Premium articles and stories', commonPrices: { monthly: 5, annual: 50 }, billingCycle: 'annual' },
+    { name: 'Substack Pro', category: 'News & Media', color: '#FF6719', description: 'Newsletter platform', commonPrices: { monthly: 10 }, billingCycle: 'monthly' },
+    
+    // Gaming
+    { name: 'Xbox Game Pass', category: 'Entertainment', color: '#107C10', description: 'Gaming subscription service', commonPrices: { monthly: 14.99 }, billingCycle: 'monthly' },
+    { name: 'PlayStation Plus', category: 'Entertainment', color: '#003791', description: 'PlayStation gaming service', commonPrices: { monthly: 9.99, annual: 59.99 }, billingCycle: 'annual' },
+    { name: 'Nintendo Switch Online', category: 'Entertainment', color: '#E60012', description: 'Nintendo online gaming', commonPrices: { annual: 19.99 }, billingCycle: 'annual' },
+    { name: 'Steam Deck', category: 'Entertainment', color: '#000000', description: 'PC gaming platform', commonPrices: { monthly: 5.99 }, billingCycle: 'monthly' },
+    
+    // Communication
+    { name: 'Discord Nitro', category: 'Social Media', color: '#5865F2', description: 'Enhanced Discord features', commonPrices: { monthly: 9.99, annual: 99.99 }, billingCycle: 'annual' },
+    { name: 'Telegram Premium', category: 'Social Media', color: '#0088CC', description: 'Enhanced messaging features', commonPrices: { monthly: 4.99 }, billingCycle: 'monthly' },
+    { name: 'WhatsApp Business', category: 'Social Media', color: '#25D366', description: 'Business messaging platform', commonPrices: { monthly: 0 }, billingCycle: 'monthly' },
+  ];
+
+  // Initialize form data when modal opens or subscription changes
   useEffect(() => {
     if (isOpen) {
-      console.log('AddSubscriptionModal is open', subscription?.name || 'new subscription');
+      if (subscription) {
+        // Pre-fill form with existing subscription data
+        setFormData({
+          name: subscription.name || '',
+          description: subscription.description || '',
+          cost: subscription.cost?.toString() || '',
+          currency: subscription.currency || settings.currency || 'USD',
+          billingCycle: subscription.billingCycle || 'monthly',
+          nextBilling: subscription.nextBilling || '',
+          categories: subscription.category ? [subscription.category] : [],
+          status: subscription.status || 'active',
+          color: subscription.color || '#8B5CF6'
+        });
+        setShowPopularServices(false);
+      } else {
+        // Reset form for new subscription with user's default currency
+        setFormData({
+          name: '',
+          description: '',
+          cost: '',
+          currency: settings.currency || 'USD',
+          billingCycle: 'monthly',
+          nextBilling: '',
+          categories: [],
+          status: 'active',
+          color: '#8B5CF6'
+        });
+        setShowPopularServices(true);
+      }
+      setSearchTerm('');
     }
-  }, [isOpen, subscription]);
+  }, [isOpen, subscription, settings.currency]);
+
+  // Prevent modal from closing when clicking outside or losing focus
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      
+      const handleVisibilityChange = (e: Event) => {
+        e.preventDefault();
+        e.stopPropagation();
+      };
+
+      const handleWindowBlur = (e: Event) => {
+        e.preventDefault();
+      };
+
+      const handleWindowFocus = (e: Event) => {
+        e.preventDefault();
+      };
+
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+      window.addEventListener('blur', handleWindowBlur);
+      window.addEventListener('focus', handleWindowFocus);
+
+      return () => {
+        document.body.style.overflow = 'unset';
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+        window.removeEventListener('blur', handleWindowBlur);
+        window.removeEventListener('focus', handleWindowFocus);
+      };
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscape);
+      return () => document.removeEventListener('keydown', handleEscape);
+    }
+  }, [isOpen, onClose]);
+
+  // Filter popular services based on search term
+  const filteredServices = popularServices.filter(service =>
+    service.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    service.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    service.description.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Group services by category
+  const servicesByCategory = filteredServices.reduce((acc, service) => {
+    if (!acc[service.category]) {
+      acc[service.category] = [];
+    }
+    acc[service.category].push(service);
+    return acc;
+  }, {} as Record<string, PopularService[]>);
+
+  const handleServiceSelect = (service: PopularService) => {
+    const defaultPrice = service.billingCycle === 'monthly' 
+      ? service.commonPrices.monthly 
+      : service.commonPrices.annual || service.commonPrices.monthly;
+
+    setFormData({
+      name: service.name,
+      description: service.description,
+      cost: defaultPrice?.toString() || '',
+      currency: settings.currency || 'USD',
+      billingCycle: service.billingCycle,
+      nextBilling: '',
+      categories: [service.category],
+      status: 'active',
+      color: service.color
+    });
+    setShowPopularServices(false);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.name || !formData.cost || !formData.nextBilling) return;
+    
+    onAdd({
+      ...formData,
+      cost: parseFloat(formData.cost),
+      category: formData.categories.join(', '), // Convert array back to string for compatibility
+    });
+    onClose();
+  };
+
+  const toggleCategory = (category: string) => {
+    setFormData(prev => ({
+      ...prev,
+      categories: prev.categories.includes(category)
+        ? prev.categories.filter(c => c !== category)
+        : [...prev.categories, category]
+    }));
+  };
+
+  const removeCategory = (category: string) => {
+    setFormData(prev => ({
+      ...prev,
+      categories: prev.categories.filter(c => c !== category)
+    }));
+  };
+
+  const handleModalContentClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -63,454 +392,317 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
     }
   };
 
-  const popularServices: PopularService[] = [
-    {
-      name: 'Netflix',
-      category: 'Entertainment',
-      color: '#E50914',
-      description: 'Streaming movies and TV shows',
-      commonPrices: { monthly: 15.49, annual: 185.88 },
-      billingCycle: 'monthly'
-    },
-    {
-      name: 'Spotify',
-      category: 'Entertainment',
-      color: '#1DB954',
-      description: 'Music streaming service',
-      commonPrices: { monthly: 9.99, annual: 99 },
-      billingCycle: 'monthly'
-    },
-    {
-      name: 'Amazon Prime',
-      category: 'Shopping',
-      color: '#00A8E1',
-      description: 'Free shipping and streaming',
-      commonPrices: { monthly: 14.99, annual: 139 },
-      billingCycle: 'monthly'
-    },
-    {
-      name: 'Disney+',
-      category: 'Entertainment',
-      color: '#0063E5',
-      description: 'Disney streaming service',
-      commonPrices: { monthly: 7.99, annual: 79.99 },
-      billingCycle: 'monthly'
-    },
-    {
-      name: 'YouTube Premium',
-      category: 'Entertainment',
-      color: '#FF0000',
-      description: 'Ad-free YouTube and music',
-      commonPrices: { monthly: 11.99, annual: 119.99 },
-      billingCycle: 'monthly'
-    },
-    {
-      name: 'Apple Music',
-      category: 'Entertainment',
-      color: '#FA243C',
-      description: 'Music streaming service',
-      commonPrices: { monthly: 9.99, annual: 99 },
-      billingCycle: 'monthly'
-    },
-    {
-      name: 'HBO Max',
-      category: 'Entertainment',
-      color: '#5822B4',
-      description: 'HBO streaming service',
-      commonPrices: { monthly: 15.99, annual: 149.99 },
-      billingCycle: 'monthly'
-    },
-    {
-      name: 'Hulu',
-      category: 'Entertainment',
-      color: '#1CE783',
-      description: 'TV and movie streaming',
-      commonPrices: { monthly: 7.99, annual: 79.99 },
-      billingCycle: 'monthly'
-    },
-    {
-      name: 'Adobe Creative Cloud',
-      category: 'Productivity',
-      color: '#FF0000',
-      description: 'Creative software suite',
-      commonPrices: { monthly: 52.99, annual: 599.88 },
-      billingCycle: 'monthly'
-    },
-    {
-      name: 'Microsoft 365',
-      category: 'Productivity',
-      color: '#0078D4',
-      description: 'Office suite and cloud storage',
-      commonPrices: { monthly: 6.99, annual: 69.99 },
-      billingCycle: 'monthly'
-    },
-    {
-      name: 'Dropbox',
-      category: 'Storage',
-      color: '#0061FF',
-      description: 'Cloud storage and file sharing',
-      commonPrices: { monthly: 11.99, annual: 119.88 },
-      billingCycle: 'monthly'
-    },
-    {
-      name: 'Google One',
-      category: 'Storage',
-      color: '#4285F4',
-      description: 'Google cloud storage',
-      commonPrices: { monthly: 1.99, annual: 19.99 },
-      billingCycle: 'monthly'
-    }
-  ];
-
-  const filteredServices = popularServices.filter(service =>
-    service.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    service.category.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Validate form
-    const newErrors: Record<string, string> = {};
-    
-    if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
-    }
-    
-    if (!formData.cost) {
-      newErrors.cost = 'Cost is required';
-    } else if (isNaN(parseFloat(formData.cost)) || parseFloat(formData.cost) < 0) {
-      newErrors.cost = 'Cost must be a valid number';
-    }
-    
-    if (!formData.nextBilling) {
-      newErrors.nextBilling = 'Next billing date is required';
-    }
-    
-    setErrors(newErrors);
-    
-    // If no errors, submit form
-    if (Object.keys(newErrors).length === 0) {
-      onAdd({
-        name: formData.name,
-        description: formData.description,
-        cost: parseFloat(formData.cost),
-        currency: formData.currency,
-        billingCycle: formData.billingCycle as 'monthly' | 'annual',
-        nextBilling: formData.nextBilling,
-        category: formData.category,
-        status: 'active',
-        color: formData.color
-      });
-      onClose();
-    }
-  };
-
-  const handleServiceSelect = (service: PopularService) => {
-    setFormData({
-      ...formData,
-      name: service.name,
-      description: service.description,
-      cost: service.commonPrices[service.billingCycle]?.toString() || '',
-      billingCycle: service.billingCycle,
-      category: service.category,
-      color: service.color
-    });
-    setShowPopularServices(false);
-  };
-
-  useEffect(() => {
-    if (subscription) {
-      setFormData({
-        name: subscription.name,
-        description: subscription.description || '',
-        cost: subscription.cost ? subscription.cost.toString() : '',
-        currency: subscription.currency,
-        billingCycle: subscription.billingCycle,
-        nextBilling: subscription.nextBilling,
-        category: subscription.category || '',
-        color: subscription.color || '#8B5CF6'
-      });
-    }
-  }, [subscription]);
-
   if (!isOpen) return null;
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleColorChange = (color: string) => {
-    setFormData(prev => ({ ...prev, color }));
-  };
-
-  const colors = [
-    '#8B5CF6', // Purple
-    '#3B82F6', // Blue
-    '#10B981', // Green
-    '#F59E0B', // Amber
-    '#EF4444', // Red
-    '#EC4899', // Pink
-    '#06B6D4', // Cyan
-    '#F97316', // Orange
-    '#6366F1', // Indigo
-    '#14B8A6', // Teal
-    '#84CC16', // Lime
-    '#9333EA'  // Violet
-  ];
-
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4" onClick={handleBackdropClick}>
-      <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl" onClick={(e) => e.stopPropagation()}>
-        <div className="p-6 border-b border-gray-100">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-gray-900">
-              {subscription ? 'Edit Subscription' : 'Add New Subscription'}
-            </h2>
-            <button
-              onClick={onClose}
-              className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-        
-        <form onSubmit={handleSubmit} className="p-6">
-          <p className="text-gray-600 mb-6">
-            {subscription 
-              ? 'Update your subscription details below' 
-              : 'Enter your subscription details below or choose from popular services'}
-          </p>
-          
-          {/* Popular Services */}
-          {!subscription && (
-            <div className="mb-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900">Popular Services</h3>
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <input
-                    type="text"
-                    placeholder="Search services..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-9 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
-                  />
-                </div>
-              </div>
-              
-              {showPopularServices && (
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6">
-                  {filteredServices.slice(0, 6).map((service, index) => (
-                    <button
-                      key={index}
-                      type="button"
-                      onClick={() => handleServiceSelect(service)}
-                      className="flex items-center space-x-2 p-3 border border-gray-200 rounded-lg hover:border-purple-300 hover:bg-purple-50 transition-all duration-200 text-left"
-                    >
-                      <div
-                        className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-semibold text-sm"
-                        style={{ backgroundColor: service.color }}
-                      >
-                        {service.name.substring(0, 2).toUpperCase()}
-                      </div>
-                      <div>
-                        <p className="font-medium text-gray-900">{service.name}</p>
-                        <p className="text-xs text-gray-500">${service.commonPrices.monthly?.toFixed(2)}/mo</p>
-                      </div>
-                    </button>
-                  ))}
+    <div 
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4"
+      onClick={handleBackdropClick}
+    >
+      <div 
+        className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-purple-100"
+        onClick={handleModalContentClick}
+      >
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-purple-600 to-violet-600 rounded-xl sm:rounded-2xl flex items-center justify-center">
+              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+              {isFreeTier && !subscription && (
+                <div className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-yellow-400 text-xs text-white w-5 h-5 rounded-full flex items-center justify-center font-bold">
+                  {subscriptions.length}/7
                 </div>
               )}
             </div>
-          )}
-          
-          {/* Subscription Form */}
-          <div className="space-y-6">
-            {/* Service Name */}
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
+              {subscription ? 'Edit Subscription' : 'Add New Subscription'}
+            </h2>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-xl sm:rounded-2xl transition-colors"
+            type="button"
+          >
+            <X className="w-5 h-5 sm:w-6 sm:h-6" />
+          </button>
+        </div>
+
+        {/* Popular Services Section */}
+        {showPopularServices && !subscription && (
+          <div className="mb-6 sm:mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-2">
+                <Star className="w-5 h-5 text-yellow-500" />
+                <h3 className="text-lg font-semibold text-gray-900">Popular Services</h3>
+              </div>
+              <button
+                onClick={() => setShowPopularServices(false)}
+                className="text-purple-600 hover:text-purple-700 font-medium text-sm"
+              >
+                Add Custom
+              </button>
+            </div>
+
+            {/* Search Bar */}
+            <div className="relative mb-4">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <input
+                type="text"
+                placeholder="Search services..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              />
+            </div>
+
+            {/* Services Grid */}
+            <div className="max-h-72 sm:max-h-96 overflow-y-auto space-y-4 sm:space-y-6">
+              {Object.entries(servicesByCategory).map(([category, services]) => (
+                <div key={category}>
+                  <h4 className="text-sm font-semibold text-gray-700 mb-3 sticky top-0 bg-white py-1">
+                    {category}
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+                    {services.map((service) => (
+                      <button
+                        key={service.name}
+                        onClick={() => handleServiceSelect(service)}
+                        className="flex items-center p-3 border border-gray-200 rounded-lg hover:border-purple-300 hover:bg-purple-50 transition-all duration-200 text-left group"
+                      >
+                        <div
+                          className="w-12 h-12 rounded-lg flex items-center justify-center text-white font-semibold text-sm flex-shrink-0 mr-3"
+                          style={{ backgroundColor: service.color }}
+                        >
+                          {service.name.substring(0, 2).toUpperCase()}
+                        </div>
+                        <div className="flex-1 min-w-0 max-w-[calc(100%-80px)]">
+                          <h5 className="font-medium text-gray-900 group-hover:text-purple-700 transition-colors truncate">
+                            {service.name}
+                          </h5>
+                          <p className="text-xs text-gray-600 line-clamp-1 mb-1">{service.description}</p>
+                          <div className="flex items-center space-x-2 mt-1">
+                            {service.commonPrices.monthly && (
+                              <span className="text-xs font-medium text-green-600">
+                                ${service.commonPrices.monthly}/mo
+                              </span>
+                            )}
+                            {service.commonPrices.annual && (
+                              <span className="text-xs font-medium text-blue-600">
+                                ${service.commonPrices.annual}/yr
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {filteredServices.length === 0 && (
+              <div className="text-center py-8">
+                <p className="text-gray-500 mb-2">No services found</p>
+                <button
+                  onClick={() => setShowPopularServices(false)}
+                  className="text-purple-600 hover:text-purple-700 font-medium"
+                >
+                  Add custom subscription
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Manual Form */}
+        {(!showPopularServices || subscription) && (
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+            {!subscription && (
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900">Subscription Details</h3>
+                <button
+                  type="button"
+                  onClick={() => setShowPopularServices(true)}
+                  className="text-purple-600 hover:text-purple-700 font-medium text-sm"
+                >
+                  Choose from Popular
+                </button>
+              </div>
+            )}
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Service Name *
               </label>
               <input
                 type="text"
-                name="name"
                 value={formData.name}
-                onChange={handleInputChange}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent ${
-                  errors.name ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                }`}
-                placeholder="e.g., Netflix, Spotify, etc."
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-purple-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
+                placeholder="e.g., ChatGPT Plus, Netflix, Spotify"
+                required
+                autoFocus
               />
-              {errors.name && (
-                <p className="mt-1 text-sm text-red-600">{errors.name}</p>
-              )}
             </div>
-            
-            {/* Description */}
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Description (Optional)
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Description
               </label>
-              <textarea
-                name="description"
-                value={formData.description || ''}
-                onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                placeholder="Brief description of the service"
-                rows={2}
+              <input
+                type="text"
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-purple-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
+                placeholder="Brief description"
               />
             </div>
-            
-            {/* Cost and Billing Cycle */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+            <div className="grid grid-cols-2 gap-3 sm:gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Cost *
                 </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <DollarSign className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <input
-                    type="text"
-                    name="cost"
-                    value={formData.cost}
-                    onChange={handleInputChange}
-                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent ${
-                      errors.cost ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                    }`}
-                    placeholder="0.00"
-                  />
-                </div>
-                {errors.cost && (
-                  <p className="mt-1 text-sm text-red-600">{errors.cost}</p>
-                )}
+                <input
+                  type="number"
+                  step="0.01"
+                  value={formData.cost}
+                  onChange={(e) => setFormData({ ...formData, cost: e.target.value })}
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-purple-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
+                  placeholder="0.00"
+                  required
+                />
               </div>
-              
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Billing Cycle *
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Currency
                 </label>
                 <select
-                  name="billingCycle"
-                  value={formData.billingCycle}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  value={formData.currency}
+                  onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-purple-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
                 >
-                  <option value="monthly">Monthly</option>
-                  <option value="annual">Annual</option>
+                  {currencies.slice(0, 10).map((currency) => (
+                    <option key={currency.code} value={currency.code}>
+                      {currency.symbol} {currency.code}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
-            
-            {/* Next Billing Date */}
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Next Billing Date *
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Calendar className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  type="date"
-                  name="nextBilling"
-                  value={formData.nextBilling}
-                  onChange={handleInputChange}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent ${
-                    errors.nextBilling ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                  }`}
-                />
-              </div>
-              {errors.nextBilling && (
-                <p className="mt-1 text-sm text-red-600">{errors.nextBilling}</p>
-              )}
-            </div>
-            
-            {/* Category */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Category
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Billing Cycle
               </label>
               <select
-                name="category"
-                value={formData.category}
-                onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                value={formData.billingCycle}
+                onChange={(e) => setFormData({ ...formData, billingCycle: e.target.value as 'monthly' | 'annual' })}
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-purple-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
               >
-                <option value="">Select a category</option>
-                <option value="Entertainment">Entertainment</option>
-                <option value="Productivity">Productivity</option>
-                <option value="Utilities">Utilities</option>
-                <option value="Shopping">Shopping</option>
-                <option value="Storage">Storage</option>
-                <option value="Health & Fitness">Health & Fitness</option>
-                <option value="Education">Education</option>
-                <option value="Finance">Finance</option>
-                <option value="News">News</option>
-                <option value="Social">Social</option>
-                <option value="Gaming">Gaming</option>
-                <option value="Other">Other</option>
+                <option value="monthly">Monthly</option>
+                <option value="annual">Annual</option>
               </select>
             </div>
-            
-            {/* Color Selection */}
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Next Billing Date *
+              </label>
+              <input
+                type="date"
+                value={formData.nextBilling}
+                onChange={(e) => setFormData({ ...formData, nextBilling: e.target.value })}
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-purple-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-3">
+                Categories
+              </label>
+              
+              {/* Selected Categories */}
+              {formData.categories.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {formData.categories.map((category) => (
+                    <span
+                      key={category}
+                      className="inline-flex items-center space-x-1 bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-medium"
+                    >
+                      <span>{category}</span>
+                      <button
+                        type="button"
+                        onClick={() => removeCategory(category)}
+                        className="text-purple-500 hover:text-purple-700 ml-1"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+              
+              {/* Category Selection Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {categories.map((category) => (
+                  <button
+                    key={category}
+                    type="button"
+                    onClick={() => toggleCategory(category)}
+                    className={`p-3 text-sm font-medium rounded-xl transition-all duration-200 border-2 ${
+                      formData.categories.includes(category)
+                        ? 'bg-purple-100 border-purple-300 text-purple-700'
+                        : 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100 hover:border-gray-300'
+                    }`}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
+              
+              <p className="text-xs text-gray-500 mt-2">
+                Select one or more categories that best describe this subscription
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-3">
                 Color
               </label>
-              <div className="grid grid-cols-6 gap-2">
+              <div className="flex flex-wrap gap-2 sm:gap-3">
                 {colors.map((color) => (
                   <button
                     key={color}
                     type="button"
-                    onClick={() => handleColorChange(color)}
-                    className={`w-10 h-10 rounded-lg transition-all duration-200 ${
-                      formData.color === color ? 'ring-2 ring-offset-2 ring-gray-400 scale-110' : ''
+                    onClick={() => setFormData({ ...formData, color })}
+                    className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl border-2 transition-all duration-200 hover:scale-110 ${
+                      formData.color === color ? 'border-gray-900 scale-110 shadow-lg' : 'border-gray-200 hover:border-gray-400'
                     }`}
                     style={{ backgroundColor: color }}
-                  >
-                    {formData.color === color && (
-                      <Check className="w-5 h-5 text-white mx-auto" />
-                    )}
-                  </button>
+                  />
                 ))}
               </div>
             </div>
-          </div>
-          
-          {/* Free tier warning */}
-          {isFreeTier && subscriptions && subscriptions.length >= 7 && !subscription && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-4">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
-                  <Star className="w-5 h-5 text-yellow-600" />
-                </div>
-                <span className="text-sm font-medium text-yellow-800">
-                  Free tier is limited to 7 subscriptions. Please upgrade to Premium for unlimited subscriptions.
-                </span>
-              </div>
+
+            <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 pt-4 sm:pt-6">
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex-1 px-4 sm:px-6 py-2 sm:py-3 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl sm:rounded-2xl font-semibold transition-colors text-sm sm:text-base"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="flex-1 px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white rounded-xl sm:rounded-2xl font-semibold transition-all duration-300 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl text-sm sm:text-base"
+              >
+                <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span>{subscription ? 'Update' : 'Add'} Subscription</span>
+              </button>
             </div>
-          )}
-        </form>
-        
-        <div className="p-6 border-t border-gray-100 flex justify-end space-x-3">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleSubmit}
-            className="px-4 py-2 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white rounded-lg font-medium transition-all duration-200"
-          >
-            {subscription ? 'Save Changes' : 'Add Subscription'}
-          </button>
-        </div>
+          </form>
+        )}
       </div>
     </div>
   );

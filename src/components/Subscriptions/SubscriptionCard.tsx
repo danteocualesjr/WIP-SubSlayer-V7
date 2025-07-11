@@ -70,25 +70,21 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
 
   const handleCardClick = (e: React.MouseEvent) => {
     // Prevent card click when clicking on action buttons or in selection mode
-    const target = e.target as HTMLElement;
-    e.stopPropagation();
-    
     if (isSelectionMode) {
       if (onSelect) {
         onSelect(subscription.id);
       }
       return;
     }
-    
-    // Only prevent if clicking on a button or the actions menu
-    if (target.tagName === 'BUTTON' || target.closest('button') || target.closest('.actions-menu')) {
-      console.log('Clicked on button or actions menu, preventing edit for', subscription.name);
+
+    // Check if the click was on the actions menu or its children
+    const target = e.target as HTMLElement;
+    if (target.closest('.actions-menu') || target.closest('button')) {
       return;
     }
 
     // Open edit modal when clicking anywhere on the card
     onEdit(subscription);
-    console.log('Card clicked - opening edit modal for:', subscription.name);
   };
 
   const handleSelectClick = (e: React.MouseEvent) => {
@@ -194,32 +190,23 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
               <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                 subscription.status === 'active' 
                   ? 'bg-green-100 text-green-700'
-                  : 'bg-gray-100 text-gray-700'
+                  : subscription.status === 'paused'
+                    ? 'bg-yellow-100 text-yellow-700'
+                    : 'bg-red-100 text-red-700'
               }`}>
-                {subscription.status === 'active' ? 'Active' : 'Cancelled'}
+                {subscription.status.charAt(0).toUpperCase() + subscription.status.slice(1)}
               </span>
             </div>
           </div>
         </div>
 
         {/* Progress Bar */}
-        <div className="mt-4">
+        <div className="mt-3 mb-2">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-xs text-gray-500">Billing cycle progress</span>
+            <span className="text-xs font-medium text-purple-700">{daysUntil > 0 ? `${daysUntil} days left` : 'Due today'}</span>
+          </div>
           <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-            <div 
-              className={`h-full rounded-full ${
-                isUrgent ? 'bg-red-500' : isWarning ? 'bg-yellow-500' : 'bg-green-500'
-              }`}
-              style={{ width: `${progressPercentage}%` }}
-            ></div>
-          </div>
-        </div>
-
-        {/* Progress Bar */}
-        <div className="mt-4 mb-4">
-          <div className="flex justify-between items-center mb-1">
-            <span className="text-xs text-gray-500">Progress</span>
-          </div>
-          <div className="w-[200px] h-2 bg-gray-100 rounded-full overflow-hidden">
             <div 
               className={`h-full rounded-full ${
                 isUrgent ? 'bg-red-500' : isWarning ? 'bg-yellow-500' : 'bg-green-500'
@@ -238,7 +225,11 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
               {formatDate(subscription.nextBilling)}
             </span>
           </div>
-          <div>
+          <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-1">
+              <Bell className="w-3 h-3 text-gray-400" />
+              <span className="text-xs text-gray-500">{settings.reminderDays}d reminder</span>
+            </div>
             <div className={`flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium ${
               isUrgent 
                 ? 'bg-red-100 text-red-700' 
@@ -246,7 +237,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
                   ? 'bg-yellow-100 text-yellow-700'
                   : 'bg-green-100 text-green-700'
             }`}>
-              <span>{daysUntil} days left</span>
+              <span>{daysUntil} days</span>
             </div>
           </div>
         </div>

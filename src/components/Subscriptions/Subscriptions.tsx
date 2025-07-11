@@ -153,10 +153,6 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
   const handleEdit = (subscription: Subscription) => {
     setEditingSubscription(subscription);
     setShowAddModal(true);
-    // Force the modal to appear by ensuring state is updated
-    setTimeout(() => {
-      console.log('Edit subscription triggered for:', subscription.name);
-    }, 0);
   };
 
   const handleAddOrEdit = (subscriptionData: Omit<Subscription, 'id' | 'createdAt'>) => {
@@ -173,9 +169,6 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
   const handleModalClose = () => {
     setShowAddModal(false);
     setEditingSubscription(null);
-    setTimeout(() => {
-      console.log('Subscription modal closed');
-    }, 0);
   };
 
   const handleDeleteClick = (subscription: Subscription) => {
@@ -277,7 +270,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
                   <h1 className="text-2xl sm:text-4xl font-bold">Subscription Calendar</h1>
                 </div>
                 <p className="text-lg sm:text-xl text-white/90 mb-6 sm:mb-8 max-w-2xl">
-                  Start tracking your subscriptions and take control of your recurring expenses. Add your first subscription to see insights and analytics.
+                  Visualize your renewal dates and never miss a payment again
                 </p>
               </div>
               
@@ -420,7 +413,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
               >
                 {isAtSubscriptionLimit && isFreeTier ? (
                   <>
-                    <span>Upgrade to Premium</span>
+                    <span>Upgrade to Pro</span>
                   </>
                 ) : (
                   <>

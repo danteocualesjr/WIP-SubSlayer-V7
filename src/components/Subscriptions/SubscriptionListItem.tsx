@@ -71,24 +71,19 @@ const SubscriptionListItem: React.FC<SubscriptionListItemProps> = ({
   const handleRowClick = (e: React.MouseEvent) => {
     // Prevent row click when clicking on action buttons
     const target = e.target as HTMLElement;
-    e.stopPropagation();
-    
+    if (target.closest('.actions-menu') || target.closest('button')) {
+      return;
+    }
+
     if (isSelectionMode) {
       if (onSelect) {
         onSelect(subscription.id);
       }
       return;
     }
-    
-    // Only prevent if clicking on a button or the actions menu
-    if (target.tagName === 'BUTTON' || target.closest('button') || target.closest('.actions-menu')) {
-      console.log('Clicked on button or actions menu, preventing edit for', subscription.name);
-      return;
-    }
 
     // Open edit modal when clicking anywhere on the row
     onEdit(subscription);
-    console.log('Row clicked - opening edit modal for:', subscription.name);
   };
 
   const handleSelectClick = (e: React.MouseEvent) => {
@@ -153,22 +148,28 @@ const SubscriptionListItem: React.FC<SubscriptionListItemProps> = ({
                 {subscription.name.substring(0, 2).toUpperCase()}
               </div>
               <div>
-                <h4 className="font-medium text-gray-900 mb-1">{subscription.name}</h4>
+                <h4 className="font-medium text-gray-900 mb-0.5">{subscription.name}</h4>
                 {subscription.description && (
                   <p className="text-sm text-gray-600 line-clamp-1 mb-1">{subscription.description}</p>
                 )}
-                <div className="w-[200px] h-1.5 bg-gray-100 rounded-full overflow-hidden mt-1">
-                  <div 
-                    className={`h-full rounded-full ${
-                      isUrgent ? 'bg-red-500' : isWarning ? 'bg-yellow-500' : 'bg-green-500'
-                    }`}
-                    style={{ width: `${progressPercentage}%` }}
-                  ></div>
-                </div>
-                <div className="text-xs text-gray-500 mt-1">Progress</div>
               </div>
             </div>
             
+            {/* Progress Bar */}
+            <div className="mt-1 w-full">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs text-gray-500">Progress</span>
+                <span className="text-xs font-medium text-purple-700">{daysUntil > 0 ? `${daysUntil} days left` : 'Due today'}</span>
+              </div>
+              <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                <div 
+                  className={`h-full rounded-full ${
+                    isUrgent ? 'bg-red-500' : isWarning ? 'bg-yellow-500' : 'bg-green-500'
+                  }`}
+                  style={{ width: `${progressPercentage}%` }}
+                ></div>
+              </div>
+            </div>
           </div>
 
           {/* Category */}
@@ -199,7 +200,7 @@ const SubscriptionListItem: React.FC<SubscriptionListItemProps> = ({
                     ? 'bg-yellow-100 text-yellow-700'
                     : 'bg-green-100 text-green-700'
               }`}>
-                {daysUntil} days left
+                {daysUntil} days
               </div>
             </div>
           </div>

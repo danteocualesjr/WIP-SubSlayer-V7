@@ -152,7 +152,6 @@ const Dashboard: React.FC<DashboardProps> = ({
   const handleEditSubscription = useCallback((subscription: Subscription) => {
     setEditingSubscription(subscription);
     setShowAddModal(true);
-    console.log('Edit subscription triggered in Dashboard for:', subscription.name);
   }, []);
 
   const handleSaveEdit = useCallback((subscriptionData: Omit<Subscription, 'id' | 'createdAt'>) => {
@@ -166,7 +165,6 @@ const Dashboard: React.FC<DashboardProps> = ({
   const handleModalClose = useCallback(() => {
     setShowAddModal(false);
     setEditingSubscription(null);
-    console.log('Subscription modal closed in Dashboard');
   }, []);
 
   const handleSwitchToCalendar = useCallback(() => {
@@ -246,7 +244,7 @@ const Dashboard: React.FC<DashboardProps> = ({
               >
                 {isAtSubscriptionLimit && isFreeTier ? (
                   <>
-                    <span>Upgrade to Premium</span>
+                    <span>Upgrade to Pro</span>
                   </>
                 ) : (
                   <>

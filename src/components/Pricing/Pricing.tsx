@@ -31,7 +31,7 @@ const Pricing: React.FC = () => {
     },
     {
       id: 'pro',
-      name: 'Premium',
+      name: 'Pro',
       description: 'For power users who actively manage subscriptions',
       monthlyPrice: 9.99,
       annualPrice: 99,
@@ -48,7 +48,7 @@ const Pricing: React.FC = () => {
         'CSV export of history',
         'Priority support',
       ],
-      cta: 'Upgrade to Premium',
+      cta: 'Upgrade Now',
       gradient: 'from-purple-600 to-violet-600',
       bgGradient: 'from-purple-50 to-violet-50',
       borderColor: 'border-purple-200',
