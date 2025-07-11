@@ -153,6 +153,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
   const handleEdit = (subscription: Subscription) => {
     setEditingSubscription(subscription);
     setShowAddModal(true);
+    console.log('Edit subscription:', subscription.name);
   };
 
   const handleAddOrEdit = (subscriptionData: Omit<Subscription, 'id' | 'createdAt'>) => {
@@ -169,6 +170,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
   const handleModalClose = () => {
     setShowAddModal(false);
     setEditingSubscription(null);
+    console.log('Modal closed');
   };
 
   const handleDeleteClick = (subscription: Subscription) => {

@@ -71,19 +71,22 @@ const SubscriptionListItem: React.FC<SubscriptionListItemProps> = ({
   const handleRowClick = (e: React.MouseEvent) => {
     // Prevent row click when clicking on action buttons
     const target = e.target as HTMLElement;
-    if (target.closest('.actions-menu') || target.closest('button')) {
-      return;
-    }
-
+    
     if (isSelectionMode) {
       if (onSelect) {
         onSelect(subscription.id);
       }
       return;
     }
+    
+    // Only prevent if clicking on a button or the actions menu
+    if (target.tagName === 'BUTTON' || target.closest('.actions-menu') || target.closest('button')) {
+      return;
+    }
 
     // Open edit modal when clicking anywhere on the row
     onEdit(subscription);
+    console.log('Row clicked:', subscription.name);
   };
 
   const handleSelectClick = (e: React.MouseEvent) => {

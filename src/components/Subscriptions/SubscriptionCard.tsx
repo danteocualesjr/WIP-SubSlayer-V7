@@ -70,21 +70,23 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
 
   const handleCardClick = (e: React.MouseEvent) => {
     // Prevent card click when clicking on action buttons or in selection mode
+    const target = e.target as HTMLElement;
+    
     if (isSelectionMode) {
       if (onSelect) {
         onSelect(subscription.id);
       }
       return;
     }
-
-    // Check if the click was on the actions menu or its children
-    const target = e.target as HTMLElement;
-    if (target.closest('.actions-menu') || target.closest('button')) {
+    
+    // Only prevent if clicking on a button or the actions menu
+    if (target.tagName === 'BUTTON' || target.closest('.actions-menu') || target.closest('button')) {
       return;
     }
 
     // Open edit modal when clicking anywhere on the card
     onEdit(subscription);
+    console.log('Card clicked:', subscription.name);
   };
 
   const handleSelectClick = (e: React.MouseEvent) => {
