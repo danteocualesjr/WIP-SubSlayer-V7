@@ -202,61 +202,6 @@ export function useNotifications() {
                 }
               });
             }
-          });
-        } else if (Notification.permission !== 'denied') {
-          Notification.requestPermission().then(permission => {
-            if (permission === 'granted') {
-              new Notification(notification.title, {
-                body: notification.message,
-                icon: '/vite.svg',
-                badge: '/vite.svg',
-                tag: notification.id,
-              });
-
-              // Send email notification if enabled
-              if (settings.emailNotifications && user?.email) {
-                const emailSubject = notification.title;
-                const nextBillingDate = new Date();
-                nextBillingDate.setDate(nextBillingDate.getDate() + (notification.daysUntil || 0));
-                
-                const emailHtmlContent = `
-                  <p>Hello,</p>
-                  <p>${notification.message}.</p>
-                  <p>Subscription: <strong>${notification.subscriptionName}</strong></p>
-                  <p>Cost: <strong>$${notification.amount?.toFixed(2)}</strong></p>
-                  <p>Next Billing Date: <strong>${nextBillingDate.toLocaleDateString()}</strong></p>
-                  <p>Manage your subscriptions in SubSlayer: <a href="${window.location.origin}">Go to SubSlayer</a></p>
-                  <p>Thank you,<br>The SubSlayer Team</p>
-                `;
-                
-                // Get the current session for authentication
-                supabase.auth.getSession().then(({ data: { session } }) => {
-                  if (session?.access_token) {
-                    fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-renewal-email`, {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${session.access_token}`
-                      },
-                      body: JSON.stringify({
-                        to: user.email,
-                        subject: emailSubject,
-                        htmlContent: emailHtmlContent,
-                      }),
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                      if (data.error) {
-                        console.error('Error sending email:', data.error);
-                      } else {
-                        console.log('Email sent successfully:', data.message);
-                      }
-                    })
-                    .catch(error => console.error('Network error sending email:', error));
-                  }
-                });
-              }
-            }
           }
         });
       }
