@@ -185,7 +185,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
                 <span className="text-base sm:text-lg font-bold text-gray-900">
                   ${subscription.cost.toFixed(2)}
                 </span>
-                <span className="text-sm text-gray-500">{subscription.billingCycle === 'monthly' ? ' monthly' : ' annually'}</span>
+                <span>{daysUntil} days left</span>
               </div>
               <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                 subscription.status === 'active' 
