@@ -120,32 +120,31 @@ const UpcomingRenewals: React.FC<UpcomingRenewalsProps> = ({
                   </div>
                 </div>
                 
-                <div className="flex items-center space-x-3">
-                  <span className="font-bold text-gray-900 group-hover/item:text-purple-700 transition-colors">
-                    ${subscription.cost.toFixed(2)}{subscription.billingCycle === 'monthly' ? ' monthly' : ' annually'}
-                  </span>
-                  <div className={`flex items-center space-x-1 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${
-                    isUrgent 
-                      ? 'bg-red-100 text-red-700 group-hover/item:bg-red-200' 
-                      : daysUntil <= 7 
-                        ? 'bg-yellow-100 text-yellow-700 group-hover/item:bg-yellow-200'
-                        : 'bg-green-100 text-green-700 group-hover/item:bg-green-200'
-                  }`}>
-                    {isUrgent && <AlertCircle className="w-3 h-3" />}
-                    <span>{daysUntil} days</span>
-                  </div>
-                  
-                  {/* Progress Bar */}
-                  <div className="mt-2 mb-1 w-full">
-                    <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                  const daysUntil = getDaysUntilRenewal(subscription.nextBilling);
-                      <div 
-                        className={`h-full rounded-full ${
-                          daysUntil <= 3 ? 'bg-red-500' : daysUntil <= 7 ? 'bg-yellow-500' : 'bg-green-500'
-                        }`}
-                        style={{ width: `${calculateProgress(subscription)}%` }}
-                      ></div>
+                <div className="flex flex-col items-end space-y-2">
+                  <div className="flex items-center space-x-3">
+                    <span className="font-bold text-gray-900 group-hover/item:text-purple-700 transition-colors">
+                      ${subscription.cost.toFixed(2)}{subscription.billingCycle === 'monthly' ? ' monthly' : ' annually'}
+                    </span>
+                    <div className={`flex items-center space-x-1 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${
+                      isUrgent 
+                        ? 'bg-red-100 text-red-700 group-hover/item:bg-red-200' 
+                        : daysUntil <= 7 
+                          ? 'bg-yellow-100 text-yellow-700 group-hover/item:bg-yellow-200'
+                          : 'bg-green-100 text-green-700 group-hover/item:bg-green-200'
+                    }`}>
+                      {isUrgent && <AlertCircle className="w-3 h-3" />}
+                      <span>{daysUntil} days</span>
                     </div>
+                  </div>
+                
+                  {/* Progress Bar */}
+                  <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                    <div 
+                      className={`h-full rounded-full ${
+                        daysUntil <= 3 ? 'bg-red-500' : daysUntil <= 7 ? 'bg-yellow-500' : 'bg-green-500'
+                      }`}
+                      style={{ width: `${calculateProgress(subscription)}%` }}
+                    ></div>
                   </div>
                 </div>
               </div>
