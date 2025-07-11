@@ -130,12 +130,15 @@ export function useAuth() {
   const signOut = async () => {
     try {
       const { error } = await supabase.auth.signOut();
-      // Always clear auth data regardless of error to ensure clean state
       clearAuthData();
+      // Redirect to sign in page after sign out
+      window.location.href = '/';
       return { error };
     } catch (error) {
       console.error('Sign out error:', error);
       clearAuthData();
+      // Ensure redirection even if there's an error
+      window.location.href = '/';
       return { error };
     }
   };
