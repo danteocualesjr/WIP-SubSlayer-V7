@@ -43,8 +43,8 @@ function App() {
   const [isMobile, setIsMobile] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showAuthForm, setShowAuthForm] = useState(false);
+  const [showLandingPage, setShowLandingPage] = useState(true);
   const [showSuccessPage, setShowSuccessPage] = useState(false);
-  const [showSignInAfterSignOut, setShowSignInAfterSignOut] = useState(false);
 
   // Check for success page on mount
   useEffect(() => {
@@ -60,7 +60,7 @@ function App() {
   useEffect(() => {
     const handleSignOut = () => {
       setShowAuthForm(true);
-      setShowSignInAfterSignOut(true);
+      setShowLandingPage(false);
     };
 
     window.addEventListener('userSignedOut', handleSignOut);
@@ -90,6 +90,7 @@ function App() {
   }, []);
 
   const handleGetStarted = useCallback(() => {
+    setShowLandingPage(false);
     setShowAuthForm(true);
   }, []);
 
@@ -297,12 +298,12 @@ function App() {
   }
 
   // Show landing page if not authenticated and not showing auth form
-  if (!user && !showAuthForm && !showSignInAfterSignOut) {
+  if (!user && !showAuthForm && showLandingPage) {
     return <LandingPage onGetStarted={handleGetStarted} />;
   }
 
   // Show auth form if not authenticated and auth form is requested
-  if (!user && (showAuthForm || showSignInAfterSignOut)) {
+  if (!user && showAuthForm) {
     return <AuthForm />;
   }
 

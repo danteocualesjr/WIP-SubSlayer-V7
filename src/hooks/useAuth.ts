@@ -130,20 +130,20 @@ export function useAuth() {
   const signOut = async () => {
     try {
       const { error } = await supabase.auth.signOut();
-      
+
       // Dispatch a custom event to notify components about sign out
       window.dispatchEvent(new CustomEvent('userSignedOut'));
-      
+
       clearAuthData();
-      
+
       return { error };
     } catch (error) {
       console.error('Sign out error:', error);
       clearAuthData();
-      
+
       // Dispatch event even if there's an error
       window.dispatchEvent(new CustomEvent('userSignedOut'));
-      
+
       return { error };
     }
   };
