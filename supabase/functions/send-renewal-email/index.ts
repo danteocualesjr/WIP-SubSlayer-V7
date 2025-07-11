@@ -27,6 +27,7 @@ Deno.serve(async (req) => {
       const isDebug = params.get('debug') === 'true' || body.debug === true;
       
       if (isDebug) {
+        
         const envVars = {
           hasSendgridApiKey: !!Deno.env.get('SENDGRID_API_KEY'),
           hasSenderEmail: !!Deno.env.get('SENDER_EMAIL'),
