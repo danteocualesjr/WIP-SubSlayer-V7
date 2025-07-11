@@ -130,15 +130,20 @@ export function useAuth() {
   const signOut = async () => {
     try {
       const { error } = await supabase.auth.signOut();
+      
+      // Dispatch a custom event to notify components about sign out
+      window.dispatchEvent(new CustomEvent('userSignedOut'));
+      
       clearAuthData();
-      // Redirect to sign in page after sign out
-      window.location.href = '/';
+      
       return { error };
     } catch (error) {
       console.error('Sign out error:', error);
       clearAuthData();
-      // Ensure redirection even if there's an error
-      window.location.href = '/';
+      
+      // Dispatch event even if there's an error
+      window.dispatchEvent(new CustomEvent('userSignedOut'));
+      
       return { error };
     }
   };
