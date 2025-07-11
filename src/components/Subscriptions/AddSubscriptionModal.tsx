@@ -493,11 +493,19 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
                           </div>
                         </div>
                       </button>
-                    <span className="text-sm font-medium text-yellow-800">Free tier is limited to 7 subscriptions. Please upgrade to Premium for unlimited subscriptions.</span>
                   </div>
                 </div>
               ))}
             </div>
+
+            {/* Free tier warning */}
+            {isFreeTier && subscriptions.length >= 7 && (
+              <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <span className="text-sm font-medium text-yellow-800">
+                  Free tier is limited to 7 subscriptions. Please upgrade to Premium for unlimited subscriptions.
+                </span>
+              </div>
+            )}
 
             {filteredServices.length === 0 && (
               <div className="text-center py-8">
