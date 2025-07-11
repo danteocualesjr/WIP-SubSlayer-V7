@@ -39,6 +39,34 @@ const SubscriptionListItem: React.FC<SubscriptionListItemProps> = ({
   const daysUntil = getDaysUntilRenewal();
   const isUrgent = daysUntil <= 3;
   const isWarning = daysUntil <= 7 && daysUntil > 3;
+  
+  // Calculate progress for billing cycle
+  const calculateProgress = () => {
+    const now = new Date();
+    const renewalDate = new Date(subscription.nextBilling);
+    
+    if (subscription.billingCycle === 'monthly') {
+      // For monthly subscriptions, calculate days since last billing
+      const lastBillingDate = new Date(renewalDate);
+      lastBillingDate.setMonth(lastBillingDate.getMonth() - 1);
+      
+      const totalDays = Math.round((renewalDate.getTime() - lastBillingDate.getTime()) / (1000 * 60 * 60 * 24));
+      const daysElapsed = Math.round((now.getTime() - lastBillingDate.getTime()) / (1000 * 60 * 60 * 24));
+      
+      return Math.min(Math.max(0, (daysElapsed / totalDays) * 100), 100);
+    } else {
+      // For annual subscriptions
+      const lastBillingDate = new Date(renewalDate);
+      lastBillingDate.setFullYear(lastBillingDate.getFullYear() - 1);
+      
+      const totalDays = Math.round((renewalDate.getTime() - lastBillingDate.getTime()) / (1000 * 60 * 60 * 24));
+      const daysElapsed = Math.round((now.getTime() - lastBillingDate.getTime()) / (1000 * 60 * 60 * 24));
+      
+      return Math.min(Math.max(0, (daysElapsed / totalDays) * 100), 100);
+    }
+  };
+  
+  const progressPercentage = calculateProgress();
 
   const handleRowClick = (e: React.MouseEvent) => {
     // Prevent row click when clicking on action buttons
@@ -124,6 +152,22 @@ const SubscriptionListItem: React.FC<SubscriptionListItemProps> = ({
                 {subscription.description && (
                   <p className="text-sm text-gray-600 line-clamp-1 mb-1">{subscription.description}</p>
                 )}
+              </div>
+            </div>
+            
+            {/* Progress Bar */}
+            <div className="mt-1 w-full">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs text-gray-500">Progress</span>
+                <span className="text-xs font-medium text-purple-700">{daysUntil > 0 ? `${daysUntil} days left` : 'Due today'}</span>
+              </div>
+              <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                <div 
+                  className={`h-full rounded-full ${
+                    isUrgent ? 'bg-red-500' : isWarning ? 'bg-yellow-500' : 'bg-green-500'
+                  }`}
+                  style={{ width: `${progressPercentage}%` }}
+                ></div>
               </div>
             </div>
           </div>
