@@ -98,7 +98,7 @@ const UpcomingRenewals: React.FC<UpcomingRenewalsProps> = ({
             const isUrgent = daysUntil <= 3;
             
             return (
-                    <span>{daysUntil} days left</span>
+              <div
                 key={subscription.id}
                 onClick={() => handleSubscriptionClick(subscription)}
                 className="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-purple-50/30 rounded-2xl hover:from-purple-50 hover:to-violet-50 transition-all duration-200 cursor-pointer hover:shadow-md group/item border border-gray-100 hover:border-purple-200"
