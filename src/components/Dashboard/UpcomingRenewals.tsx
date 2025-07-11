@@ -29,6 +29,14 @@ const UpcomingRenewals: React.FC<UpcomingRenewalsProps> = ({
       .slice(0, 5);
   };
 
+  const getDaysUntilRenewal = (date: string) => {
+    const now = new Date();
+    const renewalDate = new Date(date);
+    const diffTime = renewalDate.getTime() - now.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
   const upcomingRenewals = getUpcomingRenewals();
 
   const handleSubscriptionClick = (subscription: Subscription) => {
