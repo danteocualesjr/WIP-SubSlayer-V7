@@ -225,33 +225,17 @@ const Settings: React.FC = () => {
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Reminder Days Before Renewal
             </label>
-            <div className="space-y-2">
-              {[
-                { value: 1, label: '1 day' },
-                { value: 3, label: '3 days' },
-                { value: 7, label: '7 days' },
-              ].map((option) => (
-                <div key={option.value} className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id={`reminder-${option.value}`}
-                    checked={settings.reminderDays.includes(option.value)}
-                    onChange={(e) => {
-                      const newReminderDays = e.target.checked
-                        ? [...settings.reminderDays, option.value]
-                        : settings.reminderDays.filter(day => day !== option.value);
-                      updateSetting('reminderDays', newReminderDays);
-                    }}
-                    className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
-                  />
-                  <label htmlFor={`reminder-${option.value}`} className="ml-2 block text-sm text-gray-700">
-                    {option.label}
-                  </label>
-                </div>
-              ))}
-            </div>
+            <select
+              value={settings.reminderDays[0] || 7}
+              onChange={(e) => updateSetting('reminderDays', [parseInt(e.target.value)])}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            >
+              <option value={1}>1 day</option>
+              <option value={3}>3 days</option>
+              <option value={7}>7 days</option>
+            </select>
             <p className="text-xs text-gray-500 mt-1">
-              Select one or more options to receive reminders before subscription renewals
+              Select when to receive reminders before subscription renewals
             </p>
           </div>
         </div>
@@ -468,31 +452,15 @@ const Settings: React.FC = () => {
     <div className="space-y-6">
       <div>
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Appearance</h3>
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">
-              Theme
-            </label>
-            <div className="grid grid-cols-3 gap-3">
-              {(['light', 'dark', 'auto'] as const).map((theme) => (
-                <button
-                  key={theme}
-                  onClick={() => updateSetting('theme', theme)}
-                  className={`p-4 border-2 rounded-lg transition-all duration-200 ${
-                    settings.theme === theme
-                      ? 'border-purple-600 bg-purple-50'
-                      : 'border-gray-200 hover:border-gray-300'
-                  }`}
-                >
-                  <div className={`w-full h-8 rounded mb-2 ${
-                    theme === 'light' ? 'bg-white border border-gray-200' :
-                    theme === 'dark' ? 'bg-gray-800' :
-                    'bg-gradient-to-r from-white to-gray-800'
-                  }`}></div>
-                  <p className="text-sm font-medium text-gray-900 capitalize">{theme}</p>
-                </button>
-              ))}
-            </div>
+            <select
+              value={settings.reminderDays[0] || 7}
+              onChange={(e) => updateSetting('reminderDays', [parseInt(e.target.value)])}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            >
+              <option value={1}>1 day</option>
+              <option value={3}>3 days</option>
+              <option value={7}>7 days</option>
+            </select>
           </div>
         </div>
       </div>

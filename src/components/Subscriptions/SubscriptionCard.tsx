@@ -228,7 +228,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
           <div className="flex items-center space-x-3">
             <div className="flex items-center space-x-1">
               <Bell className="w-3 h-3 text-gray-400" />
-              <span className="text-xs text-gray-500">{settings.reminderDays}d reminder</span>
+              <span className="text-xs text-gray-500">{Array.isArray(settings.reminderDays) ? settings.reminderDays[0] : settings.reminderDays}d reminder</span>
             </div>
             <div className={`flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium ${
               isUrgent 
