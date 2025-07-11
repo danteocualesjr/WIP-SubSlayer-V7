@@ -120,7 +120,7 @@ const UpcomingRenewals: React.FC<UpcomingRenewalsProps> = ({
                   </div>
                 </div>
                 
-                <div className="flex flex-col items-end space-y-2">
+                <div className="flex flex-col items-end space-y-2 min-w-[140px]">
                   <div className="flex items-center space-x-3">
                     <span className="font-bold text-gray-900 group-hover/item:text-purple-700 transition-colors">
                       ${subscription.cost.toFixed(2)}{subscription.billingCycle === 'monthly' ? ' monthly' : ' annually'}
@@ -138,7 +138,7 @@ const UpcomingRenewals: React.FC<UpcomingRenewalsProps> = ({
                   </div>
                 
                   {/* Progress Bar */}
-                  <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                  <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden min-w-[140px]">
                     <div 
                       className={`h-full rounded-full ${
                         daysUntil <= 3 ? 'bg-red-500' : daysUntil <= 7 ? 'bg-yellow-500' : 'bg-green-500'
