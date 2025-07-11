@@ -215,7 +215,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
           <div className="flex justify-between items-center mb-1">
             <span className="text-xs text-gray-500">Progress</span>
           </div>
-          <div className="w-full max-w-[200px] h-2 bg-gray-100 rounded-full overflow-hidden">
+          <div className="w-[200px] h-2 bg-gray-100 rounded-full overflow-hidden">
             <div 
               className={`h-full rounded-full ${
                 isUrgent ? 'bg-red-500' : isWarning ? 'bg-yellow-500' : 'bg-green-500'

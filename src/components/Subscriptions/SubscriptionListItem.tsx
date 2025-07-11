@@ -152,7 +152,7 @@ const SubscriptionListItem: React.FC<SubscriptionListItemProps> = ({
                 {subscription.description && (
                   <p className="text-sm text-gray-600 line-clamp-1 mb-1">{subscription.description}</p>
                 )}
-                <div className="w-full max-w-[200px] h-1.5 bg-gray-100 rounded-full overflow-hidden mt-1">
+                <div className="w-[200px] h-1.5 bg-gray-100 rounded-full overflow-hidden mt-1">
                   <div 
                     className={`h-full rounded-full ${
                       isUrgent ? 'bg-red-500' : isWarning ? 'bg-yellow-500' : 'bg-green-500'
