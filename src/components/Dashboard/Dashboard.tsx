@@ -248,7 +248,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                   </>
                 ) : (
                   <>
-                  <span className="ml-2 bg-yellow-400/20 text-yellow-100 px-2 py-0.5 rounded-full text-xs">
+                    <Plus className="w-5 h-5" />
                     <span>Add Subscription</span>
                   </>
                 )}
