@@ -297,17 +297,34 @@ const Notifications: React.FC<NotificationsProps> = ({ subscriptions }) => {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Renewal Reminder (days before)
               </label>
-              <select
-                value={settings.reminderDays}
-                onChange={(e) => updateSetting('reminderDays', Number(e.target.value))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              >
-                <option value={1}>1 day</option>
-                <option value={3}>3 days</option>
-                <option value={7}>7 days</option>
-                <option value={14}>14 days</option>
-                <option value={30}>30 days</option>
-              </select>
+              <div className="space-y-2">
+                {[
+                  { value: 1, label: '1 day' },
+                  { value: 3, label: '3 days' },
+                  { value: 7, label: '7 days' },
+                ].map((option) => (
+                  <div key={option.value} className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id={`notification-reminder-${option.value}`}
+                      checked={settings.reminderDays.includes(option.value)}
+                      onChange={(e) => {
+                        const newReminderDays = e.target.checked
+                          ? [...settings.reminderDays, option.value]
+                          : settings.reminderDays.filter(day => day !== option.value);
+                        updateSetting('reminderDays', newReminderDays);
+                      }}
+                      className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                    />
+                    <label htmlFor={`notification-reminder-${option.value}`} className="ml-2 block text-sm text-gray-700">
+                      {option.label}
+                    </label>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-gray-500 mt-1">
+                Select one or more options to receive reminders before subscription renewals
+              </p>
             </div>
           </div>
         </div>

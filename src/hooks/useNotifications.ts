@@ -63,9 +63,7 @@ export function useNotifications() {
   const generateRenewalNotifications = (subscriptions: Subscription[]) => {
     if (!user || !settings.emailNotifications) return;
 
-    const now = new Date();
-    const reminderThreshold = new Date(now.getTime() + settings.reminderDays * 24 * 60 * 60 * 1000);
-    
+    const now = new Date();    
     const newNotifications: NotificationItem[] = [];
     
     subscriptions.forEach(subscription => {
@@ -74,8 +72,8 @@ export function useNotifications() {
       const renewalDate = new Date(subscription.nextBilling);
       const daysUntil = Math.ceil((renewalDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
       
-      // Check if we should notify about this subscription
-      if (daysUntil <= settings.reminderDays && daysUntil >= 0) {
+      // Check if we should notify about this subscription based on selected reminder days
+      if (settings.reminderDays.includes(daysUntil)) {
         // Check if we already have a notification for this subscription and timeframe
         const existingNotification = notifications.find(n => 
           n.subscriptionId === subscription.id && 
