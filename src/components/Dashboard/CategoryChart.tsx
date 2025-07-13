@@ -6,6 +6,7 @@ import { CategoryData } from '../../types/subscription';
 interface CategoryChartProps {
   
   data: CategoryData[];
+  
 }
 
 const CategoryChart: React.FC<CategoryChartProps> = ({ data }) => {
