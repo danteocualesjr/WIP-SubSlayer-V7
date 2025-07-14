@@ -200,27 +200,35 @@ export function useProfile() {
        return { success: false, error: checkError.message };
      }
      
-     // If profile exists, update it; otherwise insert a new one
-     const operation = existingProfile ? 
-       supabase.from('user_profiles').update({
-         display_name: profileData.displayName,
-         bio: profileData.bio,
-         location: profileData.location,
-         website: profileData.website,
-         avatar_url: profileData.avatar,
-         updated_at: new Date().toISOString(),
-       }).eq('user_id', user.id) :
-       supabase.from('user_profiles').insert({
-         user_id: user.id,
-         display_name: profileData.displayName,
-         bio: profileData.bio,
-         location: profileData.location,
-         website: profileData.website,
-         avatar_url: profileData.avatar,
-         updated_at: new Date().toISOString(),
-       });
+     // Prepare the profile data
+     const profileRecord = {
+       user_id: user.id,
+       display_name: profileData.displayName,
+       bio: profileData.bio,
+       location: profileData.location,
+       website: profileData.website,
+       avatar_url: profileData.avatar,
+       updated_at: new Date().toISOString(),
+     };
+     
+     let error;
+     
+     if (existingProfile) {
+       // Update existing profile
+       const { error: updateError } = await supabase
+         .from('user_profiles')
+         .update(profileRecord)
+         .eq('user_id', user.id);
        
-     const { error } = await operation;
+       error = updateError;
+     } else {
+       // Insert new profile
+       const { error: insertError } = await supabase
+         .from('user_profiles')
+         .insert(profileRecord);
+       
+       error = insertError;
+     }
      
      if (error) {
        console.error('Error saving profile to Supabase:', error);
@@ -276,7 +284,18 @@ export function useProfile() {
       localStorage.setItem(`profile_${user.id}`, JSON.stringify(updatedProfile));
       
       // Save to Supabase for persistence
-      saveProfileToSupabase(updatedProfile);
+      // Use a timeout to ensure UI updates first, then handle the async operation
+      setTimeout(() => {
+        saveProfileToSupabase(updatedProfile)
+          .then(result => {
+            if (!result.success) {
+              console.error('Error saving profile to Supabase:', result.error);
+            }
+          })
+          .catch(err => {
+            console.error('Unexpected error in saveProfileToSupabase:', err);
+          });
+      }, 0);
       
       return { success: true };
     } catch (error) {
@@ -297,7 +316,18 @@ export function useProfile() {
       localStorage.setItem(`profile_${user.id}`, JSON.stringify(updatedProfile));
       
       // Save to Supabase
-      saveProfileToSupabase(updatedProfile);
+      // Use a timeout to ensure UI updates first, then handle the async operation
+      setTimeout(() => {
+        saveProfileToSupabase(updatedProfile)
+          .then(result => {
+            if (!result.success) {
+              console.error('Error saving avatar to Supabase:', result.error);
+            }
+          })
+          .catch(err => {
+            console.error('Unexpected error in saveProfileToSupabase:', err);
+          });
+      }, 0);
       
       return { success: true };
     } catch (error) {

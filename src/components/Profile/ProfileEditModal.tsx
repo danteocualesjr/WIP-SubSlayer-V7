@@ -45,7 +45,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         bio: currentProfile.bio || '',
         location: currentProfile.location || '',
         website: currentProfile.website || '',
-        avatar: null,
+        avatar: null as File | null | string,
         avatarPreview: currentProfile.avatar || null,
       });
       setUploadError(null);
@@ -126,7 +126,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       let avatarData = profileData.avatarPreview;
       
       // Convert file to base64 if a new file was selected
-     if (profileData.avatar && profileData.avatar instanceof File) {
+     if (profileData.avatar instanceof File) {
         try {
           avatarData = await convertFileToBase64(profileData.avatar);
         } catch (error) {
@@ -143,7 +143,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         bio: profileData.bio,
         location: profileData.location,
         website: profileData.website,
-        avatar: avatarData
+        avatarPreview: avatarData
       };
       
       const result = await onSave(dataToSave);
