@@ -187,6 +187,71 @@ export function useProfile() {
   const saveProfileToSupabase = async (profileData: ProfileData) => {
     if (!user) return { success: false, error: 'User not authenticated' };
     
+    // Compress avatar data if it's a base64 string
+    let avatarUrl = profileData.avatar;
+    
+    // If avatar is a large base64 string, we should upload it to Supabase storage
+    if (typeof avatarUrl === 'string' && avatarUrl.startsWith('data:image')) {
+      try {
+        // Extract file type and data
+        const matches = avatarUrl.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+        
+        if (!matches || matches.length !== 3) {
+          throw new Error('Invalid image data');
+        }
+        
+        const contentType = matches[1];
+        const base64Data = matches[2];
+        const extension = contentType.split('/')[1] || 'png';
+        
+        // Convert base64 to blob
+        const byteCharacters = atob(base64Data);
+        const byteArrays = [];
+        
+        for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+          const slice = byteCharacters.slice(offset, offset + 512);
+          
+          const byteNumbers = new Array(slice.length);
+          for (let i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+          }
+          
+          const byteArray = new Uint8Array(byteNumbers);
+          byteArrays.push(byteArray);
+        }
+        
+        const blob = new Blob(byteArrays, { type: contentType });
+        
+        // Upload to Supabase Storage
+        const fileName = `avatar-${user.id}-${Date.now()}.${extension}`;
+        const filePath = `avatars/${fileName}`;
+        
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('profiles')
+          .upload(filePath, blob, {
+            contentType,
+            upsert: true
+          });
+        
+        if (uploadError) {
+          console.error('Error uploading avatar to storage:', uploadError);
+          // Continue with profile update but without the avatar
+          avatarUrl = null;
+        } else {
+          // Get public URL for the uploaded file
+          const { data: { publicUrl } } = supabase.storage
+            .from('profiles')
+            .getPublicUrl(filePath);
+            
+          avatarUrl = publicUrl;
+        }
+      } catch (error) {
+        console.error('Error processing avatar for upload:', error);
+        // Continue with profile update but without the avatar
+        avatarUrl = null;
+      }
+    }
+    
     try {
      // First check if the user profile already exists
      const { data: existingProfile, error: checkError } = await supabase
@@ -207,7 +272,7 @@ export function useProfile() {
        bio: profileData.bio,
        location: profileData.location,
        website: profileData.website,
-       avatar_url: profileData.avatar,
+       avatar_url: avatarUrl,
        updated_at: new Date().toISOString(),
      };
      
@@ -273,20 +338,40 @@ export function useProfile() {
   const saveProfile = (profileData: Partial<ProfileData>) => {
     if (!user) return { success: false, error: 'User not authenticated' };
 
+    // Check if avatar data is too large for localStorage
+    const avatarData = profileData.avatar;
+    let avatarUrl = null;
+    
+    // If avatar is a base64 string, it's likely too large for localStorage
+    if (typeof avatarData === 'string' && avatarData.startsWith('data:image')) {
+      // Store only a reference to the avatar, not the full data
+      avatarUrl = avatarData;
+      profileData.avatar = null; // Don't store the full image data in localStorage
+    }
+
     try {
       const updatedProfile = { ...profile, ...profileData };
       setProfile(updatedProfile);
       
-      // Save to local storage as backup
-      localStorage.setItem(`${PROFILE_STORAGE_PREFIX}${user.id}`, JSON.stringify(updatedProfile));
-      
-      // Also update the old storage key for backward compatibility
-      localStorage.setItem(`profile_${user.id}`, JSON.stringify(updatedProfile));
+      try {
+        // Save minimal profile data to localStorage (without large avatar)
+        const storageProfile = { ...updatedProfile, avatar: null };
+        localStorage.setItem(`${PROFILE_STORAGE_PREFIX}${user.id}`, JSON.stringify(storageProfile));
+      } catch (storageError) {
+        console.warn('Failed to save profile to localStorage:', storageError);
+        // Continue execution - localStorage is just a backup
+      }
       
       // Save to Supabase for persistence
       // Use a timeout to ensure UI updates first, then handle the async operation
       setTimeout(() => {
-        saveProfileToSupabase(updatedProfile)
+        // If we have an avatar URL, restore it for Supabase storage
+        const supabaseProfile = { ...updatedProfile };
+        if (avatarUrl) {
+          supabaseProfile.avatar = avatarUrl;
+        }
+        
+        saveProfileToSupabase(supabaseProfile)
           .then(result => {
             if (!result.success) {
               console.error('Error saving profile to Supabase:', result.error);
