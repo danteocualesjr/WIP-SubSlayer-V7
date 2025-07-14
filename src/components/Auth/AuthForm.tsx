@@ -17,25 +17,30 @@ const AuthForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);
-    setMessage(null);
+    setError(null); // Clear previous errors
+    setMessage(null); // Clear previous messages
 
     try {
       if (isSignUp) {
         const { error } = await signUp(email, password);
         if (error) {
-          setError(error.message);
+          console.error('Signup error:', error);
+          setError(error.message || 'Failed to create account. Please try again.');
         } else {
           setMessage('Account created successfully! You can now sign in.');
+          // Switch to sign in mode after successful signup
+          setTimeout(() => setIsSignUp(false), 2000);
         }
       } else {
         const { error } = await signIn(email, password);
         if (error) {
-          setError(error.message);
+          console.error('Sign in error:', error);
+          setError(error.message || 'Failed to sign in. Please check your credentials.');
         }
       }
     } catch (err) {
-      setError('An unexpected error occurred');
+      console.error('Auth error:', err);
+      setError('An unexpected error occurred. Please try again later.');
     } finally {
       setLoading(false);
     }

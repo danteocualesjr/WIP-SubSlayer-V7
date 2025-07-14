@@ -104,12 +104,12 @@ export function useAuth() {
   const signUp = async (email: string, password: string) => {
     try {
       const { data, error } = await supabase.auth.signUp({
-        email: email,
-        password: password,
+        email,
+        password,
         options: {
           emailRedirectTo: `${window.location.origin}`,
           data: {
-            email: email,
+            email,
           }
         }
       });
@@ -123,8 +123,8 @@ export function useAuth() {
   const signIn = async (email: string, password: string) => {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+        email: email.trim(),
+        password: password.trim(),
       });
       return { data, error };
     } catch (error) {
