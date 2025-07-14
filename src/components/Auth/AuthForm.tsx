@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff, Mail, Lock, ArrowRight, Sword } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, ArrowRight, Sword, AlertTriangle, CheckCircle } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { SparklesCore } from '../ui/sparkles';
 
@@ -10,7 +10,9 @@ const AuthForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
+  const [message, setMessage] = useState<{text: string, type: 'success' | 'info' | 'warning' | 'error'} | null>(null);
+  const [showResendConfirmation, setShowResendConfirmation] = useState(false);
+  const [resendEmail, setResendEmail] = useState('');
 
   const { signUp, signIn, signInWithGoogle } = useAuth();
 
@@ -26,16 +28,70 @@ const AuthForm: React.FC = () => {
         if (error) {
           setError(error.message);
         } else {
-          setMessage('Check your email for the confirmation link!');
+          setMessage({
+            text: 'Check your email for the confirmation link! You need to confirm your email before you can sign in.',
+            type: 'success'
+          });
+          setShowResendConfirmation(true);
         }
       } else {
         const { error } = await signIn(email, password);
         if (error) {
-          setError(error.message);
+          // Check if the error is about email confirmation
+          if (error.message?.includes('Email not confirmed')) {
+            setMessage({
+              text: 'Please confirm your email address before signing in. Check your inbox for a confirmation link.',
+              type: 'warning'
+            });
+            setShowResendConfirmation(true);
+            setResendEmail(email);
+          } else {
+            setError(error.message);
+          }
         }
       }
     } catch (err) {
       setError('An unexpected error occurred');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResendConfirmation = async () => {
+    setLoading(true);
+    setError(null);
+    setMessage(null);
+    
+    try {
+      const emailToResend = resendEmail || email;
+      
+      if (!emailToResend) {
+        setError('Please enter your email address');
+        setLoading(false);
+        return;
+      }
+      
+      // Call the resend confirmation endpoint
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/resend-confirmation`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: emailToResend }),
+      });
+      
+      const data = await response.json();
+      
+      if (data.error) {
+        setError(data.error);
+      } else {
+        setMessage({
+          text: 'Confirmation email has been resent. Please check your inbox.',
+          type: 'success'
+        });
+      }
+    } catch (err) {
+      setError('An unexpected error occurred while resending the confirmation email');
     } finally {
       setLoading(false);
     }
@@ -200,14 +256,61 @@ const AuthForm: React.FC = () => {
             </div>
 
             {/* Error/Success Messages */}
-            {error && (
+            {error && !message && (
               <div className="bg-red-500/20 border border-red-400/30 rounded-2xl p-4 backdrop-blur-sm">
-                <p className="text-red-200 text-sm">{error}</p>
+                <div className="flex items-start space-x-3">
+                  <AlertTriangle className="w-5 h-5 text-red-200 flex-shrink-0 mt-0.5" />
+                  <p className="text-red-200 text-sm">{error}</p>
+                </div>
               </div>
             )}
             {message && (
-              <div className="bg-green-500/20 border border-green-400/30 rounded-2xl p-4 backdrop-blur-sm">
-                <p className="text-green-200 text-sm">{message}</p>
+              <div className={`${
+                message.type === 'success' ? 'bg-green-500/20 border-green-400/30 text-green-200' :
+                message.type === 'warning' ? 'bg-yellow-500/20 border-yellow-400/30 text-yellow-200' :
+                message.type === 'error' ? 'bg-red-500/20 border-red-400/30 text-red-200' :
+                'bg-blue-500/20 border-blue-400/30 text-blue-200'
+              } border rounded-2xl p-4 backdrop-blur-sm`}>
+                <div className="flex items-start space-x-3">
+                  {message.type === 'success' && <CheckCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />}
+                  {message.type === 'warning' && <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" />}
+                  {message.type === 'error' && <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" />}
+                  {message.type === 'info' && <Mail className="w-5 h-5 flex-shrink-0 mt-0.5" />}
+                  <p className="text-sm">{message.text}</p>
+                </div>
+              </div>
+            )}
+
+            {/* Resend Confirmation Section */}
+            {showResendConfirmation && (
+              <div className="bg-blue-500/20 border border-blue-400/30 rounded-2xl p-4 backdrop-blur-sm">
+                <h4 className="text-blue-200 font-medium mb-2">Didn't receive the confirmation email?</h4>
+                {!resendEmail && (
+                  <div className="mb-3">
+                    <input
+                      type="email"
+                      value={resendEmail || email}
+                      onChange={(e) => setResendEmail(e.target.value)}
+                      className="w-full px-3 py-2 bg-white/15 rounded-xl text-white placeholder-white/60 focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300 border-0 outline-none mb-2"
+                      placeholder="Confirm your email address"
+                    />
+                  </div>
+                )}
+                <button
+                  type="button"
+                  onClick={handleResendConfirmation}
+                  disabled={loading}
+                  className="w-full bg-blue-600/50 hover:bg-blue-600/70 text-white py-2 rounded-xl font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                >
+                  {loading ? (
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  ) : (
+                    <>
+                      <Mail className="w-4 h-4" />
+                      <span>Resend Confirmation Email</span>
+                    </>
+                  )}
+                </button>
               </div>
             )}
 
@@ -229,7 +332,7 @@ const AuthForm: React.FC = () => {
           </form>
 
           {/* Toggle Form */}
-          <div className="text-center">
+          <div className="text-center mt-4">
             <span className="text-white/60">
               {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
             </span>
@@ -237,7 +340,8 @@ const AuthForm: React.FC = () => {
               onClick={() => {
                 setIsSignUp(!isSignUp);
                 setError(null);
-                setMessage(null);
+                setMessage(null); 
+                setShowResendConfirmation(false);
               }}
               className="text-white hover:text-white/80 transition-colors font-medium underline"
             >

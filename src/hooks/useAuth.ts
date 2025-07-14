@@ -104,8 +104,11 @@ export function useAuth() {
   const signUp = async (email: string, password: string) => {
     try {
       const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
+        email: email.trim(),
+        password: password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/confirm`,
+        }
       });
       return { data, error };
     } catch (error) {
@@ -117,9 +120,18 @@ export function useAuth() {
   const signIn = async (email: string, password: string) => {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+        email: email.trim(),
+        password: password,
       });
+      
+      // Check if email is confirmed
+      if (data?.user && !data.user.email_confirmed_at) {
+        return { 
+          data: null, 
+          error: { message: 'Email not confirmed. Please check your inbox for a confirmation link.' } 
+        };
+      }
+      
       return { data, error };
     } catch (error) {
       console.error('Sign in error:', error);
