@@ -14,6 +14,7 @@ const stripe = new Stripe(stripeSecret, {
 });
 
 // Helper function to create responses with CORS headers
+
 function corsResponse(body: string | object | null, status = 200) {
   const headers = {
     'Access-Control-Allow-Origin': '*',
