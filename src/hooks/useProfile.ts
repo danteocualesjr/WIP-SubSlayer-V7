@@ -206,6 +206,7 @@ export function useProfile() {
         const { data, error } = await supabase.storage
           .from('profiles')
           .upload(filePath, profileData.avatar);
+      }
       
       // Simple approach - just insert/update directly
       const { error } = await supabase
