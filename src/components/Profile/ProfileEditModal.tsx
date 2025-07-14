@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { X, Camera, Upload, User, Mail, MapPin, Globe, Save } from 'lucide-react';
+import { supabase } from '../../lib/supabase';
 
 interface ProfileEditModalProps {
   isOpen: boolean;
@@ -29,7 +30,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     bio: '',
     location: '',
     website: '',
-   avatar: null as File | null | string,
+    avatar: null as File | null,
     avatarPreview: null as string | null,
   });
 
@@ -45,7 +46,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         bio: currentProfile.bio || '',
         location: currentProfile.location || '',
         website: currentProfile.website || '',
-        avatar: null as File | null | string,
+        avatar: null,
         avatarPreview: currentProfile.avatar || null,
       });
       setUploadError(null);
@@ -55,7 +56,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     setUploadError(null);
-    
+
     if (!file) return;
 
     // Validate file type
@@ -64,11 +65,11 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       setUploadError('Please select a valid image file (JPG, PNG, GIF, or WebP)');
       return;
     }
-    
+
     // Validate file size (max 5MB)
-    const maxSize = 2 * 1024 * 1024; // Reduced to 2MB to avoid storage issues
+    const maxSize = 1 * 1024 * 1024; // Reduced to 1MB to avoid storage issues
     if (file.size > maxSize) {
-      setUploadError('File size must be less than 2MB');
+      setUploadError('File size must be less than 1MB');
       return;
     }
 
@@ -102,81 +103,39 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     }
   };
 
-  const convertFileToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      
-      reader.onload = () => {
-        if (typeof reader.result === 'string') {
-          // Resize image before resolving
-          const img = new Image();
-          img.onload = () => {
-            const canvas = document.createElement('canvas');
-            let width = img.width;
-            let height = img.height;
-            
-            // Calculate new dimensions (max 800px width/height)
-            const maxDimension = 800;
-            if (width > height && width > maxDimension) {
-              height = Math.round(height * (maxDimension / width));
-              width = maxDimension;
-            } else if (height > maxDimension) {
-              width = Math.round(width * (maxDimension / height));
-              height = maxDimension;
-            }
-            
-            canvas.width = width;
-            canvas.height = height;
-            
-            // Draw resized image to canvas
-            const ctx = canvas.getContext('2d');
-            if (!ctx) {
-              reject(new Error('Could not get canvas context'));
-              return;
-            }
-            
-            ctx.drawImage(img, 0, 0, width, height);
-            
-            // Get compressed image data
-            const quality = 0.8; // 80% quality
-            const dataUrl = canvas.toDataURL(file.type, quality);
-            resolve(dataUrl);
-          };
-          
-          img.onerror = () => {
-            reject(new Error('Failed to load image'));
-          };
-          
-          img.src = reader.result;
-        } else {
-          reject(new Error('Failed to convert file to base64'));
-        }
-      };
-      
-      reader.onerror = () => reject(new Error('Failed to read file'));
-      reader.readAsDataURL(file);
-    });
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setUploadError(null);
-    
+
     try {
-      let avatarData = profileData.avatarPreview;
-      
-      // Convert file to base64 if a new file was selected
-     if (profileData.avatar instanceof File) {
-        try {
-          avatarData = await convertFileToBase64(profileData.avatar);
-        } catch (error) {
-          setUploadError('Failed to process image. Please try again.');
+      let avatarUrl = profileData.avatarPreview;
+
+      // Upload file to Supabase Storage if a new file was selected
+      if (profileData.avatar instanceof File) {
+        const fileExt = profileData.avatar.name.split('.').pop();
+        const fileName = `${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
+        const filePath = `avatars/${fileName}`;
+
+        const { data, error } = await supabase.storage
+          .from('profiles')
+          .upload(filePath, profileData.avatar);
+
+        if (error) {
+          console.error('Error uploading avatar:', error);
+          setUploadError('Failed to upload image. Please try again.');
           setLoading(false);
           return;
         }
+
+        // Get public URL
+        const { data: { publicUrl } } = supabase.storage
+          .from('profiles')
+          .getPublicUrl(filePath);
+
+        avatarUrl = publicUrl;
       }
-      
+
       // Prepare data for saving
       const dataToSave = {
         displayName: profileData.displayName,
@@ -184,14 +143,13 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         bio: profileData.bio,
         location: profileData.location,
         website: profileData.website,
-        avatarPreview: avatarData
+        avatar: avatarUrl
       };
-      
-      const result = await onSave(dataToSave);
-      
-      if (result && result.success) {
+
+      onSave(dataToSave);
+      setTimeout(() => {
         onClose();
-        
+
         // Show success message
         const successMessage = document.createElement('div');
         successMessage.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-[10000] flex items-center space-x-2';
@@ -208,9 +166,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
             document.body.removeChild(successMessage);
           }
         }, 3000);
-      } else {
-        setUploadError(result?.error || 'Failed to save profile. Please try again.');
-      }
+      }, 500);
     } catch (error) {
       console.error('Error saving profile:', error);
       setUploadError('Failed to save profile. Please try again.');
@@ -386,7 +342,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
               </div>
               
               <p className="text-xs text-gray-500">
-                JPG, PNG, GIF or WebP. Max size 2MB.
+                JPG, PNG, GIF or WebP. Max size 1MB.
               </p>
               
               {uploadError && (
