@@ -188,6 +188,25 @@ export function useProfile() {
     if (!user) return { success: false, error: 'User not authenticated' };
     
     try {
+      // Upload file to Supabase Storage if a new file was selected
+      if (profileData.avatar instanceof File) {
+        const fileExt = profileData.avatar.name.split('.').pop() || 'jpg';
+        const fileName = `${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
+        const filePath = `avatars/${fileName}`;
+
+        // Create the bucket if it doesn't exist
+        const { data: bucketData, error: bucketError } = await supabase.storage.getBucket('profiles');
+        if (bucketError && bucketError.message.includes('not found')) {
+          await supabase.storage.createBucket('profiles', {
+            public: true,
+            fileSizeLimit: 5 * 1024 * 1024, // 5MB
+          });
+        }
+
+        const { data, error } = await supabase.storage
+          .from('profiles')
+          .upload(filePath, profileData.avatar);
+      
       // Simple approach - just insert/update directly
       const { error } = await supabase
         .from('user_profiles')
