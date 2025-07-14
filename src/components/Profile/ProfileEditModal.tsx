@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { X, Camera, Upload, User, Mail, MapPin, Globe, Save } from 'lucide-react';
-import { supabase } from '../../lib/supabase';
 
 interface ProfileEditModalProps {
   isOpen: boolean;
@@ -30,8 +29,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     bio: '',
     location: '',
     website: '',
-    avatar: null as File | null,
-    avatarPreview: null as string | null,
+   avatar: '' as string,
   });
 
   const [loading, setLoading] = useState(false);
@@ -46,8 +44,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         bio: currentProfile.bio || '',
         location: currentProfile.location || '',
         website: currentProfile.website || '',
-        avatar: null,
-        avatarPreview: currentProfile.avatar || null,
+       avatar: currentProfile.avatar || '',
       });
       setUploadError(null);
     }
@@ -66,26 +63,26 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       return;
     }
 
-    // Validate file size (max 5MB)
-    const maxSize = 10 * 1024 * 1024; // 10MB
+   // Validate file size (max 2MB)
+   const maxSize = 2 * 1024 * 1024; // 2MB
     if (file.size > maxSize) {
-      setUploadError('File size must be less than 10MB');
+     setUploadError('File size must be less than 2MB');
       return;
     }
 
-    // Clean up previous preview URL if it exists
-    if (profileData.avatarPreview && profileData.avatarPreview.startsWith('blob:')) {
-      URL.revokeObjectURL(profileData.avatarPreview);
-    }
-
-    // Create preview URL
-    const previewUrl = URL.createObjectURL(file);
-    
-    setProfileData(prev => ({
-      ...prev,
-      avatar: file,
-      avatarPreview: previewUrl
-    }));
+   // Convert file to base64 string
+   const reader = new FileReader();
+   reader.onload = (e) => {
+     const base64String = e.target?.result as string;
+     setProfileData(prev => ({
+       ...prev,
+       avatar: base64String
+     }));
+   };
+   reader.onerror = () => {
+     setUploadError('Failed to read the file. Please try again.');
+   };
+   reader.readAsDataURL(file);
 
     // Clear the input value so the same file can be selected again if needed
     if (event.target) {
@@ -109,33 +106,6 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     setUploadError(null);
 
     try {
-      let avatarUrl = profileData.avatarPreview;
-
-      // Upload file to Supabase Storage if a new file was selected
-      if (profileData.avatar instanceof File) {
-        const fileExt = profileData.avatar.name.split('.').pop();
-        const fileName = `${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
-        const filePath = `avatars/${fileName}`;
-
-        const { data, error } = await supabase.storage
-          .from('profiles')
-          .upload(filePath, profileData.avatar);
-
-        if (error) {
-          console.error('Error uploading avatar:', error);
-          setUploadError('Failed to upload image. Please try again.');
-          setLoading(false);
-          return;
-        }
-
-        // Get public URL
-        const { data: { publicUrl } } = supabase.storage
-          .from('profiles')
-          .getPublicUrl(filePath);
-
-        avatarUrl = publicUrl;
-      }
-
       // Prepare data for saving
       const dataToSave = {
         displayName: profileData.displayName,
@@ -143,7 +113,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         bio: profileData.bio,
         location: profileData.location,
         website: profileData.website,
-        avatar: avatarUrl
+       avatar: profileData.avatar
       };
 
       onSave(dataToSave);
@@ -239,27 +209,13 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   };
 
   const handleRemovePhoto = () => {
-    // Clean up preview URL if it exists
-    if (profileData.avatarPreview && profileData.avatarPreview.startsWith('blob:')) {
-      URL.revokeObjectURL(profileData.avatarPreview);
-    }
-    
     setProfileData(prev => ({
       ...prev,
-      avatar: null,
-      avatarPreview: null
+     avatar: ''
     }));
     setUploadError(null);
   };
 
-  // Clean up object URLs when component unmounts or modal closes
-  useEffect(() => {
-    return () => {
-      if (profileData.avatarPreview && profileData.avatarPreview.startsWith('blob:')) {
-        URL.revokeObjectURL(profileData.avatarPreview);
-      }
-    };
-  }, [profileData.avatarPreview]);
 
   if (!isOpen) return null;
 
@@ -288,9 +244,9 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
           <div className="flex flex-col items-center space-y-4">
             <div className="relative">
               <div className="w-24 h-24 rounded-full overflow-hidden bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center border-4 border-white shadow-lg">
-                {profileData.avatarPreview ? (
+               {profileData.avatar ? (
                   <img 
-                    src={profileData.avatarPreview} 
+                   src={profileData.avatar} 
                     alt="Profile Preview" 
                     className="w-full h-full object-cover"
                   />
@@ -330,7 +286,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                   <span>Upload new photo</span>
                 </button>
                 
-                {profileData.avatarPreview && (
+               {profileData.avatar && (
                   <button
                     type="button"
                     onClick={handleRemovePhoto}
@@ -342,7 +298,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
               </div>
               
               <p className="text-xs text-gray-500 mb-1">
-                JPG, PNG, GIF or WebP. Max size 5MB.
+               JPG, PNG, GIF or WebP. Max size 2MB.
               </p>
               
               {uploadError && (

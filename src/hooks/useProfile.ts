@@ -58,79 +58,36 @@ export function useProfile() {
         joinDate: user?.created_at || new Date().toISOString(),
       });
       
-      // First try to load from Supabase
-      fetchProfileFromSupabase().then(supabaseProfile => {
-        if (supabaseProfile) {
-          setProfile(supabaseProfile);
-          
-          // Also update local storage for backup
-          localStorage.setItem(`${PROFILE_STORAGE_PREFIX}${user?.id}`, JSON.stringify(supabaseProfile));
-          return;
-        }
-      
-        // If no Supabase profile, try local storage
-        const storageKeys = [
-          `${PROFILE_STORAGE_PREFIX}${user?.id}`,
-          `profile_${user?.id}`,
-          `profile_${user?.email}`,
-        ];
-        
-        let savedProfile = null;
-        
-        // Try each storage key until we find a valid profile
-        for (const key of storageKeys) {
-          const data = localStorage.getItem(key);
-          if (data) {
-            try {
-              const parsed = JSON.parse(data);
-              if (parsed && typeof parsed === 'object') {
-                savedProfile = data;
-                console.log(`Found profile data using key: ${key}`);
-                break;
-              }
-            } catch (e) {
-              console.warn(`Failed to parse profile data for key ${key}:`, e);
-            }
-          }
-        }
-        
-        if (savedProfile) {
-          const parsedProfile = JSON.parse(savedProfile);
-          setProfile(parsedProfile);
-          
-          // Save to Supabase for persistence
-          saveProfileToSupabase(parsedProfile);
-          
-          // Migrate to the new storage key format if needed
-          if (!localStorage.getItem(`${PROFILE_STORAGE_PREFIX}${user?.id}`)) {
-            localStorage.setItem(`${PROFILE_STORAGE_PREFIX}${user?.id}`, savedProfile);
-            console.log('Migrated profile data to new storage key format');
-          }
-        } else {
-          // Initialize with user data if no saved profile
-          const displayName = user?.user_metadata?.full_name || 
-                             user?.user_metadata?.name || 
-                             user?.email?.split('@')[0] || '';
-                             
-          const newProfile = {
-            displayName: displayName,
-            email: user?.email || '',
-            bio: DEFAULT_PROFILE_BIO,
-            location: '',
-            website: '',
-            avatar: null,
-            joinDate: user?.created_at || new Date().toISOString(),
-          };
-          
-          setProfile(newProfile);
-          
-          // Save the new profile to Supabase
-          saveProfileToSupabase(newProfile);
-        }
-        
-      }).catch(error => {
-        console.error('Error in profile loading process:', error);
-      });
+     // Try to load from local storage
+     const storageKey = `${PROFILE_STORAGE_PREFIX}${user?.id}`;
+     const savedProfile = localStorage.getItem(storageKey);
+     
+     if (savedProfile) {
+       try {
+         const parsedProfile = JSON.parse(savedProfile);
+         setProfile(parsedProfile);
+       } catch (e) {
+         console.warn('Failed to parse profile data:', e);
+       }
+     } else {
+       // Initialize with user data if no saved profile
+       const displayName = user?.user_metadata?.full_name || 
+                          user?.user_metadata?.name || 
+                          user?.email?.split('@')[0] || '';
+                          
+       const newProfile = {
+         displayName: displayName,
+         email: user?.email || '',
+         bio: DEFAULT_PROFILE_BIO,
+         location: '',
+         website: '',
+         avatar: null,
+         joinDate: user?.created_at || new Date().toISOString(),
+       };
+       
+       setProfile(newProfile);
+       localStorage.setItem(storageKey, JSON.stringify(newProfile));
+     }
       
       // Always set loading to false after a short delay to ensure UI updates
       setTimeout(() => {
@@ -152,86 +109,6 @@ export function useProfile() {
     }
   };
   
-  const fetchProfileFromSupabase = async (): Promise<ProfileData | null> => {
-    if (!user) return null;
-    
-    try {
-      const { data, error } = await supabase
-        .from('user_profiles')
-        .select('*')
-        .eq('user_id', user.id)
-        .maybeSingle();
-      
-      if (error) {
-        console.warn('Error fetching profile from Supabase:', error);
-        return null;
-      }
-      
-      if (!data) return null;
-      
-      return {
-        displayName: data.display_name || '',
-        email: user.email || '',
-        bio: data.bio || DEFAULT_PROFILE_BIO,
-        location: data.location || '',
-        website: data.website || '',
-        avatar: data.avatar_url || null,
-        joinDate: data.created_at || user?.created_at || new Date().toISOString(),
-      };
-    } catch (error) {
-      console.error('Error fetching profile from Supabase:', error);
-      return null;
-    }
-  };
-  
-  const saveProfileToSupabase = async (profileData: ProfileData) => {
-    if (!user) return { success: false, error: 'User not authenticated' };
-    
-    try {
-      // Upload file to Supabase Storage if a new file was selected
-      if (profileData.avatar instanceof File) {
-        const fileExt = profileData.avatar.name.split('.').pop() || 'jpg';
-        const fileName = `${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
-        const filePath = `avatars/${fileName}`;
-
-        // Create the bucket if it doesn't exist
-        const { data: bucketData, error: bucketError } = await supabase.storage.getBucket('profiles');
-        if (bucketError && bucketError.message.includes('not found')) {
-          await supabase.storage.createBucket('profiles', {
-            public: true,
-            fileSizeLimit: 10 * 1024 * 1024, // 10MB
-          });
-        }
-
-        const { data, error } = await supabase.storage
-          .from('profiles')
-          .upload(filePath, profileData.avatar);
-      }
-      
-      // Simple approach - just insert/update directly
-      const { error } = await supabase
-        .from('user_profiles')
-        .upsert({
-          user_id: user.id,
-          display_name: profileData.displayName,
-          bio: profileData.bio || DEFAULT_PROFILE_BIO,
-          location: profileData.location || '',
-          website: profileData.website || '',
-          avatar_url: profileData.avatar || null,
-          updated_at: new Date().toISOString()
-        });
-
-      if (error) {
-        console.error('Error saving profile to Supabase:', error);
-        return { success: false, error: error.message };
-      }
-
-      return { success: true };
-    } catch (error) {
-      console.error('Error in saveProfileToSupabase:', error);
-      return { success: false, error: 'Failed to save profile' };
-    }
-  };
 
   const saveProfile = (profileData: Partial<ProfileData>) => {
     if (!user) return { success: false, error: 'User not authenticated' };
@@ -240,8 +117,8 @@ export function useProfile() {
       const updatedProfile = { ...profile, ...profileData };
       setProfile(updatedProfile);
       
-      // Save to Supabase
-      saveProfileToSupabase(updatedProfile);
+     // Save to localStorage
+     localStorage.setItem(`${PROFILE_STORAGE_PREFIX}${user.id}`, JSON.stringify(updatedProfile));
       
       return { success: true };
     } catch (error) {
