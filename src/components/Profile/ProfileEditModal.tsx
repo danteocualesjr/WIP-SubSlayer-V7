@@ -67,9 +67,9 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     }
 
     // Validate file size (max 5MB)
-    const maxSize = 5 * 1024 * 1024; // Increased to 5MB
+    const maxSize = 10 * 1024 * 1024; // 10MB
     if (file.size > maxSize) {
-      setUploadError('File size must be less than 5MB');
+      setUploadError('File size must be less than 10MB');
       return;
     }
 
@@ -429,7 +429,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
               maxLength={500}
             />
             <p className="text-xs text-gray-500 mt-1">
-              {profileData.bio.length}/500 characters
+              JPG, PNG, GIF or WebP. Max size 10MB.
             </p>
           </div>
 

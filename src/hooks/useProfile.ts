@@ -199,7 +199,7 @@ export function useProfile() {
         if (bucketError && bucketError.message.includes('not found')) {
           await supabase.storage.createBucket('profiles', {
             public: true,
-            fileSizeLimit: 5 * 1024 * 1024, // 5MB
+            fileSizeLimit: 10 * 1024 * 1024, // 10MB
           });
         }
 
