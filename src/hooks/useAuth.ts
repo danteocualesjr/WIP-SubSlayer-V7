@@ -14,7 +14,9 @@ export function useAuth() {
     try {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
-        options: {}
+        options: {
+          redirectTo: `${window.location.origin}`
+        }
       });
       
       return { data, error };
@@ -102,8 +104,8 @@ export function useAuth() {
   const signUp = async (email: string, password: string) => {
     try {
       const { data, error } = await supabase.auth.signUp({
-        email: email.trim().toLowerCase(),
-        password: password
+        email,
+        password,
       });
       return { data, error };
     } catch (error) {
@@ -115,10 +117,9 @@ export function useAuth() {
   const signIn = async (email: string, password: string) => {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: email.trim().toLowerCase(),
-        password: password
+        email,
+        password,
       });
-      
       return { data, error };
     } catch (error) {
       console.error('Sign in error:', error);

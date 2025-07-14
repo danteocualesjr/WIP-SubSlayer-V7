@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff, Mail, Lock, ArrowRight, Sword, AlertTriangle, CheckCircle } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, ArrowRight, Sword } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { SparklesCore } from '../ui/sparkles';
 
@@ -10,39 +10,28 @@ const AuthForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [message, setMessage] = useState<{text: string, type: 'success' | 'info' | 'warning' | 'error'} | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
 
   const { signUp, signIn, signInWithGoogle } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError(null); 
-    setMessage(null); 
+    setError(null);
+    setMessage(null);
 
     try {
       if (isSignUp) {
         const { error } = await signUp(email, password);
         if (error) {
-          if (error.message?.includes('Database error')) {
-            setError('Unable to create account. Please try again later or contact support.');
-          } else if (error.message?.includes('User already registered')) {
-            setError('An account with this email already exists. Please sign in instead.');
-          } else {
-            setError(error.message);
-          }
+          setError(error.message);
         } else {
-          setMessage({
-            text: 'Account created successfully! You can now sign in.',
-            type: 'success'
-          });
-          // Switch to sign in mode after successful signup
-          setIsSignUp(false);
+          setMessage('Check your email for the confirmation link!');
         }
       } else {
         const { error } = await signIn(email, password);
         if (error) {
-          setError(error.message || 'Invalid login credentials');
+          setError(error.message);
         }
       }
     } catch (err) {
@@ -211,28 +200,14 @@ const AuthForm: React.FC = () => {
             </div>
 
             {/* Error/Success Messages */}
-            {error && !message && (
+            {error && (
               <div className="bg-red-500/20 border border-red-400/30 rounded-2xl p-4 backdrop-blur-sm">
-                <div className="flex items-start space-x-3">
-                  <AlertTriangle className="w-5 h-5 text-red-200 flex-shrink-0 mt-0.5" />
-                  <p className="text-red-200 text-sm">{error}</p>
-                </div>
+                <p className="text-red-200 text-sm">{error}</p>
               </div>
             )}
             {message && (
-              <div className={`${
-                message.type === 'success' ? 'bg-green-500/20 border-green-400/30 text-green-200' :
-                message.type === 'warning' ? 'bg-yellow-500/20 border-yellow-400/30 text-yellow-200' :
-                message.type === 'error' ? 'bg-red-500/20 border-red-400/30 text-red-200' :
-                'bg-blue-500/20 border-blue-400/30 text-blue-200'
-              } border rounded-2xl p-4 backdrop-blur-sm`}>
-                <div className="flex items-start space-x-3">
-                  {message.type === 'success' && <CheckCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />}
-                  {message.type === 'warning' && <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" />}
-                  {message.type === 'error' && <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" />}
-                  {message.type === 'info' && <Mail className="w-5 h-5 flex-shrink-0 mt-0.5" />}
-                  <p className="text-sm">{message.text}</p>
-                </div>
+              <div className="bg-green-500/20 border border-green-400/30 rounded-2xl p-4 backdrop-blur-sm">
+                <p className="text-green-200 text-sm">{message}</p>
               </div>
             )}
 
@@ -254,7 +229,7 @@ const AuthForm: React.FC = () => {
           </form>
 
           {/* Toggle Form */}
-          <div className="text-center mt-4">
+          <div className="text-center">
             <span className="text-white/60">
               {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
             </span>
@@ -262,8 +237,7 @@ const AuthForm: React.FC = () => {
               onClick={() => {
                 setIsSignUp(!isSignUp);
                 setError(null);
-                setMessage(null); 
-                setShowResendConfirmation(false);
+                setMessage(null);
               }}
               className="text-white hover:text-white/80 transition-colors font-medium underline"
             >
