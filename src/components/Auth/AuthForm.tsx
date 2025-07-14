@@ -26,7 +26,7 @@ const AuthForm: React.FC = () => {
         if (error) {
           setError(error.message);
         } else {
-          setMessage('Check your email for the confirmation link!');
+          setMessage('Account created successfully! You can now sign in.');
         }
       } else {
         const { error } = await signIn(email, password);
@@ -103,10 +103,10 @@ const AuthForm: React.FC = () => {
           </button>
           
           <h1 className="text-4xl font-bold text-white mb-3">
-            Welcome back
+            {isSignUp ? 'Create account' : 'Welcome back'}
           </h1>
           <p className="text-white/80 text-lg">
-            Sign in to your account
+            {isSignUp ? 'Sign up for a new account' : 'Sign in to your account'}
           </p>
         </div>
 
