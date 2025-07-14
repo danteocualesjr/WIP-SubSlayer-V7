@@ -66,9 +66,9 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     }
     
     // Validate file size (max 5MB)
-    const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+    const maxSize = 2 * 1024 * 1024; // Reduced to 2MB to avoid storage issues
     if (file.size > maxSize) {
-      setUploadError('File size must be less than 5MB');
+      setUploadError('File size must be less than 2MB');
       return;
     }
 
@@ -105,13 +105,54 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   const convertFileToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
+      
       reader.onload = () => {
         if (typeof reader.result === 'string') {
-          resolve(reader.result);
+          // Resize image before resolving
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let width = img.width;
+            let height = img.height;
+            
+            // Calculate new dimensions (max 800px width/height)
+            const maxDimension = 800;
+            if (width > height && width > maxDimension) {
+              height = Math.round(height * (maxDimension / width));
+              width = maxDimension;
+            } else if (height > maxDimension) {
+              width = Math.round(width * (maxDimension / height));
+              height = maxDimension;
+            }
+            
+            canvas.width = width;
+            canvas.height = height;
+            
+            // Draw resized image to canvas
+            const ctx = canvas.getContext('2d');
+            if (!ctx) {
+              reject(new Error('Could not get canvas context'));
+              return;
+            }
+            
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            // Get compressed image data
+            const quality = 0.8; // 80% quality
+            const dataUrl = canvas.toDataURL(file.type, quality);
+            resolve(dataUrl);
+          };
+          
+          img.onerror = () => {
+            reject(new Error('Failed to load image'));
+          };
+          
+          img.src = reader.result;
         } else {
           reject(new Error('Failed to convert file to base64'));
         }
       };
+      
       reader.onerror = () => reject(new Error('Failed to read file'));
       reader.readAsDataURL(file);
     });
@@ -345,7 +386,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
               </div>
               
               <p className="text-xs text-gray-500">
-                JPG, PNG, GIF or WebP. Max size 5MB.
+                JPG, PNG, GIF or WebP. Max size 2MB.
               </p>
               
               {uploadError && (
