@@ -60,6 +60,7 @@ Deno.serve(async (req) => {
     );
 
     if (error) {
+      
       return corsResponse({ error }, 400);
     }
 
