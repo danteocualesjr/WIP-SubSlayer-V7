@@ -60,16 +60,16 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     if (!file) return;
 
     // Validate file type
-    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml', 'image/bmp', 'image/tiff'];
     if (!validTypes.includes(file.type)) {
-      setUploadError('Please select a valid image file (JPG, PNG, GIF, or WebP)');
+      setUploadError('Please select a valid image file (JPG, PNG, GIF, WebP, etc.)');
       return;
     }
 
     // Validate file size (max 5MB)
-    const maxSize = 1 * 1024 * 1024; // Reduced to 1MB to avoid storage issues
+    const maxSize = 5 * 1024 * 1024; // Increased to 5MB
     if (file.size > maxSize) {
-      setUploadError('File size must be less than 1MB');
+      setUploadError('File size must be less than 5MB');
       return;
     }
 
@@ -313,7 +313,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
             <input
               ref={fileInputRef}
               type="file"
-              accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+              accept="image/*"
               onChange={handleFileSelect}
               className="hidden"
               multiple={false}
@@ -341,8 +341,8 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 )}
               </div>
               
-              <p className="text-xs text-gray-500">
-                JPG, PNG, GIF or WebP. Max size 1MB.
+              <p className="text-xs text-gray-500 mb-1">
+                JPG, PNG, GIF or WebP. Max size 5MB.
               </p>
               
               {uploadError && (
