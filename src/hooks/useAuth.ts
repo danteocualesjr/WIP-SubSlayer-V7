@@ -103,10 +103,7 @@ export function useAuth() {
     try {
       const { data, error } = await supabase.auth.signUp({
         email: email.trim().toLowerCase(),
-        password: password,
-        options: {
-          emailRedirectTo: `${window.location.origin}`,
-        }
+        password: password
       });
       return { data, error };
     } catch (error) {
@@ -119,16 +116,8 @@ export function useAuth() {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email: email.trim().toLowerCase(),
-        password: password,
+        password: password
       });
-      
-      // Check if email is confirmed
-      if (data?.user && !data.user.email_confirmed_at) {
-        return { 
-          data: null, 
-          error: { message: 'Email not confirmed. Please check your inbox for a confirmation link.' } 
-        };
-      }
       
       return { data, error };
     } catch (error) {

@@ -11,8 +11,6 @@ const AuthForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<{text: string, type: 'success' | 'info' | 'warning' | 'error'} | null>(null);
-  const [showResendConfirmation, setShowResendConfirmation] = useState(false);
-  const [resendEmail, setResendEmail] = useState('');
 
   const { signUp, signIn, signInWithGoogle } = useAuth();
 
@@ -28,74 +26,27 @@ const AuthForm: React.FC = () => {
         if (error) {
           if (error.message?.includes('Database error')) {
             setError('Unable to create account. Please try again later or contact support.');
+          } else if (error.message?.includes('User already registered')) {
+            setError('An account with this email already exists. Please sign in instead.');
           } else {
             setError(error.message);
           }
         } else {
           setMessage({
-            text: 'Check your email for the confirmation link! You need to confirm your email before you can sign in.',
+            text: 'Account created successfully! You can now sign in.',
             type: 'success'
           });
-          setShowResendConfirmation(true);
+          // Switch to sign in mode after successful signup
+          setIsSignUp(false);
         }
       } else {
         const { error } = await signIn(email, password);
         if (error) {
-          // Check if the error is about email confirmation or invalid credentials
-          if (error.message?.includes('Email not confirmed') || error.message?.includes('Invalid login credentials')) {
-            setMessage({
-              text: 'Please check your email and password. If you haven\'t confirmed your email yet, check your inbox for a confirmation link.',
-              type: 'warning'
-            });
-            setShowResendConfirmation(true);
-            setResendEmail(email);
-          } else {
-            setError(error.message);
-          }
+          setError(error.message || 'Invalid login credentials');
         }
       }
     } catch (err) {
       setError('An unexpected error occurred');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleResendConfirmation = async () => {
-    setLoading(true);
-    setError(null);
-    setMessage(null);
-    
-    try {
-      const emailToResend = resendEmail || email;
-      
-      if (!emailToResend) {
-        setError('Please enter your email address');
-        setLoading(false);
-        return;
-      }
-      
-      // Call the resend confirmation endpoint
-      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/resend-confirmation`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email: emailToResend }),
-      });
-      
-      const data = await response.json();
-      
-      if (data.error) {
-        setError(data.error);
-      } else {
-        setMessage({
-          text: 'Confirmation email has been resent. Please check your inbox.',
-          type: 'success'
-        });
-      }
-    } catch (err) {
-      setError('An unexpected error occurred while resending the confirmation email');
     } finally {
       setLoading(false);
     }
@@ -282,39 +233,6 @@ const AuthForm: React.FC = () => {
                   {message.type === 'info' && <Mail className="w-5 h-5 flex-shrink-0 mt-0.5" />}
                   <p className="text-sm">{message.text}</p>
                 </div>
-              </div>
-            )}
-
-            {/* Resend Confirmation Section */}
-            {showResendConfirmation && (
-              <div className="bg-blue-500/20 border border-blue-400/30 rounded-2xl p-4 backdrop-blur-sm">
-                <h4 className="text-blue-200 font-medium mb-2">Didn't receive the confirmation email?</h4>
-                {!resendEmail && (
-                  <div className="mb-3">
-                    <input
-                      type="email"
-                      value={resendEmail || email}
-                      onChange={(e) => setResendEmail(e.target.value)}
-                      className="w-full px-3 py-2 bg-white/15 rounded-xl text-white placeholder-white/60 focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300 border-0 outline-none mb-2"
-                      placeholder="Confirm your email address"
-                    />
-                  </div>
-                )}
-                <button
-                  type="button"
-                  onClick={handleResendConfirmation}
-                  disabled={loading}
-                  className="w-full bg-blue-600/50 hover:bg-blue-600/70 text-white py-2 rounded-xl font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
-                >
-                  {loading ? (
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  ) : (
-                    <>
-                      <Mail className="w-4 h-4" />
-                      <span>Resend Confirmation Email</span>
-                    </>
-                  )}
-                </button>
               </div>
             )}
 

@@ -11,7 +11,6 @@ import Profile from './components/Profile/Profile';
 import Pricing from './components/Pricing/Pricing';
 import SwordiePage from './components/Swordie/SwordiePage';
 import AuthForm from './components/Auth/AuthForm';
-import EmailConfirmation from './components/Auth/EmailConfirmation';
 import LandingPage from './components/Landing/LandingPage';
 import SuccessPage from './components/Success/SuccessPage';
 import ChatbotWidget from './components/Chatbot/ChatbotWidget';
@@ -45,7 +44,6 @@ function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showAuthForm, setShowAuthForm] = useState(false);
   const [showSuccessPage, setShowSuccessPage] = useState(false);
-  const [showEmailConfirmation, setShowEmailConfirmation] = useState(false);
 
   // Check for success page on mount
   useEffect(() => {
@@ -54,14 +52,6 @@ function App() {
       setShowSuccessPage(true);
       // Clean up URL
       window.history.replaceState({}, document.title, '/');
-    }
-  }, []);
-
-  // Check for email confirmation on mount
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    if (window.location.pathname === '/confirm' || urlParams.get('token')) {
-      setShowEmailConfirmation(true);
     }
   }, []);
 
@@ -90,10 +80,6 @@ function App() {
 
   const handleSuccessPageClose = useCallback(() => {
     setShowSuccessPage(false);
-  }, []);
-
-  const handleConfirmationComplete = useCallback(() => {
-    setShowEmailConfirmation(false);
   }, []);
 
   // Update category data based on current subscriptions
@@ -293,11 +279,6 @@ function App() {
   // Show success page if requested
   if (showSuccessPage && user) {
     return <SuccessPage />;
-  }
-
-  // Show email confirmation page if requested
-  if (showEmailConfirmation) {
-    return <EmailConfirmation onComplete={handleConfirmationComplete} />;
   }
 
   // Show landing page if not authenticated and not showing auth form
