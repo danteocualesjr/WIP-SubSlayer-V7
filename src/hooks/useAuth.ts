@@ -14,9 +14,7 @@ export function useAuth() {
     try {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}`
-        }
+        options: {}
       });
       
       return { data, error };
@@ -104,10 +102,10 @@ export function useAuth() {
   const signUp = async (email: string, password: string) => {
     try {
       const { data, error } = await supabase.auth.signUp({
-        email: email.trim(),
+        email: email.trim().toLowerCase(),
         password: password,
         options: {
-          emailRedirectTo: `${window.location.origin}/confirm`,
+          emailRedirectTo: `${window.location.origin}`,
         }
       });
       return { data, error };
@@ -120,7 +118,7 @@ export function useAuth() {
   const signIn = async (email: string, password: string) => {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
+        email: email.trim().toLowerCase(),
         password: password,
       });
       

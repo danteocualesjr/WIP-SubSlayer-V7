@@ -19,14 +19,18 @@ const AuthForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);
-    setMessage(null);
+    setError(null); 
+    setMessage(null); 
 
     try {
       if (isSignUp) {
         const { error } = await signUp(email, password);
         if (error) {
-          setError(error.message);
+          if (error.message?.includes('Database error')) {
+            setError('Unable to create account. Please try again later or contact support.');
+          } else {
+            setError(error.message);
+          }
         } else {
           setMessage({
             text: 'Check your email for the confirmation link! You need to confirm your email before you can sign in.',
@@ -37,10 +41,10 @@ const AuthForm: React.FC = () => {
       } else {
         const { error } = await signIn(email, password);
         if (error) {
-          // Check if the error is about email confirmation
-          if (error.message?.includes('Email not confirmed')) {
+          // Check if the error is about email confirmation or invalid credentials
+          if (error.message?.includes('Email not confirmed') || error.message?.includes('Invalid login credentials')) {
             setMessage({
-              text: 'Please confirm your email address before signing in. Check your inbox for a confirmation link.',
+              text: 'Please check your email and password. If you haven\'t confirmed your email yet, check your inbox for a confirmation link.',
               type: 'warning'
             });
             setShowResendConfirmation(true);
