@@ -43,14 +43,15 @@ Deno.serve(async (req) => {
     const senderEmail = Deno.env.get('SENDER_EMAIL');
 
     if (!sendgridApiKey || !senderEmail) {
+      console.warn('SendGrid not configured - skipping welcome email');
       return new Response(JSON.stringify({ 
-        error: 'SendGrid API key or sender email not configured in Supabase secrets.',
+        message: 'Welcome email skipped - SendGrid not configured',
         missing: {
           sendgridApiKey: !sendgridApiKey,
           senderEmail: !senderEmail
         }
       }), {
-        status: 500,
+        status: 200,
         headers: { 
           'Content-Type': 'application/json',
           ...corsHeaders
@@ -120,6 +121,7 @@ Deno.serve(async (req) => {
 
     try {
       await sgMail.send(msg);
+      console.log('Welcome email sent successfully to:', email);
       return new Response(JSON.stringify({ message: 'Welcome email sent successfully' }), {
         status: 200,
         headers: { 
@@ -130,12 +132,13 @@ Deno.serve(async (req) => {
     } catch (sendError) {
       console.error('SendGrid error:', sendError);
       
+      // Don't fail the signup process if email sending fails
       return new Response(JSON.stringify({ 
-        error: 'Failed to send email via SendGrid',
+        message: 'User created successfully, but welcome email failed to send',
         details: sendError.message,
         response: sendError.response?.body || null
       }), {
-        status: 500,
+        status: 200,
         headers: { 
           'Content-Type': 'application/json',
           ...corsHeaders
@@ -145,15 +148,16 @@ Deno.serve(async (req) => {
   } catch (error) {
     console.error('Error sending welcome email:', error);
     
+    // Don't fail the signup process if there's an unexpected error
     return new Response(JSON.stringify({ 
-      error: error.message,
+      message: 'User created successfully, but welcome email encountered an error',
       details: {
         message: error.message,
         stack: error.stack,
         name: error.name
       }
     }), {
-      status: 500,
+      status: 200,
       headers: { 
         'Content-Type': 'application/json',
         ...corsHeaders
