@@ -62,6 +62,7 @@ Deno.serve(async (req) => {
     if (error) {
       
       return corsResponse({ error }, 400);
+      
     }
 
     const authHeader = req.headers.get('Authorization')!;
