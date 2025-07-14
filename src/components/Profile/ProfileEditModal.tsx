@@ -29,7 +29,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     bio: '',
     location: '',
     website: '',
-    avatar: null as File | null,
+   avatar: null as File | null | string,
     avatarPreview: null as string | null,
   });
 
@@ -126,7 +126,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       let avatarData = profileData.avatarPreview;
       
       // Convert file to base64 if a new file was selected
-      if (profileData.avatar) {
+     if (profileData.avatar && profileData.avatar instanceof File) {
         try {
           avatarData = await convertFileToBase64(profileData.avatar);
         } catch (error) {

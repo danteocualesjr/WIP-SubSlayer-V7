@@ -188,7 +188,57 @@ export function useProfile() {
     if (!user) return { success: false, error: 'User not authenticated' };
     
     try {
-      const { error } = await supabase
+     // First check if the user profile already exists
+     const { data: existingProfile, error: checkError } = await supabase
+       .from('user_profiles')
+       .select('id')
+       .eq('user_id', user.id)
+       .maybeSingle();
+       
+     if (checkError) {
+       console.error('Error checking existing profile:', checkError);
+       return { success: false, error: checkError.message };
+     }
+     
+     // If profile exists, update it; otherwise insert a new one
+     const operation = existingProfile ? 
+       supabase.from('user_profiles').update({
+         display_name: profileData.displayName,
+         bio: profileData.bio,
+         location: profileData.location,
+         website: profileData.website,
+         avatar_url: profileData.avatar,
+         updated_at: new Date().toISOString(),
+       }).eq('user_id', user.id) :
+       supabase.from('user_profiles').insert({
+         user_id: user.id,
+         display_name: profileData.displayName,
+         bio: profileData.bio,
+         location: profileData.location,
+         website: profileData.website,
+         avatar_url: profileData.avatar,
+         updated_at: new Date().toISOString(),
+       });
+       
+     const { error } = await operation;
+     
+     if (error) {
+       console.error('Error saving profile to Supabase:', error);
+       return { success: false, error: error.message };
+     }
+     
+     return { success: true };
+   } catch (error) {
+     console.error('Error in saveProfileToSupabase:', error);
+     return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+   }
+ };
+
+ const saveProfileToSupabaseOld = async (profileData: ProfileData) => {
+   if (!user) return { success: false, error: 'User not authenticated' };
+   
+   try {
+     const { error } = await supabase
         .from('user_profiles')
         .upsert({
           user_id: user.id,
